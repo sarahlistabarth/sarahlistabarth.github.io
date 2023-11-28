@@ -5,6 +5,10 @@ date: "2023-11-28"
 categories: [code, visualization]
 image: "map.jpg"
 
+format:
+  html:
+    toc: true
+
 execute:
   warning: false
 ---
