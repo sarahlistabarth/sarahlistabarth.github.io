@@ -1,0 +1,252 @@
+---
+title: Untitled
+format:
+  modern2-cv-pdf: 
+    keep-tex: false
+cvfont: raleway #texlive fonts like raleway,fetamont,gillius,comfortaa
+cvcolor: 
+  main: 110d89
+  accent: 245292
+jobtitle: 
+sidebar:
+  image: portrait.jpg
+  bullets:
+    - Dresden, Germany
+    - German
+  sections: 
+    - name: Skills
+      items:
+        - text: R
+          exp: 
+            text: "4 yrs."
+            num: 1
+        - text: Python
+          exp: 
+            text: "1 yr."
+            num: 0.1
+        - text: Lua
+          exp: 
+            text: "1 yr."
+            num: 0.1
+        - text: Quarto
+          exp: 
+            text: "1 yr."
+            num: 0.5
+        - text: Data Analysis
+          exp: 
+            text: "4 years"
+            num: 0.8        
+        - text: Word VBA
+          exp: 
+            text: "2 years"
+            num: 0.4
+    - name: Languages 
+      items:      
+        - text: German
+          exp: 
+            text: "native"
+            num: 1        
+        - text: English
+          exp: 
+            text: "C2"
+            num: 1        
+        - text: French
+          exp: 
+            text: "C1"
+            num: .8        
+        - text: Russian
+          exp: 
+            text: "B2"
+            num: .5        
+        - text: Spanish
+          exp: 
+            text: "A2"
+            num: .2
+    - name: Tools
+      items:
+        - RStudio
+        - Git
+        - Word Developer Tools
+    - name: Contact
+      items:
+        - icon: map-marker
+          text: Dresden, Germany
+        - icon: phone
+          text: "+49 1573 5726454"
+        - icon: envelope
+          text: sarah.zeller@tu-dresden.de
+        - icon: github
+          text: sarahzeller
+          href: https://github.com/sarahzeller
+        - icon: twitter
+          text: sarah_y_zeller
+          href: https://twitter.com/sarah_y_zeller    
+execute: 
+  echo: false
+---
+
+```{r}
+#| label: cvevents
+cvevents <- function(tbl, when, what, where, descr) {
+
+    command_start <- "\\cvevent"
+    tbl[[where]] <- gsub("\n", " \\\\newline ", tbl[[where]])
+    res <- paste0(
+        command_start, "{", tbl[[when]], "}", 
+        "{", tbl[[what]], "}",
+        "{", tbl[[where]], "}",
+        "{", tbl[[descr]], "}"
+        )
+
+    cat(res, sep = "\n\n\n")
+}
+
+cvproj <- function(tbl,what,role,items){
+    command_start <- "\\cvproj"
+    res <- paste0(
+        command_start, "{", tbl[[what]], "}",
+        "{", tbl[[role]], "}",
+        "{", sapply(tbl[[items]], function(x)paste0(x,collapse = ", ")), "}"
+    )
+
+    cat(res, sep = "\n\n\n")
+}
+
+cvpublication <- function(tbl, name, cit, descr){
+    command_start <- "\\cvproj"
+    res <- paste0(
+        command_start, "{", tbl[[name]], "}",
+        "{", tbl[[cit]], "}",
+        "{", tbl[[descr]], "}"
+    )
+
+    cat(res, sep = "\n\n\n")
+}
+```
+
+<!-- # Summary -->
+
+<!-- Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. -->
+
+# Education
+
+```{r}
+#| label: education
+#| output: asis
+
+tibble::tribble(
+  ~course, ~uni, ~dates, ~details,
+  "M.Sc. Economics",
+  "TU Dresden",
+  "10/2020 -- 09/2023",
+  "\\cvlist{
+  \\item Master's thesis: The impact of landfills on local development in Sub-Saharan Africa
+  \\item Focus on econometric methods
+  \\item Research in political economics
+  }",
+  
+  "B.A. International relations (1.6)",
+  "TU Dresden",
+  "10/2015 -- 09/2019",
+  "\\cvlist{
+  \\item Econometric bachelor\'s thesis: Impact of development aid on economic growth. 
+  \\item Exchange year at Ural Federal University, Yekaterinburg, Russia
+  \\item Full scholarship: Evangelisches Studienwerk Villigst
+  }",
+  
+  "A-levels (1.0)",
+  "Johann-Heinrich-Voss Gymnasium, Eutin",
+  "08/2005 -- 06/2014",
+  "\\cvlist{
+  \\item DMV-price for mathematics
+  \\item Exchange year in Kansas (USA) with Bundestag-Congress full scholarship
+  }"
+  ) |> 
+  cvevents(when = "dates", what = "course", where = "uni", descr = "details")
+
+```
+
+# Experience
+
+```{r}
+#| label: experience
+#| output: asis
+tibble::tribble(
+    ~role, ~institution, ~dates, ~details,
+    "Student assistant", 
+    "Chair of economics, esp. international economics, TU Dresden ", 
+    "11/2022 -- present", 
+    "I mostly work in R to analyze large geo-spatial data sets. I also conduct literature reviews and prepare big data for a machine learning algorithm.",
+    
+    "Student assistant", 
+    "TU Dresden",
+    # "Research Group Knowledge and Technology Transfer", 
+    "04/2020 -- 04/2021",
+    "I helped code key indicators for 100s of scientific articles to create a database. I also held tutorials for a beginners' statistics lecture.",
+    
+    "Consultant",
+    "GIZ, Kenya",
+    "02/2019 -- 03/2019",
+    "I accompanied a \\emph{Lessons Learned} mission with the Kenyan NGO \\emph{Grassroots Economics}. I organized and implemented field visits and conducted interviews with stakeholders. The result was a report on structures, strengths and challenges when using a community currency to foster entrepreneurial potential.",
+    
+    "Intern",
+    "Financial development and energy (West Africa and Madagascar), KfW Development Bank",
+    "11/2018 -- 04/2019",
+    "I supported writing project reports, statements and preparations for government negotioations. I also researched background information for projects and prepared two-pagers. Preparing presentations and writing articles for the webpage were also part of the job.",
+    
+    "Intern to the Personal Representative of the German Chancellor for Africa",
+    "Federal Ministry of Economic Cooperation and Development (BMZ)",
+    "07/2018 -- 09/2018",
+    "I worked on the community currency project \\emph{Our Village} and developed a concept paper. I also researched alternative approaches to development cooperation and worked on the \\emph{widu-Africa} project, which targets the potential of remittances.",
+    
+    "Volunteer",
+    "\\emph{weltwärts} program in Balanka, Togo",
+    "09/2014 -- 07/2015",
+    "I organized and advertized events, such as an Open Day, and prepared and implemented education offers in the local library."
+    
+) |>
+    cvevents(when = "dates", what = "role", where = "institution", descr = "details")
+```
+
+# Publications
+
+```{r}
+#| label: publications
+#| output: asis
+#| eval: true
+
+tibble::tribble(
+  ~name, ~url, ~description,
+  "Community currencies",
+  "\\href{https://www.mdpi.com/1911-8074/13/11/271}{Zeller, Sarah: Economic Advantages of Community Currencies, JRFM 13 (11), p. 271.}",
+  "Qualitative analysis of the mediating effects of local currencies. Publication in economic journal.",
+  
+  "Our Village -- Creating endogenous growth",
+  "\\href{https://www.rural21.com/fileadmin/downloads/2019/en-03/Rural21_3_2019.pdf}{Nooke, Günter and Sarah Zeller (2019): Our village - creating endogenous growth, Rural21 51(3), p. 42-43.}",
+  "Concept paper for using community currencies in a development cooperation context. Publication in development politics magazine",
+  
+  "Analysis of the Turkey-EU statement on refugees 2016",
+  "\\href{https://elar.urfu.ru/handle/10995/63633}{Zeller, S (2018): Turkey-EU Statement on Refugees 2016: Analysis from the Point of View of Liberalism}",
+ "Analysis of the refugee deal between Turkey and the EU in 2016, published in a Russian conference proceedings journal."
+) |> 
+  cvpublication(name = "name", cit = "url", descr = "description")
+```
+
+<!-- # Projects -->
+
+<!-- See my [github profile](https://github.com/sarahzeller) for a comprehensive list of open source projects. -->
+
+```{r}
+#| label: proj
+#| output: asis
+#| eval: false
+tibble::tribble(
+    ~what, ~role, ~items,
+    "R package", "Creator and maintainer", "donutsR", 
+    "Quarto extensions", "Contributer",  "acronyms",
+    "Word macros for editors", "Creator and maintainer", "Word macros that help editors prepare the document, and macros that help while editing."
+    
+) |>
+    cvproj(what = "what", role = "role", items = "items")
+
+```
