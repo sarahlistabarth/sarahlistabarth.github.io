@@ -334,17 +334,96 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>First, let’s change the labels for our regression. We do this by adding names to the list’s input (lines 1–2).</p>
 <p>As a next step, let’s use the label we added earlier on, by setting <code>coef_rename</code> to true. Then, let’s omit some of the goodnes-of-fit (gof) indicators, since we don’t need all of them here. We do this with a regex in the <code>gof_omit</code> argument: anything that matches the expression in line 4 will not be included.</p>
 <p>Lastly, I’m used to adding stars where a coefficient is significant. This is not added by default, so let’s simply set the <code>stars</code> argument to true.</p>
-<div>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">list</span>(<span class="at">OLS =</span> gravity_ols,</span>
 <span id="cb5-2"><a href="#cb5-2"></a>     <span class="at">Poisson =</span> gravity_pois) <span class="sc">|&gt;</span></span>
 <span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">modelsummary</span>(<span class="at">coef_rename =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb5-4"><a href="#cb5-4"></a>               <span class="at">gof_omit =</span> <span class="st">"AIC|BIC|RMSE"</span>,</span>
-<span id="cb5-5"><a href="#cb5-5"></a>               <span class="at">stars =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-6"><a href="#cb5-6"></a>               <span class="at">output =</span> <span class="st">"table.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="tbl-regression-prettier" class="cell tbl-parent quarto-layout-panel anchored" data-tbl-cap="Some regressions -- prettier">
-<div class="panel-caption table-caption">
-<p><strong>?(caption)</strong></p>
+<span id="cb5-5"><a href="#cb5-5"></a>               <span class="at">stars =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="tbl-regression-prettier" class="anchored">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Table&nbsp;2: Some regressions – prettier</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">OLS</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Poisson</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Log (distance [km])</td>
+<td style="text-align: center;">-47643.024***</td>
+<td style="text-align: center;">-0.002***</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5px;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5px;">(10905.572)</td>
+<td style="text-align: center; box-shadow: 0px 1.5px;">(0.000)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Num.Obs.</td>
+<td style="text-align: center;">38325</td>
+<td style="text-align: center;">38325</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R2</td>
+<td style="text-align: center;">0.286</td>
+<td style="text-align: center;">0.751</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R2 Adj.</td>
+<td style="text-align: center;">0.285</td>
+<td style="text-align: center;">0.751</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R2 Within</td>
+<td style="text-align: center;">0.031</td>
+<td style="text-align: center;">0.269</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R2 Within Adj.</td>
+<td style="text-align: center;">0.031</td>
+<td style="text-align: center;">0.269</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Std.Errors</td>
+<td style="text-align: center;">by: Origin</td>
+<td style="text-align: center;">by: Origin</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FE: Origin</td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FE: Destination</td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FE: Product</td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FE: Year</td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><sup></sup> + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
 </div>
+
+
 </div>
 </div>
 </section>
