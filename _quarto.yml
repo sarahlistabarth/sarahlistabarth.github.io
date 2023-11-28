@@ -1,9 +1,6 @@
 project:
   type: website
-  render:
-    - "*.qmd"
-    - "!cv/cv.qmd"
-
+  
 website:
   title: "Sarah Zeller"
   favicon: assets/favicon-data.svg
