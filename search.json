@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Sarah Zeller",
+    "section": "",
+    "text": "I’m a PhD student at the Technical University of Dresden (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in R, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.\nI have a particular interest in the challenge of data wrangling – organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.\nOne of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights."
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html",
+    "href": "blog/posts/creating-a-basic-map/index.html",
+    "title": "Creating a map with ggplot2",
+    "section": "",
+    "text": "In this post, I create a basic world map – specifically, a Choropleth map. That means we colour the countries by a specific variable."
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html#basic-map",
+    "href": "blog/posts/creating-a-basic-map/index.html#basic-map",
+    "title": "Creating a map with ggplot2",
+    "section": "Basic map",
+    "text": "Basic map\nWe can simply do this with ggplot, with the function geom_sf. It takes normal aesthetics, so we can just hand it our variable of interest – is_my_country. Since this is a map, it makes the most sense to just fill the polygons according to this variable, so we use the fill aesthetic.\n\nggplot() +\n  # plot an sf object\n  geom_sf(data = world,\n          # fill it according to my variable\n          aes(fill = is_my_country))\n\n\n\n\nFigure 1: Choropleth map of my countries – basic"
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html#intermediate-map",
+    "href": "blog/posts/creating-a-basic-map/index.html#intermediate-map",
+    "title": "Creating a map with ggplot2",
+    "section": "Intermediate map",
+    "text": "Intermediate map\nWe now decrease some of the clutter. We get rid of the legend since it’s just a Boolean – we can indicate this in our title/caption. We also choose different colours, and get rid of the gridlines.\n\nggplot() +\n  # plot an sf object\n  geom_sf(data = world,\n          # fill it according to my variable\n          aes(fill = is_my_country),\n         # don't show the legend: it's just true or false, can be shown in title\n          show.legend = FALSE) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # remove clutter\n  theme_void() \n\n\n\n\nFigure 2: Choropleth map of my countries (in yellow) – intermediate"
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html#prettier-map",
+    "href": "blog/posts/creating-a-basic-map/index.html#prettier-map",
+    "title": "Creating a map with ggplot2",
+    "section": "Prettier map",
+    "text": "Prettier map\nIt doesn’t quite look like we’re used to, though. Check out the comments to see what we’ve changed.\n\nggplot() +\n  # plot an sf object\n  geom_sf(\n    data = world,\n    # fill it according to my variable\n    aes(fill = is_my_country),\n    # make borders lighter\n    col = \"grey80\",\n    # don't show the legend: it's just true or false, can be shown in title\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    # get the data just for the countries we want to show\n    data = world |&gt; filter(is_my_country == TRUE),\n    # get the sovereignt label, and transform it to upper case\n    aes(label = admin |&gt; toupper()),\n    # make it not as dark\n    col = \"grey30\",\n    # decrease size\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void() +\n  # add blue background for water\n  theme(panel.background = element_rect(fill = alpha(\"cornflowerblue\", .4),\n                                        colour = NA)) \n\n\n\n\nFigure 3: Choropleth map of my countries – prettier version"
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html#advanced-stuff",
+    "href": "blog/posts/creating-a-basic-map/index.html#advanced-stuff",
+    "title": "Creating a map with ggplot2",
+    "section": "Advanced stuff",
+    "text": "Advanced stuff\nIf you’re really interested, you can check out the following on top:\n\ngraticules (latitude/longitude)\nNorth arrow (not recommended for world maps, though)\nscale (not recommended for most world maps, though)"
+  },
+  {
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "Creating a map with ggplot2\n\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah\n\n\n\n\n\n\nNo matching items"
+  }
+]
