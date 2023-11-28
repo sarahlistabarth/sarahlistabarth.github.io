@@ -82,8 +82,7 @@ list(OLS = gravity_ols,
      Poisson = gravity_pois) |>
   modelsummary(coef_rename = TRUE,
                gof_omit = "AIC|BIC|RMSE",
-               stars = TRUE,
-               output = "table.png")
+               stars = TRUE)
 ```
 
 ## For advanced features, check out the documentation
