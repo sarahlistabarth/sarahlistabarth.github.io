@@ -3,7 +3,7 @@ author: Sarah
 title: Creating a basic regression table
 date: "2023-11-28"
 categories: [code, summary]
-image: "table.jpg"
+image: "table.png"
 
 format:
   html:
@@ -25,7 +25,7 @@ library(fixest)
 library(modelsummary)
 library(dplyr)
 library(labelled)
-library(flextable)
+library(gt)
 ```
 
 Then, we prepare the data. We simply use the data that comes with the `fixest` package. For a prettier output in the table later on, we add a label to our variable of interest.
@@ -67,11 +67,65 @@ list(gravity_ols,
 
 However, the output in @tbl-regression-basic is not very pretty yet. Let's customize it!
 
-First, let's change the labels for our regression. We do this by adding names to the list's input (lines 1--2).
+As a first step, we make create some helper functions.
+
+```{r}
+#| label: helper-functions
+#| code-fold: true
+
+# format numbers: thousand separator
+f <- function(x, n_digits = 2) {
+  ifelse(is.na(x),
+         "",
+         formatC(
+           x,
+           digits = n_digits,
+           big.mark = ",",
+           format = "f"
+         ))
+}
+
+f_0 <- purrr::partial(f, n_digits = 0)
+  
+#  function for GOF measures we don't want to change
+keep_format <- function(x) list("raw" = x, "clean" = x, "fmt" = NA)
+```
+
+Then, we create a list where we format our goodness-of-fit (GOF) measures.
+
+```{r}
+#| label: format-gof
+#| code-fold: true
+# format # observations and R^2, keep the rest
+gof_tidy <- list(
+  list(
+    "raw" = "nobs",
+    "clean" = "Num. observations",
+    "fmt" = f_0
+  ),
+  list(
+    "raw" = "r.squared",
+    "clean" = "R\u00B2",
+    "fmt" = 3
+  ),
+  keep_format("FE: Origin"),
+  keep_format("FE: Destination"),
+  keep_format("FE: Product"),
+  keep_format("FE: Year")
+)
+```
+
+
+Then, let's change the labels for our regression. We do this by adding names to the list's input (lines 1--2).
 
 As a next step, let's use the label we added earlier on, by setting `coef_rename` to true. Then, let's omit some of the goodnes-of-fit (gof) indicators, since we don't need all of them here. We do this with a regex in the `gof_omit` argument: anything that matches the expression in line 4 will not be included.
 
 Lastly, I'm used to adding stars where a coefficient is significant. This is not added by default, so let's simply set the `stars` argument to true.
+
+Then, we're using `gt` output, which gives us the possibility to further style the table.
+We add a header detailing our dependent variable.
+Then, we add a spanner to tell readers that *OLS* and *Poisson* are regression models.
+
 
 ```{r}
 #| label: tbl-regression-prettier
@@ -80,9 +134,20 @@ Lastly, I'm used to adding stars where a coefficient is significant. This is not
 
 list(OLS = gravity_ols,
      Poisson = gravity_pois) |>
-  modelsummary(coef_rename = TRUE,
-               gof_omit = "AIC|BIC|RMSE",
-               stars = TRUE)
+  modelsummary(
+    coef_rename = TRUE,
+    gof_omit = "AIC|BIC|RMSE|Within|Adj",
+    gof_map = gof_tidy,
+    fmt = f,
+    stars = TRUE,
+    output = "gt"
+  ) |>
+  # add header and spanner
+  tab_header(title = "Dependent variable: Trade flow [€]") |>
+  tab_spanner(
+    label = "Regression model",
+    columns = c("OLS", "Poisson")
+    )
 ```
 
 ## For advanced features, check out the documentation
