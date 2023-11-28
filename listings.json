@@ -2,6 +2,7 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/posts/showing-regression-results/show-regressions.html",
       "/blog/posts/creating-a-basic-map/index.html"
     ]
   }
