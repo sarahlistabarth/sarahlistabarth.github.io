@@ -1,0 +1,22 @@
+---
+title: "Sarah Zeller"
+image: cv/portrait.jpg
+
+about:
+  template: jolla
+  links: 
+    - icon: envelope
+      href: mailto:sarah.zeller@tu-dresden.de
+    - icon: github
+      href: https://github.com/sarahzeller
+    - icon: twitter
+      href: https://twitter.com/sarah_y_zeller
+---
+
+::: text-start
+I'm a PhD student at the *Technical University of Dresden* (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in `R`, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.
+
+I have a particular interest in the challenge of data wrangling -- organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.
+
+One of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights.
+:::
