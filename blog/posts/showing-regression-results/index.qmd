@@ -1,0 +1,91 @@
+---
+author: Sarah
+title: Creating a basic regression table
+date: "2023-11-28"
+categories: [code, summary]
+image: "table.jpg"
+
+format:
+  html:
+    toc: true
+
+execute:
+  warning: false
+---
+
+In this post, we have a look at creating a basic regression table with `modelsummary` and `fixest`.
+
+# Setup
+
+First, we load the necessary libraries.
+
+```{r}
+#| label: setup
+library(fixest)
+library(modelsummary)
+library(dplyr)
+library(labelled)
+library(flextable)
+```
+
+Then, we prepare the data. We simply use the data that comes with the `fixest` package. For a prettier output in the table later on, we add a label to our variable of interest.
+
+```{r}
+#| label: prepare-data
+data(trade)
+trade_labelled <- trade |> 
+  dplyr::mutate(log_dist_km = labelled(dist_km, label = "Log (distance [km])"))
+```
+
+As a next step, we run two regressions: One with Fixed Effects, the other one with a Poisson Pseudo-Maximum-Likelihood (PPML) model. With this, we have a very basic Gravity Model in two variations.
+
+```{r}
+#| label: regressions
+gravity_ols <- feols(Euros ~ log_dist_km | Origin + Destination + Product + Year, trade_labelled)
+gravity_pois = fepois(Euros ~ log_dist_km | Origin + Destination + Product + Year, trade_labelled)
+```
+
+# Creating a table
+
+We're already all set to create a regression table.
+
+## Basic table
+
+Creating a summary table of our equations is very straight-forward with `modelsummary`: We create a list of the models we want to show, and then input that to `modelsummary`.
+
+```{r}
+#| label: tbl-regression-basic
+#| tbl-cap: Some regressions -- basic
+
+
+list(gravity_ols,
+     gravity_pois) |>
+  modelsummary()
+```
+
+## Prettier table
+
+However, the output in @tbl-regression-basic is not very pretty yet. Let's customize it!
+
+First, let's change the labels for our regression. We do this by adding names to the list's input (lines 1--2).
+
+As a next step, let's use the label we added earlier on, by setting `coef_rename` to true. Then, let's omit some of the goodnes-of-fit (gof) indicators, since we don't need all of them here. We do this with a regex in the `gof_omit` argument: anything that matches the expression in line 4 will not be included.
+
+Lastly, I'm used to adding stars where a coefficient is significant. This is not added by default, so let's simply set the `stars` argument to true.
+
+```{r}
+#| label: tbl-regression-prettier
+#| tbl-cap: Some regressions -- prettier
+#| code-line-numbers: true
+
+list(OLS = gravity_ols,
+     Poisson = gravity_pois) |>
+  modelsummary(coef_rename = TRUE,
+               gof_omit = "AIC|BIC|RMSE",
+               stars = TRUE,
+               output = "table.png")
+```
+
+## For advanced features, check out the documentation
+
+These are some pretty normal results. However, you may to e.g. bootstrap standard errors, omit coefficients, or add more information. I really recommend checking out `modelsummary`'s [documentation](https://modelsummary.com/)!
