@@ -22,7 +22,8 @@ First, I load all necessary libraries.
 ```{r}
 #| label: setup
 library(sf)
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(countrycode)
 library(rnaturalearth)
 library(ggspatial)
