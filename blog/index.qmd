@@ -11,3 +11,7 @@ listing:
 page-layout: full
 title-block-banner: true
 ---
+
+
+>This blog is for people just starting out with their `R` journey.
+I'll address beginner problems, simplifying some concepts in `R` programming. 
