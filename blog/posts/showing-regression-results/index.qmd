@@ -1,6 +1,6 @@
 ---
 author: Sarah
-title: Creating a basic regression table
+title: Creating a basic regression table with `modelsummary`
 date: "2023-11-28"
 categories: [code, summary]
 image: "table.png"
@@ -41,13 +41,18 @@ As a next step, we run two regressions: One with Fixed Effects, the other one wi
 
 ```{r}
 #| label: regressions
-gravity_ols <- feols(Euros ~ log_dist_km | Origin + Destination + Product + Year, trade_labelled)
-gravity_pois = fepois(Euros ~ log_dist_km | Origin + Destination + Product + Year, trade_labelled)
+gravity_ols <-
+  feols(Euros ~ log_dist_km | Origin + Destination + Product + Year,
+        data = trade_labelled)
+gravity_pois <-
+  fepois(Euros ~ log_dist_km |
+           Origin + Destination + Product + Year,
+         data = trade_labelled)
 ```
 
 # Creating a table
 
-We're already all set to create a regression table.
+With our two regressions ready, we're all set to create a regression table.
 
 ## Basic table
 
@@ -65,9 +70,12 @@ list(gravity_ols,
 
 ## Prettier table
 
-However, the output in @tbl-regression-basic is not very pretty yet. Let's customize it!
+However, the output in @tbl-regression-basic is not very pretty yet. 
+It's not entirely clear yet what the independent variable is, we don't know what (1) and (2) stand for, and we have a mass of goodness-of-fit measures.
+Let's customize our table!
 
 As a first step, we make create some helper functions.
+These help with formatting the table.
 
 ```{r}
 #| label: helper-functions
@@ -92,6 +100,7 @@ keep_format <- function(x) list("raw" = x, "clean" = x, "fmt" = NA)
 ```
 
 Then, we create a list where we format our goodness-of-fit (GOF) measures.
+Some of the default names are not so pretty, e.g. *Num.Observations* without a space between the two words -- so we switch them to shorter or nicer names.
 
 ```{r}
 #| label: format-gof
@@ -100,7 +109,7 @@ Then, we create a list where we format our goodness-of-fit (GOF) measures.
 gof_tidy <- list(
   list(
     "raw" = "nobs",
-    "clean" = "Num. observations",
+    "clean" = "Observations",
     "fmt" = f_0
   ),
   list(
@@ -116,13 +125,18 @@ gof_tidy <- list(
 ```
 
 
-Then, let's change the labels for our regression. We do this by adding names to the list's input (lines 1--2).
+Let's change the labels for our regression. We do this by adding names to the list's input (lines 1--2).
 
-As a next step, let's use the label we added earlier on, by setting `coef_rename` to true. Then, let's omit some of the goodnes-of-fit (gof) indicators, since we don't need all of them here. We do this with a regex in the `gof_omit` argument: anything that matches the expression in line 4 will not be included.
+As a next step, let's use the label we added earlier on, by setting `coef_rename` to true. 
+Let's also format the numbers using the formatting function we set up earlier, `f`.
 
-Lastly, I'm used to adding stars where a coefficient is significant. This is not added by default, so let's simply set the `stars` argument to true.
+Let's omit some of the goodnes-of-fit (gof) indicators, since we don't need all of them here.
+We do this with the `gof_map` argument, to which we supply our GOF list from the last step.
+Alternatively, we could use a regex in the `gof_omit` argument: anything that matches the expression in line 4 will not be included.
 
-Then, we're using `gt` output, which gives us the possibility to further style the table.
+Also, I'm used to adding stars where a coefficient is significant. This is not added by default, so let's simply set the `stars` argument to true.
+
+Then, we're setting the output to `gt`, which gives us the possibility to further style the table with the package `gt`.
 We add a header detailing our dependent variable.
 Then, we add a spanner to tell readers that *OLS* and *Poisson* are regression models.
 
@@ -136,7 +150,6 @@ list(OLS = gravity_ols,
      Poisson = gravity_pois) |>
   modelsummary(
     coef_rename = TRUE,
-    gof_omit = "AIC|BIC|RMSE|Within|Adj",
     gof_map = gof_tidy,
     fmt = f,
     stars = TRUE,
@@ -150,6 +163,8 @@ list(OLS = gravity_ols,
     )
 ```
 
-## For advanced features, check out the documentation
+# For advanced features, check out the documentation
 
-These are some pretty normal results. However, you may to e.g. bootstrap standard errors, omit coefficients, or add more information. I really recommend checking out `modelsummary`'s [documentation](https://modelsummary.com/)!
+These are some pretty normal results.
+However, you may to e.g. bootstrap standard errors, omit coefficients, or add more information.
+I really recommend checking out `modelsummary`'s [documentation](https://modelsummary.com/)!
