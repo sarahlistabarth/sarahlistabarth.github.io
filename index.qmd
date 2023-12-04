@@ -1,6 +1,6 @@
 ---
 title: "Sarah Zeller"
-image: cv/portrait.jpg
+image: assets/portrait.jpg
 
 about:
   template: jolla
