@@ -1,12 +1,5 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Sarah Zeller",
-    "section": "",
-    "text": "I’m a PhD student at the Technical University of Dresden (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in R, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.\nI have a particular interest in the challenge of data wrangling – organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.\nOne of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights."
-  },
-  {
     "objectID": "blog/posts/showing-regression-results/index.html",
     "href": "blog/posts/showing-regression-results/index.html",
     "title": "Creating a basic regression table with modelsummary",
@@ -32,7 +25,14 @@
     "href": "blog/index.html",
     "title": "Blog",
     "section": "",
-    "text": "This blog is for people just starting out with their R journey. I’ll address beginner problems, simplifying some concepts in R programming.\n\n\n\n\n\n\n\n\n\n  \n\n\n\n\nCreating a basic regression table with modelsummary\n\n\n\n\n\n\n\ncode\n\n\nsummary\n\n\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah\n\n\n\n\n\n\n  \n\n\n\n\nCreating a map with ggplot2\n\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah\n\n\n\n\n\n\nNo matching items"
+    "text": "This blog is for people just starting out with their R journey. I’ll address beginner problems, simplifying some concepts in R programming.\n\n\n\n\n\n\n\n\n\n  \n\n\n\n\nCreating a map with ggplot2\n\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah Zeller\n\n\n\n\n\n\n  \n\n\n\n\nCreating a basic regression table with modelsummary\n\n\n\n\n\n\n\ncode\n\n\nsummary\n\n\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah Zeller\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Sarah Zeller",
+    "section": "",
+    "text": "I’m a PhD student at the Technical University of Dresden (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in R, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.\nI have a particular interest in the challenge of data wrangling – organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.\nOne of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights."
   },
   {
     "objectID": "blog/posts/creating-a-basic-map/index.html",
