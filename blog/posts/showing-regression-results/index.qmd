@@ -1,9 +1,11 @@
 ---
-author: Sarah
+author: Sarah Zeller
 title: Creating a basic regression table with `modelsummary`
 date: "2023-11-28"
 categories: [code, summary]
 image: "table.png"
+citation:
+  url: https://sarahzeller.github.io/blog/posts/showing-regression-results/
 
 format:
   html:
@@ -70,12 +72,9 @@ list(gravity_ols,
 
 ## Prettier table
 
-However, the output in @tbl-regression-basic is not very pretty yet. 
-It's not entirely clear yet what the independent variable is, we don't know what (1) and (2) stand for, and we have a mass of goodness-of-fit measures.
-Let's customize our table!
+However, the output in @tbl-regression-basic is not very pretty yet. It's not entirely clear yet what the independent variable is, we don't know what (1) and (2) stand for, and we have a mass of goodness-of-fit measures. Let's customize our table!
 
-As a first step, we make create some helper functions.
-These help with formatting the table.
+As a first step, we make create some helper functions. These help with formatting the table.
 
 ```{r}
 #| label: helper-functions
@@ -99,8 +98,7 @@ f_0 <- purrr::partial(f, n_digits = 0)
 keep_format <- function(x) list("raw" = x, "clean" = x, "fmt" = NA)
 ```
 
-Then, we create a list where we format our goodness-of-fit (GOF) measures.
-Some of the default names are not so pretty, e.g. *Num.Observations* without a space between the two words -- so we switch them to shorter or nicer names.
+Then, we create a list where we format our goodness-of-fit (GOF) measures. Some of the default names are not so pretty, e.g. *Num.Observations* without a space between the two words -- so we switch them to shorter or nicer names.
 
 ```{r}
 #| label: format-gof
@@ -124,22 +122,15 @@ gof_tidy <- list(
 )
 ```
 
-
 Let's change the labels for our regression. We do this by adding names to the list's input (lines 1--2).
 
-As a next step, let's use the label we added earlier on, by setting `coef_rename` to true. 
-Let's also format the numbers using the formatting function we set up earlier, `f`.
+As a next step, let's use the label we added earlier on, by setting `coef_rename` to true. Let's also format the numbers using the formatting function we set up earlier, `f`.
 
-Let's omit some of the goodnes-of-fit (gof) indicators, since we don't need all of them here.
-We do this with the `gof_map` argument, to which we supply our GOF list from the last step.
-Alternatively, we could use a regex in the `gof_omit` argument: anything that matches the expression in line 4 will not be included.
+Let's omit some of the goodnes-of-fit (gof) indicators, since we don't need all of them here. We do this with the `gof_map` argument, to which we supply our GOF list from the last step. Alternatively, we could use a regex in the `gof_omit` argument: anything that matches the expression in line 4 will not be included.
 
 Also, I'm used to adding stars where a coefficient is significant. This is not added by default, so let's simply set the `stars` argument to true.
 
-Then, we're setting the output to `gt`, which gives us the possibility to further style the table with the package `gt`.
-We add a header detailing our dependent variable.
-Then, we add a spanner to tell readers that *OLS* and *Poisson* are regression models.
-
+Then, we're setting the output to `gt`, which gives us the possibility to further style the table with the package `gt`. We add a header detailing our dependent variable. Then, we add a spanner to tell readers that *OLS* and *Poisson* are regression models.
 
 ```{r}
 #| label: tbl-regression-prettier
@@ -165,6 +156,4 @@ list(OLS = gravity_ols,
 
 # For advanced features, check out the documentation
 
-These are some pretty normal results.
-However, you may to e.g. bootstrap standard errors, omit coefficients, or add more information.
-I really recommend checking out `modelsummary`'s [documentation](https://modelsummary.com/)!
+These are some pretty normal results. However, you may to e.g. bootstrap standard errors, omit coefficients, or add more information. I really recommend checking out `modelsummary`'s [documentation](https://modelsummary.com/)!
