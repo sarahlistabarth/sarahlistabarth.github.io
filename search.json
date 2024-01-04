@@ -1,40 +1,5 @@
 [
   {
-    "objectID": "blog/posts/showing-regression-results/index.html",
-    "href": "blog/posts/showing-regression-results/index.html",
-    "title": "Creating a basic regression table with modelsummary",
-    "section": "",
-    "text": "In this post, we have a look at creating a basic regression table with modelsummary and fixest."
-  },
-  {
-    "objectID": "blog/posts/showing-regression-results/index.html#basic-table",
-    "href": "blog/posts/showing-regression-results/index.html#basic-table",
-    "title": "Creating a basic regression table with modelsummary",
-    "section": "Basic table",
-    "text": "Basic table\nCreating a summary table of our equations is very straight-forward with modelsummary: We create a list of the models we want to show, and then input that to modelsummary.\n\nlist(gravity_ols,\n     gravity_pois) |&gt;\n  modelsummary()\n\n\n\nTable 1: Some regressions – basic\n\n\n\n (1)\n  (2)\n\n\n\n\nlog_dist_km\n-47643.024\n-0.002\n\n\n\n(10905.572)\n(0.000)\n\n\nNum.Obs.\n38325\n38325\n\n\nR2\n0.286\n0.751\n\n\nR2 Adj.\n0.285\n0.751\n\n\nR2 Within\n0.031\n0.269\n\n\nR2 Within Adj.\n0.031\n0.269\n\n\nAIC\n1533832.6\n1e+12\n\n\nBIC\n1534328.7\n1e+12\n\n\nRMSE\n118498460.83\n88327120.62\n\n\nStd.Errors\nby: Origin\nby: Origin\n\n\nFE: Origin\nX\nX\n\n\nFE: Destination\nX\nX\n\n\nFE: Product\nX\nX\n\n\nFE: Year\nX\nX"
-  },
-  {
-    "objectID": "blog/posts/showing-regression-results/index.html#prettier-table",
-    "href": "blog/posts/showing-regression-results/index.html#prettier-table",
-    "title": "Creating a basic regression table with modelsummary",
-    "section": "Prettier table",
-    "text": "Prettier table\nHowever, the output in Table 1 is not very pretty yet. It’s not entirely clear yet what the independent variable is, we don’t know what (1) and (2) stand for, and we have a mass of goodness-of-fit measures. Let’s customize our table!\nAs a first step, we make create some helper functions. These help with formatting the table.\n\n\nCode\n# format numbers: thousand separator\nf &lt;- function(x, n_digits = 2) {\n  ifelse(is.na(x),\n         \"\",\n         formatC(\n           x,\n           digits = n_digits,\n           big.mark = \",\",\n           format = \"f\"\n         ))\n}\n\nf_0 &lt;- purrr::partial(f, n_digits = 0)\n  \n#  function for GOF measures we don't want to change\nkeep_format &lt;- function(x) list(\"raw\" = x, \"clean\" = x, \"fmt\" = NA)\n\n\nThen, we create a list where we format our goodness-of-fit (GOF) measures. Some of the default names are not so pretty, e.g. Num.Observations without a space between the two words – so we switch them to shorter or nicer names.\n\n\nCode\n# format # observations and R^2, keep the rest\ngof_tidy &lt;- list(\n  list(\n    \"raw\" = \"nobs\",\n    \"clean\" = \"Observations\",\n    \"fmt\" = f_0\n  ),\n  list(\n    \"raw\" = \"r.squared\",\n    \"clean\" = \"R\\u00B2\",\n    \"fmt\" = 3\n  ),\n  keep_format(\"FE: Origin\"),\n  keep_format(\"FE: Destination\"),\n  keep_format(\"FE: Product\"),\n  keep_format(\"FE: Year\")\n)\n\n\nLet’s change the labels for our regression. We do this by adding names to the list’s input (lines 1–2).\nAs a next step, let’s use the label we added earlier on, by setting coef_rename to true. Let’s also format the numbers using the formatting function we set up earlier, f.\nLet’s omit some of the goodnes-of-fit (gof) indicators, since we don’t need all of them here. We do this with the gof_map argument, to which we supply our GOF list from the last step. Alternatively, we could use a regex in the gof_omit argument: anything that matches the expression in line 4 will not be included.\nAlso, I’m used to adding stars where a coefficient is significant. This is not added by default, so let’s simply set the stars argument to true.\nThen, we’re setting the output to gt, which gives us the possibility to further style the table with the package gt. We add a header detailing our dependent variable. Then, we add a spanner to tell readers that OLS and Poisson are regression models.\n\nlist(OLS = gravity_ols,\n     Poisson = gravity_pois) |&gt;\n  modelsummary(\n    coef_rename = TRUE,\n    gof_map = gof_tidy,\n    fmt = f,\n    stars = TRUE,\n    output = \"gt\"\n  ) |&gt;\n  # add header and spanner\n  tab_header(title = \"Dependent variable: Trade flow [€]\") |&gt;\n  tab_spanner(\n    label = \"Regression model\",\n    columns = c(\"OLS\", \"Poisson\")\n    )\n\n\n\n\n\nTable 2:  Some regressions – prettier \n  \n    \n      Dependent variable: Trade flow [€]\n    \n    \n    \n       \n      \n        Regression model\n      \n    \n    \n      OLS\n      Poisson\n    \n  \n  \n    Log (distance [km])\n-47,643.02***\n-0.00***\n    \n(10,905.57)\n(0.00)\n    Observations\n38,325\n38,325\n    R²\n0.286\n0.751\n    FE: Origin\nX\nX\n    FE: Destination\nX\nX\n    FE: Product\nX\nX\n    FE: Year\nX\nX\n  \n  \n    \n      + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001"
-  },
-  {
-    "objectID": "blog/index.html",
-    "href": "blog/index.html",
-    "title": "Blog",
-    "section": "",
-    "text": "This blog is for people just starting out with their R journey. I’ll address beginner problems, simplifying some concepts in R programming.\n\n\n\n\n\n\n\n\n\n  \n\n\n\n\nCreating a map with ggplot2\n\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah Zeller\n\n\n\n\n\n\n  \n\n\n\n\nCreating a basic regression table with modelsummary\n\n\n\n\n\n\n\ncode\n\n\nsummary\n\n\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah Zeller\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Sarah Zeller",
-    "section": "",
-    "text": "I’m a PhD student at the Technical University of Dresden (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in R, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.\nI have a particular interest in the challenge of data wrangling – organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.\nOne of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights."
-  },
-  {
     "objectID": "blog/posts/creating-a-basic-map/index.html",
     "href": "blog/posts/creating-a-basic-map/index.html",
     "title": "Creating a map with ggplot2",
@@ -60,7 +25,14 @@
     "href": "blog/posts/creating-a-basic-map/index.html#prettier-map",
     "title": "Creating a map with ggplot2",
     "section": "Prettier map",
-    "text": "Prettier map\nIt doesn’t quite look like we’re used to, though. Check out the comments to see what we’ve changed.\n\nggplot() +\n  # plot an sf object\n  geom_sf(\n    data = world,\n    # fill it according to my variable\n    aes(fill = is_my_country),\n    # make borders lighter\n    col = \"grey80\",\n    # don't show the legend: it's just true or false, can be shown in title\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    # get the data just for the countries we want to show\n    data = world |&gt; filter(is_my_country == TRUE),\n    # get the sovereignt label, and transform it to upper case\n    aes(label = admin |&gt; toupper()),\n    # make it not as dark\n    col = \"grey30\",\n    # decrease size\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void() +\n  # add blue background for water\n  theme(panel.background = element_rect(fill = alpha(\"cornflowerblue\", .4),\n                                        colour = NA)) \n\n\n\n\nFigure 3: Choropleth map of my countries – prettier version"
+    "text": "Prettier map\nIt doesn’t quite look like we’re used to, though. Check out the comments to see what we’ve changed.\n\nggplot() +\n  # plot an sf object\n  geom_sf(\n    data = world,\n    # fill it according to my variable\n    aes(fill = is_my_country),\n    # make borders lighter\n    col = \"grey80\",\n    # don't show the legend: it's just true or false, can be shown in title\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    # get the data just for the countries we want to show\n    data = world |&gt; filter(is_my_country == TRUE),\n    # get the sovereignt label, and transform it to upper case\n    aes(label = admin |&gt; toupper()),\n    # make it not as dark\n    col = \"grey30\",\n    # decrease size\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void()\n\n\n\n\nFigure 3: Choropleth map of my countries – prettier version"
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html#prettier-map-with-ocean",
+    "href": "blog/posts/creating-a-basic-map/index.html#prettier-map-with-ocean",
+    "title": "Creating a map with ggplot2",
+    "section": "Prettier map with ocean",
+    "text": "Prettier map with ocean\nThere’s just some lines of code you need to add to have a round earth/rounded sea. We need to create a polygon that has just the shape of the earth. We can do this with st_graticule, and then st_cast it to a polygon. Then, we can simply plot this polygon at the beginning of our ggplot.\n\ngrat &lt;- st_graticule() |&gt; st_cast('POLYGON')\n\nggplot() +\n  # this is the new line\n  geom_sf(data = grat, fill = \"#d7ecfa\", col = \"#d7ecfa\") +\n  # now everything is the same as before\n  geom_sf(\n    data = world,\n    aes(fill = is_my_country),\n    col = \"grey80\",\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    data = world |&gt; filter(is_my_country == TRUE),\n    aes(label = admin |&gt; toupper()),\n    col = \"grey30\",\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void()\n\n\n\n\nFigure 4: Choropleth map of my countries – round earth"
   },
   {
     "objectID": "blog/posts/creating-a-basic-map/index.html#advanced-stuff",
@@ -68,5 +40,40 @@
     "title": "Creating a map with ggplot2",
     "section": "Advanced stuff",
     "text": "Advanced stuff\nIf you’re really interested, you can check out the following on top:\n\ngraticules (latitude/longitude)\nNorth arrow (not recommended for world maps, though)\nscale (not recommended for most world maps, though)"
+  },
+  {
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "This blog is for people just starting out with their R journey. I’ll address beginner problems, simplifying some concepts in R programming.\n\n\n\n\n\n\n\n\n\n  \n\n\n\n\nCreating a map with ggplot2\n\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\n\n\n\n\n\n\n\n\n\nJan 4, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n  \n\n\n\n\nCreating a basic regression table with modelsummary\n\n\n\n\n\n\n\ncode\n\n\nsummary\n\n\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah Zeller\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Sarah Zeller",
+    "section": "",
+    "text": "I’m a PhD student at the Technical University of Dresden (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in R, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.\nI have a particular interest in the challenge of data wrangling – organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.\nOne of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights."
+  },
+  {
+    "objectID": "blog/posts/showing-regression-results/index.html",
+    "href": "blog/posts/showing-regression-results/index.html",
+    "title": "Creating a basic regression table with modelsummary",
+    "section": "",
+    "text": "In this post, we have a look at creating a basic regression table with modelsummary and fixest."
+  },
+  {
+    "objectID": "blog/posts/showing-regression-results/index.html#basic-table",
+    "href": "blog/posts/showing-regression-results/index.html#basic-table",
+    "title": "Creating a basic regression table with modelsummary",
+    "section": "Basic table",
+    "text": "Basic table\nCreating a summary table of our equations is very straight-forward with modelsummary: We create a list of the models we want to show, and then input that to modelsummary.\n\nlist(gravity_ols,\n     gravity_pois) |&gt;\n  modelsummary()\n\n\n\nTable 1: Some regressions – basic\n\n\n\n (1)\n  (2)\n\n\n\n\nlog_dist_km\n-47643.024\n-0.002\n\n\n\n(10905.572)\n(0.000)\n\n\nNum.Obs.\n38325\n38325\n\n\nR2\n0.286\n0.751\n\n\nR2 Adj.\n0.285\n0.751\n\n\nR2 Within\n0.031\n0.269\n\n\nR2 Within Adj.\n0.031\n0.269\n\n\nAIC\n1533832.6\n1e+12\n\n\nBIC\n1534328.7\n1e+12\n\n\nRMSE\n118498460.83\n88327120.62\n\n\nStd.Errors\nby: Origin\nby: Origin\n\n\nFE: Origin\nX\nX\n\n\nFE: Destination\nX\nX\n\n\nFE: Product\nX\nX\n\n\nFE: Year\nX\nX"
+  },
+  {
+    "objectID": "blog/posts/showing-regression-results/index.html#prettier-table",
+    "href": "blog/posts/showing-regression-results/index.html#prettier-table",
+    "title": "Creating a basic regression table with modelsummary",
+    "section": "Prettier table",
+    "text": "Prettier table\nHowever, the output in Table 1 is not very pretty yet. It’s not entirely clear yet what the independent variable is, we don’t know what (1) and (2) stand for, and we have a mass of goodness-of-fit measures. Let’s customize our table!\nAs a first step, we make create some helper functions. These help with formatting the table.\n\n\nCode\n# format numbers: thousand separator\nf &lt;- function(x, n_digits = 2) {\n  ifelse(is.na(x),\n         \"\",\n         formatC(\n           x,\n           digits = n_digits,\n           big.mark = \",\",\n           format = \"f\"\n         ))\n}\n\nf_0 &lt;- purrr::partial(f, n_digits = 0)\n  \n#  function for GOF measures we don't want to change\nkeep_format &lt;- function(x) list(\"raw\" = x, \"clean\" = x, \"fmt\" = NA)\n\n\nThen, we create a list where we format our goodness-of-fit (GOF) measures. Some of the default names are not so pretty, e.g. Num.Observations without a space between the two words – so we switch them to shorter or nicer names.\n\n\nCode\n# format # observations and R^2, keep the rest\ngof_tidy &lt;- list(\n  list(\n    \"raw\" = \"nobs\",\n    \"clean\" = \"Observations\",\n    \"fmt\" = f_0\n  ),\n  list(\n    \"raw\" = \"r.squared\",\n    \"clean\" = \"R\\u00B2\",\n    \"fmt\" = 3\n  ),\n  keep_format(\"FE: Origin\"),\n  keep_format(\"FE: Destination\"),\n  keep_format(\"FE: Product\"),\n  keep_format(\"FE: Year\")\n)\n\n\nLet’s change the labels for our regression. We do this by adding names to the list’s input (lines 1–2).\nAs a next step, let’s use the label we added earlier on, by setting coef_rename to true. Let’s also format the numbers using the formatting function we set up earlier, f.\nLet’s omit some of the goodnes-of-fit (gof) indicators, since we don’t need all of them here. We do this with the gof_map argument, to which we supply our GOF list from the last step. Alternatively, we could use a regex in the gof_omit argument: anything that matches the expression in line 4 will not be included.\nAlso, I’m used to adding stars where a coefficient is significant. This is not added by default, so let’s simply set the stars argument to true.\nThen, we’re setting the output to gt, which gives us the possibility to further style the table with the package gt. We add a header detailing our dependent variable. Then, we add a spanner to tell readers that OLS and Poisson are regression models.\n\nlist(OLS = gravity_ols,\n     Poisson = gravity_pois) |&gt;\n  modelsummary(\n    coef_rename = TRUE,\n    gof_map = gof_tidy,\n    fmt = f,\n    stars = TRUE,\n    output = \"gt\"\n  ) |&gt;\n  # add header and spanner\n  tab_header(title = \"Dependent variable: Trade flow [€]\") |&gt;\n  tab_spanner(\n    label = \"Regression model\",\n    columns = c(\"OLS\", \"Poisson\")\n    )\n\n\n\n\n\nTable 2:  Some regressions – prettier \n  \n    \n      Dependent variable: Trade flow [€]\n    \n    \n    \n       \n      \n        Regression model\n      \n    \n    \n      OLS\n      Poisson\n    \n  \n  \n    Log (distance [km])\n-47,643.02***\n-0.00***\n    \n(10,905.57)\n(0.00)\n    Observations\n38,325\n38,325\n    R²\n0.286\n0.751\n    FE: Origin\nX\nX\n    FE: Destination\nX\nX\n    FE: Product\nX\nX\n    FE: Year\nX\nX\n  \n  \n    \n      + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001"
   }
 ]

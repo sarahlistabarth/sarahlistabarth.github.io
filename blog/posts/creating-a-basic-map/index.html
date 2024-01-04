@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Sarah Zeller">
-<meta name="dcterms.date" content="2023-11-28">
+<meta name="dcterms.date" content="2024-01-04">
 
 <title>Sarah Zeller - Creating a map with ggplot2</title>
 <style>
@@ -165,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">November 28, 2023</p>
+        <p class="date">January 4, 2024</p>
       </div>
     </div>
     
@@ -187,6 +187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#basic-map" id="toc-basic-map" class="nav-link" data-scroll-target="#basic-map">Basic map</a></li>
   <li><a href="#intermediate-map" id="toc-intermediate-map" class="nav-link" data-scroll-target="#intermediate-map">Intermediate map</a></li>
   <li><a href="#prettier-map" id="toc-prettier-map" class="nav-link" data-scroll-target="#prettier-map">Prettier map</a></li>
+  <li><a href="#prettier-map-with-ocean" id="toc-prettier-map-with-ocean" class="nav-link" data-scroll-target="#prettier-map-with-ocean">Prettier map with ocean</a></li>
   <li><a href="#advanced-stuff" id="toc-advanced-stuff" class="nav-link" data-scroll-target="#advanced-stuff">Advanced stuff</a></li>
   </ul></li>
   </ul>
@@ -319,15 +320,51 @@ Tip
 <span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># change to a nicer projection: equal area (more accurate)</span></span>
 <span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">crs =</span> <span class="st">"ESRI:54009"</span>) <span class="sc">+</span></span>
 <span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove clutter</span></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># add blue background for water</span></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="fu">alpha</span>(<span class="st">"cornflowerblue"</span>, .<span class="dv">4</span>),</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">colour =</span> <span class="cn">NA</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-map-advanced" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="index_files/figure-html/fig-map-advanced-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption class="figure-caption">Figure&nbsp;3: Choropleth map of my countries – prettier version</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="prettier-map-with-ocean" class="level2">
+<h2 class="anchored" data-anchor-id="prettier-map-with-ocean">Prettier map with ocean</h2>
+<p>There’s just some lines of code you need to add to have a round earth/rounded sea. We need to create a polygon that has just the shape of the earth. We can do this with <code>st_graticule</code>, and then <code>st_cast</code> it to a polygon. Then, we can simply plot this polygon at the beginning of our <code>ggplot</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>grat <span class="ot">&lt;-</span> <span class="fu">st_graticule</span>() <span class="sc">|&gt;</span> <span class="fu">st_cast</span>(<span class="st">'POLYGON'</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># this is the new line</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> grat, <span class="at">fill =</span> <span class="st">"#d7ecfa"</span>, <span class="at">col =</span> <span class="st">"#d7ecfa"</span>) <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># now everything is the same as before</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> world,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill =</span> is_my_country),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"grey80"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># add country labels</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> world <span class="sc">|&gt;</span> <span class="fu">filter</span>(is_my_country <span class="sc">==</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> admin <span class="sc">|&gt;</span> <span class="fu">toupper</span>()),</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"grey30"</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">2.5</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make colours prettier</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"wheat"</span>)) <span class="sc">+</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># change to a nicer projection: equal area (more accurate)</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">crs =</span> <span class="st">"ESRI:54009"</span>) <span class="sc">+</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove clutter</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-earth-round" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/fig-earth-round-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;4: Choropleth map of my countries – round earth</figcaption>
 </figure>
 </div>
 </div>
@@ -346,16 +383,16 @@ Tip
 </section>
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{zeller2023,
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{zeller2024,
   author = {Zeller, Sarah},
   title = {Creating a Map with `Ggplot2`},
-  date = {2023-11-28},
+  date = {2024-01-04},
   url = {https://sarahzeller.github.io/blog/posts/creating-a-basic-map/},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-zeller2023" class="csl-entry quarto-appendix-citeas" role="listitem">
-Zeller, Sarah. 2023. <span>“Creating a Map with `Ggplot2`.”</span>
-November 28, 2023. <a href="https://sarahzeller.github.io/blog/posts/creating-a-basic-map/">https://sarahzeller.github.io/blog/posts/creating-a-basic-map/</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-zeller2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+Zeller, Sarah. 2024. <span>“Creating a Map with `Ggplot2`.”</span>
+January 4, 2024. <a href="https://sarahzeller.github.io/blog/posts/creating-a-basic-map/">https://sarahzeller.github.io/blog/posts/creating-a-basic-map/</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
