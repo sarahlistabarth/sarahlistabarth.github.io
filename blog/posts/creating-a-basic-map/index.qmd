@@ -1,9 +1,9 @@
 ---
 author: Sarah Zeller
 title: "Creating a map with `ggplot2`"
-date: "2023-11-28"
+date: "2024-01-04"
 categories: [code, visualization]
-image: "map.jpg"
+image: "map.png"
 citation: 
   url: https://sarahzeller.github.io/blog/posts/creating-a-basic-map/
 
