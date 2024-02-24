@@ -11,28 +11,28 @@
     "href": "blog/posts/creating-a-basic-map/index.html#basic-map",
     "title": "Creating a map with ggplot2",
     "section": "Basic map",
-    "text": "Basic map\nWe can simply do this with ggplot, with the function geom_sf. It takes normal aesthetics, so we can just hand it our variable of interest – is_my_country. Since this is a map, it makes the most sense to just fill the polygons according to this variable, so we use the fill aesthetic.\n\nggplot() +\n  # plot an sf object\n  geom_sf(data = world,\n          # fill it according to my variable\n          aes(fill = is_my_country))\n\n\n\n\nFigure 1: Choropleth map of my countries – basic"
+    "text": "Basic map\nWe can simply do this with ggplot, with the function geom_sf. It takes normal aesthetics, so we can just hand it our variable of interest – is_my_country. Since this is a map, it makes the most sense to just fill the polygons according to this variable, so we use the fill aesthetic.\n\nggplot() +\n  # plot an sf object\n  geom_sf(data = world,\n          # fill it according to my variable\n          aes(fill = is_my_country))\n\n\n\n\n\n\n\nFigure 1: Choropleth map of my countries – basic"
   },
   {
     "objectID": "blog/posts/creating-a-basic-map/index.html#intermediate-map",
     "href": "blog/posts/creating-a-basic-map/index.html#intermediate-map",
     "title": "Creating a map with ggplot2",
     "section": "Intermediate map",
-    "text": "Intermediate map\nWe now decrease some of the clutter. We get rid of the legend since it’s just a Boolean – we can indicate this in our title/caption. We also choose different colours, and get rid of the gridlines.\n\nggplot() +\n  # plot an sf object\n  geom_sf(data = world,\n          # fill it according to my variable\n          aes(fill = is_my_country),\n         # don't show the legend: it's just true or false, can be shown in title\n          show.legend = FALSE) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # remove clutter\n  theme_void() \n\n\n\n\nFigure 2: Choropleth map of my countries (in yellow) – intermediate"
+    "text": "Intermediate map\nWe now decrease some of the clutter. We get rid of the legend since it’s just a Boolean – we can indicate this in our title/caption. We also choose different colours, and get rid of the gridlines.\n\nggplot() +\n  # plot an sf object\n  geom_sf(data = world,\n          # fill it according to my variable\n          aes(fill = is_my_country),\n         # don't show the legend: it's just true or false, can be shown in title\n          show.legend = FALSE) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # remove clutter\n  theme_void() \n\n\n\n\n\n\n\nFigure 2: Choropleth map of my countries (in yellow) – intermediate"
   },
   {
     "objectID": "blog/posts/creating-a-basic-map/index.html#prettier-map",
     "href": "blog/posts/creating-a-basic-map/index.html#prettier-map",
     "title": "Creating a map with ggplot2",
     "section": "Prettier map",
-    "text": "Prettier map\nIt doesn’t quite look like we’re used to, though. Check out the comments to see what we’ve changed.\n\nggplot() +\n  # plot an sf object\n  geom_sf(\n    data = world,\n    # fill it according to my variable\n    aes(fill = is_my_country),\n    # make borders lighter\n    col = \"grey80\",\n    # don't show the legend: it's just true or false, can be shown in title\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    # get the data just for the countries we want to show\n    data = world |&gt; filter(is_my_country == TRUE),\n    # get the sovereignt label, and transform it to upper case\n    aes(label = admin |&gt; toupper()),\n    # make it not as dark\n    col = \"grey30\",\n    # decrease size\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void()\n\n\n\n\nFigure 3: Choropleth map of my countries – prettier version"
+    "text": "Prettier map\nIt doesn’t quite look like we’re used to, though. Check out the comments to see what we’ve changed.\n\nggplot() +\n  # plot an sf object\n  geom_sf(\n    data = world,\n    # fill it according to my variable\n    aes(fill = is_my_country),\n    # make borders lighter\n    col = \"grey80\",\n    # don't show the legend: it's just true or false, can be shown in title\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    # get the data just for the countries we want to show\n    data = world |&gt; filter(is_my_country == TRUE),\n    # get the sovereignt label, and transform it to upper case\n    aes(label = admin |&gt; toupper()),\n    # make it not as dark\n    col = \"grey30\",\n    # decrease size\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void()\n\n\n\n\n\n\n\nFigure 3: Choropleth map of my countries – prettier version"
   },
   {
     "objectID": "blog/posts/creating-a-basic-map/index.html#prettier-map-with-ocean",
     "href": "blog/posts/creating-a-basic-map/index.html#prettier-map-with-ocean",
     "title": "Creating a map with ggplot2",
     "section": "Prettier map with ocean",
-    "text": "Prettier map with ocean\nThere’s just some lines of code you need to add to have a round earth/rounded sea. We need to create a polygon that has just the shape of the earth. We can do this with st_graticule, and then st_cast it to a polygon. Then, we can simply plot this polygon at the beginning of our ggplot.\n\ngrat &lt;- st_graticule() |&gt; st_cast('POLYGON')\n\nggplot() +\n  # this is the new line\n  geom_sf(data = grat, fill = \"#d7ecfa\", col = \"#d7ecfa\") +\n  # now everything is the same as before\n  geom_sf(\n    data = world,\n    aes(fill = is_my_country),\n    col = \"grey80\",\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    data = world |&gt; filter(is_my_country == TRUE),\n    aes(label = admin |&gt; toupper()),\n    col = \"grey30\",\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void()\n\n\n\n\nFigure 4: Choropleth map of my countries – round earth"
+    "text": "Prettier map with ocean\nThere’s just some lines of code you need to add to have a round earth/rounded sea. We need to create a polygon that has just the shape of the earth. We can do this with st_graticule, and then st_cast it to a polygon. Then, we can simply plot this polygon at the beginning of our ggplot.\n\ngrat &lt;- st_graticule() |&gt; st_cast('POLYGON')\n\nggplot() +\n  # this is the new line\n  geom_sf(data = grat, fill = \"#d7ecfa\", col = \"#d7ecfa\") +\n  # now everything is the same as before\n  geom_sf(\n    data = world,\n    aes(fill = is_my_country),\n    col = \"grey80\",\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    data = world |&gt; filter(is_my_country == TRUE),\n    aes(label = admin |&gt; toupper()),\n    col = \"grey30\",\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void()\n\n\n\n\n\n\n\nFigure 4: Choropleth map of my countries – round earth"
   },
   {
     "objectID": "blog/posts/creating-a-basic-map/index.html#advanced-stuff",
@@ -40,20 +40,6 @@
     "title": "Creating a map with ggplot2",
     "section": "Advanced stuff",
     "text": "Advanced stuff\nIf you’re really interested, you can check out the following on top:\n\ngraticules (latitude/longitude)\nNorth arrow (not recommended for world maps, though)\nscale (not recommended for most world maps, though)"
-  },
-  {
-    "objectID": "blog/index.html",
-    "href": "blog/index.html",
-    "title": "Blog",
-    "section": "",
-    "text": "This blog is for people just starting out with their R journey. I’ll address beginner problems, simplifying some concepts in R programming.\n\n\n\n\n\n\n\n\n\n  \n\n\n\n\nCreating a map with ggplot2\n\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\n\n\n\n\n\n\n\n\n\nJan 4, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n  \n\n\n\n\nCreating a basic regression table with modelsummary\n\n\n\n\n\n\n\ncode\n\n\nsummary\n\n\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah Zeller\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Sarah Zeller",
-    "section": "",
-    "text": "I’m a PhD student at the Technical University of Dresden (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in R, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.\nI have a particular interest in the challenge of data wrangling – organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.\nOne of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights."
   },
   {
     "objectID": "blog/posts/showing-regression-results/index.html",
@@ -67,13 +53,83 @@
     "href": "blog/posts/showing-regression-results/index.html#basic-table",
     "title": "Creating a basic regression table with modelsummary",
     "section": "Basic table",
-    "text": "Basic table\nCreating a summary table of our equations is very straight-forward with modelsummary: We create a list of the models we want to show, and then input that to modelsummary.\n\nlist(gravity_ols,\n     gravity_pois) |&gt;\n  modelsummary()\n\n\n\nTable 1: Some regressions – basic\n\n\n\n (1)\n  (2)\n\n\n\n\nlog_dist_km\n-47643.024\n-0.002\n\n\n\n(10905.572)\n(0.000)\n\n\nNum.Obs.\n38325\n38325\n\n\nR2\n0.286\n0.751\n\n\nR2 Adj.\n0.285\n0.751\n\n\nR2 Within\n0.031\n0.269\n\n\nR2 Within Adj.\n0.031\n0.269\n\n\nAIC\n1533832.6\n1e+12\n\n\nBIC\n1534328.7\n1e+12\n\n\nRMSE\n118498460.83\n88327120.62\n\n\nStd.Errors\nby: Origin\nby: Origin\n\n\nFE: Origin\nX\nX\n\n\nFE: Destination\nX\nX\n\n\nFE: Product\nX\nX\n\n\nFE: Year\nX\nX"
+    "text": "Basic table\nCreating a summary table of our equations is very straight-forward with modelsummary: We create a list of the models we want to show, and then input that to modelsummary.\n\nlist(gravity_ols,\n     gravity_pois) |&gt;\n  modelsummary()\n\n\n\nTable 1: Some regressions – basic\n\n\n\n\n\n\n\n\n (1)\n  (2)\n\n\n\n\nlog_dist_km\n-47643.024\n-0.002\n\n\n\n(10905.572)\n(0.000)\n\n\nNum.Obs.\n38325\n38325\n\n\nR2\n0.286\n0.751\n\n\nR2 Adj.\n0.285\n0.751\n\n\nR2 Within\n0.031\n0.269\n\n\nR2 Within Adj.\n0.031\n0.269\n\n\nAIC\n1533832.6\n1e+12\n\n\nBIC\n1534328.7\n1e+12\n\n\nRMSE\n118498460.83\n88327120.62\n\n\nStd.Errors\nby: Origin\nby: Origin\n\n\nFE: Origin\nX\nX\n\n\nFE: Destination\nX\nX\n\n\nFE: Product\nX\nX\n\n\nFE: Year\nX\nX"
   },
   {
     "objectID": "blog/posts/showing-regression-results/index.html#prettier-table",
     "href": "blog/posts/showing-regression-results/index.html#prettier-table",
     "title": "Creating a basic regression table with modelsummary",
     "section": "Prettier table",
-    "text": "Prettier table\nHowever, the output in Table 1 is not very pretty yet. It’s not entirely clear yet what the independent variable is, we don’t know what (1) and (2) stand for, and we have a mass of goodness-of-fit measures. Let’s customize our table!\nAs a first step, we make create some helper functions. These help with formatting the table.\n\n\nCode\n# format numbers: thousand separator\nf &lt;- function(x, n_digits = 2) {\n  ifelse(is.na(x),\n         \"\",\n         formatC(\n           x,\n           digits = n_digits,\n           big.mark = \",\",\n           format = \"f\"\n         ))\n}\n\nf_0 &lt;- purrr::partial(f, n_digits = 0)\n  \n#  function for GOF measures we don't want to change\nkeep_format &lt;- function(x) list(\"raw\" = x, \"clean\" = x, \"fmt\" = NA)\n\n\nThen, we create a list where we format our goodness-of-fit (GOF) measures. Some of the default names are not so pretty, e.g. Num.Observations without a space between the two words – so we switch them to shorter or nicer names.\n\n\nCode\n# format # observations and R^2, keep the rest\ngof_tidy &lt;- list(\n  list(\n    \"raw\" = \"nobs\",\n    \"clean\" = \"Observations\",\n    \"fmt\" = f_0\n  ),\n  list(\n    \"raw\" = \"r.squared\",\n    \"clean\" = \"R\\u00B2\",\n    \"fmt\" = 3\n  ),\n  keep_format(\"FE: Origin\"),\n  keep_format(\"FE: Destination\"),\n  keep_format(\"FE: Product\"),\n  keep_format(\"FE: Year\")\n)\n\n\nLet’s change the labels for our regression. We do this by adding names to the list’s input (lines 1–2).\nAs a next step, let’s use the label we added earlier on, by setting coef_rename to true. Let’s also format the numbers using the formatting function we set up earlier, f.\nLet’s omit some of the goodnes-of-fit (gof) indicators, since we don’t need all of them here. We do this with the gof_map argument, to which we supply our GOF list from the last step. Alternatively, we could use a regex in the gof_omit argument: anything that matches the expression in line 4 will not be included.\nAlso, I’m used to adding stars where a coefficient is significant. This is not added by default, so let’s simply set the stars argument to true.\nThen, we’re setting the output to gt, which gives us the possibility to further style the table with the package gt. We add a header detailing our dependent variable. Then, we add a spanner to tell readers that OLS and Poisson are regression models.\n\nlist(OLS = gravity_ols,\n     Poisson = gravity_pois) |&gt;\n  modelsummary(\n    coef_rename = TRUE,\n    gof_map = gof_tidy,\n    fmt = f,\n    stars = TRUE,\n    output = \"gt\"\n  ) |&gt;\n  # add header and spanner\n  tab_header(title = \"Dependent variable: Trade flow [€]\") |&gt;\n  tab_spanner(\n    label = \"Regression model\",\n    columns = c(\"OLS\", \"Poisson\")\n    )\n\n\n\n\n\nTable 2:  Some regressions – prettier \n  \n    \n      Dependent variable: Trade flow [€]\n    \n    \n    \n       \n      \n        Regression model\n      \n    \n    \n      OLS\n      Poisson\n    \n  \n  \n    Log (distance [km])\n-47,643.02***\n-0.00***\n    \n(10,905.57)\n(0.00)\n    Observations\n38,325\n38,325\n    R²\n0.286\n0.751\n    FE: Origin\nX\nX\n    FE: Destination\nX\nX\n    FE: Product\nX\nX\n    FE: Year\nX\nX\n  \n  \n    \n      + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001"
+    "text": "Prettier table\nHowever, the output in Table 1 is not very pretty yet. It’s not entirely clear yet what the independent variable is, we don’t know what (1) and (2) stand for, and we have a mass of goodness-of-fit measures. Let’s customize our table!\nAs a first step, we make create some helper functions. These help with formatting the table.\n\n\nCode\n# format numbers: thousand separator\nf &lt;- function(x, n_digits = 2) {\n  ifelse(is.na(x),\n         \"\",\n         formatC(\n           x,\n           digits = n_digits,\n           big.mark = \",\",\n           format = \"f\"\n         ))\n}\n\nf_0 &lt;- purrr::partial(f, n_digits = 0)\n  \n#  function for GOF measures we don't want to change\nkeep_format &lt;- function(x) list(\"raw\" = x, \"clean\" = x, \"fmt\" = NA)\n\n\nThen, we create a list where we format our goodness-of-fit (GOF) measures. Some of the default names are not so pretty, e.g. Num.Observations without a space between the two words – so we switch them to shorter or nicer names.\n\n\nCode\n# format # observations and R^2, keep the rest\ngof_tidy &lt;- list(\n  list(\n    \"raw\" = \"nobs\",\n    \"clean\" = \"Observations\",\n    \"fmt\" = f_0\n  ),\n  list(\n    \"raw\" = \"r.squared\",\n    \"clean\" = \"R\\u00B2\",\n    \"fmt\" = 3\n  ),\n  keep_format(\"FE: Origin\"),\n  keep_format(\"FE: Destination\"),\n  keep_format(\"FE: Product\"),\n  keep_format(\"FE: Year\")\n)\n\n\nLet’s change the labels for our regression. We do this by adding names to the list’s input (lines 1–2).\nAs a next step, let’s use the label we added earlier on, by setting coef_rename to true. Let’s also format the numbers using the formatting function we set up earlier, f.\nLet’s omit some of the goodnes-of-fit (gof) indicators, since we don’t need all of them here. We do this with the gof_map argument, to which we supply our GOF list from the last step. Alternatively, we could use a regex in the gof_omit argument: anything that matches the expression in line 4 will not be included.\nAlso, I’m used to adding stars where a coefficient is significant. This is not added by default, so let’s simply set the stars argument to true.\nThen, we’re setting the output to gt, which gives us the possibility to further style the table with the package gt. We add a header detailing our dependent variable. Then, we add a spanner to tell readers that OLS and Poisson are regression models.\n\nlist(OLS = gravity_ols,\n     Poisson = gravity_pois) |&gt;\n  modelsummary(\n    coef_rename = TRUE,\n    gof_map = gof_tidy,\n    fmt = f,\n    stars = TRUE,\n    output = \"gt\"\n  ) |&gt;\n  # add header and spanner\n  tab_header(title = \"Dependent variable: Trade flow [€]\") |&gt;\n  tab_spanner(\n    label = \"Regression model\",\n    columns = c(\"OLS\", \"Poisson\")\n    )\n\n\n\nTable 2: Some regressions – prettier\n\n\n\n\n\n\n\n\n\n\nDependent variable: Trade flow [€]\n\n\n\nRegression model\n\n\nOLS\nPoisson\n\n\n\n\nLog (distance [km])\n-47,643.02***\n-0.00***\n\n\n\n(10,905.57)\n(0.00)\n\n\nObservations\n38,325\n38,325\n\n\nR²\n0.286\n0.751\n\n\nFE: Origin\nX\nX\n\n\nFE: Destination\nX\nX\n\n\nFE: Product\nX\nX\n\n\nFE: Year\nX\nX\n\n\n\n+ p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Sarah Zeller",
+    "section": "",
+    "text": "I’m a PhD student at the Technical University of Dresden (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in R, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.\nI have a particular interest in the challenge of data wrangling – organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.\nOne of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights."
+  },
+  {
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "This blog is for people just starting out with their R journey. I’ll address beginner problems, simplifying some concepts in R programming.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nOpening .nc files\n\n\n\n\n\n\ncode\n\n\nraster formats\n\n\n\n\n\n\n\n\n\nFeb 24, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a map with ggplot2\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\n\n\n\n\n\n\n\nJan 4, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a basic regression table with modelsummary\n\n\n\n\n\n\ncode\n\n\nsummary\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah Zeller\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html",
+    "href": "blog/posts/opening-nc-files/index.html",
+    "title": "Opening .nc files",
+    "section": "",
+    "text": "When working with raster data, one thing I’ve noticed is: there’s a lot of obscure data formats. And with every one of them, it takes me a while to figure out how to handle them in R. So I decided to make a series of blog posts on how to handle some of the raster formats I’ve come across.\nThe first one are .nc files, also known as netCDF. From what I’ve learned, they usually have three layers:\nHowever, the order of these three layers varies, which means you’ll have to get acquainted with your data first. So:"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#open-nc-file",
+    "href": "blog/posts/opening-nc-files/index.html#open-nc-file",
+    "title": "Opening .nc files",
+    "section": "Open nc file",
+    "text": "Open nc file\nThe first thing we do is have a look at the variable names (they’re saved under var in the weather list). Let’s also check out their names, which is saved under longname in this ncd4 format. Additionally, let’s find out their respective dimensions, saved under size.\n\nraster &lt;- raster_path |&gt; nc_open()\n\nraster |&gt; \n  pluck(\"var\") |&gt; \n  map_df(~ .x[c(\"longname\", \"size\")] |&gt; as.character()) |&gt; \n  # you could stop here, but I wanted a nice display\n  t() |&gt; \n  data.frame() |&gt; \n  tibble::rownames_to_column() |&gt; \n  setNames(c(\"variable\", \"name\", \"dimension\")) |&gt; \n  kableExtra::kbl()\n\n\n\n\n\nvariable\nname\ndimension\n\n\n\n\ntime_bnds\ntime_bnds\nc(2, 365)\n\n\nlon\nLongitude Of Cell Center\nc(240, 220)\n\n\nlat\nLatitude Of Cell Center\nc(240, 220)\n\n\nx_bnds\nx_bnds\nc(2, 240)\n\n\ny_bnds\ny_bnds\nc(2, 220)\n\n\ncrs_HYRAS\nDWD HYRAS ETRS89 LCC grid with 240 columns and 220 rows\n1\n\n\ntas\nDaily Mean Air Temperature\nc(240, 220, 365)\n\n\nnumber_of_stations\nNumber Of Stations Available For Interpolation Per Day All Over The HYRAS Area\n365"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#sec-vars",
+    "href": "blog/posts/opening-nc-files/index.html#sec-vars",
+    "title": "Opening .nc files",
+    "section": "Time and spatial layers",
+    "text": "Time and spatial layers\nWe’re definitely going to need something along the lines of latitude and longitude. From the descriptions, we can see that lat and lon describe the cell center, and their dimension is 240 \\(\\times\\) 220. That is not what we need. Instead, we want something with dimensions of 1–2 \\(\\times\\) 240 or 220, which describes the latitude and longitude in general, not for every cell center. In this case, that applies for x_bnds and y_bnds.\nWe also need something specifying the time. In this case, that is time_bnds.\nLet’s also get the crs for good measure, crs_HYRAS. This only has dimension 1, so we need to extract is as an attribute.\nAll of these layers can be named differently in different files, so it pays off to check out the specific name. Let’s save them into variables so we can’t forget them!\n\ntime &lt;- ncvar_get(raster, \"time_bnds\")\nlon &lt;- ncvar_get(raster, \"x_bnds\")\nlat &lt;- ncvar_get(raster, \"y_bnds\")\ncrs &lt;- ncatt_get(raster, \"crs_HYRAS\")$epsg_code"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#variable-layer",
+    "href": "blog/posts/opening-nc-files/index.html#variable-layer",
+    "title": "Opening .nc files",
+    "section": "Variable layer",
+    "text": "Variable layer\nNow, we also need the actual variable we’re looking for. In this case, it’s tas (for mean daily temperature). We can see that the dimensions are the largest and match our geospatial and time dimensions: 240 (x_bnds) \\(\\times\\) 220 (y_bnds) \\(\\times\\) 365 (time_bnds).\nLet’s get this variable’s array out. Additionally, let’s find out how the NAs are coded, and use that information to code them as NAs that R recognizes.\n\nvariable_array &lt;- ncvar_get(raster, \"tas\")\nfillvalue &lt;- ncatt_get(raster, \"tas\", \"_FillValue\")\n\n# set NA value\nvariable_array[variable_array == fillvalue$value] &lt;- NA"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#close-nc-file",
+    "href": "blog/posts/opening-nc-files/index.html#close-nc-file",
+    "title": "Opening .nc files",
+    "section": "Close nc file",
+    "text": "Close nc file\nNow we have all the information we need, yay! Let’s not forget to close the .nc file again.\n\nnc_close(raster)"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#making-a-raster",
+    "href": "blog/posts/opening-nc-files/index.html#making-a-raster",
+    "title": "Opening .nc files",
+    "section": "Making a raster",
+    "text": "Making a raster\nNext, we make a raster of this with the terra package. We already know the structure of the array, where time is the last layer. This does vary over different files though!\nWe declare the extent and the crs that we extracted in Section 2.2. Then, let’s go ahead and plot it!\n\ngot_weather_array &lt;- variable_array[,, day_of_year]\ngot_weather_raster &lt;- got_weather_array |&gt; \n  terra::rast(extent = ext(min(lon),\n                             max(lon),\n                             min(lat),\n                             max(lat)),\n                crs = crs)\nplot(got_weather_raster)\n\n\n\n\n\n\n\n\nWell, this somewhat looks like Germany … but not quite yet. We need to mirror it and turn it by 90°."
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#transposing-the-raster",
+    "href": "blog/posts/opening-nc-files/index.html#transposing-the-raster",
+    "title": "Opening .nc files",
+    "section": "Transposing the raster",
+    "text": "Transposing the raster\nFor this, we need to go back to the last step, and transpose the 2-dimensional array for our specific day. Then, we make it a raster again.\n\ngot_weather_raster_transposed &lt;- got_weather_array |&gt;\n  t() |&gt;\n  terra::rast(extent = ext(min(lon),\n                           max(lon),\n                           min(lat),\n                           max(lat)),\n              crs = crs)\n\ngot_weather_raster_transposed |&gt; \n  plot()\n\n\n\n\n\n\n\n\nWell, this is almost right – we just need to turn it upside down now."
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#flipping-the-raster",
+    "href": "blog/posts/opening-nc-files/index.html#flipping-the-raster",
+    "title": "Opening .nc files",
+    "section": "Flipping the raster",
+    "text": "Flipping the raster\nFor this task, terra has a specific function, flip. We can say which way to flip the raster – in this case, vertically. Let’s go ahead and plot this again.\n\ngot_weather_raster_right_side_up &lt;- got_weather_raster_transposed |&gt; \n  flip(direction = \"vertical\")\n\ngot_weather_raster_right_side_up |&gt; plot()\n\n\n\n\n\n\n\n\nAnd there we have it!"
   }
 ]
