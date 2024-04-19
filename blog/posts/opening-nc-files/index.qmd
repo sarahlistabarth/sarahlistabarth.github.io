@@ -3,7 +3,7 @@ author: Sarah Zeller
 title: Opening `.nc` files
 date: "2024-02-24"
 image: "raster.png"
-categories: [code, raster formats]
+categories: [code, spatial formats]
 citation:
   url: https://sarahzeller.github.io/blog/posts/opening-nc-files/
 
@@ -19,9 +19,9 @@ editor:
     wrap: sentence
 ---
 
-When working with raster data, one thing I've noticed is: there's a lot of obscure data formats.
+When working with spatial data, one thing I've noticed is: there's a lot of obscure data formats.
 And with every one of them, it takes me a while to figure out how to handle them in `R`.
-So I decided to make a series of blog posts on how to handle some of the raster formats I've come across.
+So I decided to make a series of blog posts on how to handle some of the spatial formats I've come across.
 
 The first one are `.nc` files, also known as netCDF.
 From what I've learned, they usually have three layers:
@@ -33,10 +33,10 @@ From what I've learned, they usually have three layers:
 However, the order of these three layers varies, which means you'll have to get acquainted with your data first.
 So:
 
-1.    Get to know dataset with `ncdf4`
-2.    Read in data with `terra::rast()`
+1.  Get to know dataset with `ncdf4`
+2.  Read in data with `terra::rast()`
 
-::: {.callout-note}
+::: callout-note
 ## Further info
 
 This blog post is based in parts on [R as GIS for Economists](https://tmieno2.github.io/R-as-GIS-for-Economists/work-with-netcdf.html) and an [RPubs article on ncdf4](https://rpubs.com/boyerag/297592).
@@ -89,8 +89,8 @@ Let's `nc_open` this file now to check out it's structure.
 ## Open nc file
 
 The first thing we do is have a look at the variable names (they're saved under `var` in the `weather` list).
-Let's also check out their names, which is saved under _longname_ in this ncd4 format.
-Additionally, let's find out their respective dimensions, saved under _size_.
+Let's also check out their names, which is saved under *longname* in this ncd4 format.
+Additionally, let's find out their respective dimensions, saved under *size*.
 
 ```{r}
 #| label: glimpse-structure
@@ -113,7 +113,7 @@ raster |>
 We're definitely going to need something along the lines of *latitude* and *longitude*.
 From the descriptions, we can see that *lat* and *lon* describe the cell center, and their dimension is 240 $\times$ 220.
 That is not what we need.
-Instead, we want something with dimensions of 1--2 $\times$ 240 _or_ 220, which describes the latitude and longitude in general, not for every cell center.
+Instead, we want something with dimensions of 1--2 $\times$ 240 *or* 220, which describes the latitude and longitude in general, not for every cell center.
 In this case, that applies for *x_bnds* and *y_bnds*.
 
 We also need something specifying the time.
@@ -192,14 +192,14 @@ got_weather_raster <- got_weather_array |>
 plot(got_weather_raster)
 ```
 
-Well, this somewhat looks like Germany ... but not quite yet.
+Well, this somewhat looks like Germany ...
+but not quite yet.
 We need to mirror it and turn it by 90°.
 
-## Transposing the raster 
+## Transposing the raster
 
 For this, we need to go back to the last step, and transpose the 2-dimensional array for our specific day.
 Then, we make it a `rast`er again.
-
 
 ```{r}
 #| label: rast-transpose
@@ -248,8 +248,7 @@ raster_terra <- rast(raster_path,
 
 ```
 
-In this case, the layer structure is rather easy:
-We simply have 365 layers for *tas*.
+In this case, the layer structure is rather easy: We simply have 365 layers for *tas*.
 
 ```{r}
 #| label: check-out-terra-layers
@@ -272,7 +271,5 @@ In such an easy case, we can extract the layer for our *day_of_year* as follows:
 raster_terra[[day_of_year]] |> plot()
 ```
 
-
 And there we have it -- we extracted the weather on the day after the last episode of Game of Thrones aired!
 In the South, weather was a lot colder, so maybe more people watched the last episode there.
-
