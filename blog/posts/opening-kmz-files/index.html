@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Sarah Zeller">
-<meta name="dcterms.date" content="2024-01-04">
+<meta name="dcterms.date" content="2024-04-19">
 
-<title>Sarah Zeller - Creating a map with ggplot2</title>
+<title>Sarah Zeller - Opening .kmz files</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -151,10 +151,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Creating a map with <code>ggplot2</code></h1>
+      <h1 class="title">Opening <code>.kmz</code> files</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">code</div>
-                <div class="quarto-category">visualization</div>
+                <div class="quarto-category">spatial formats</div>
               </div>
                   </div>
   </div>
@@ -172,7 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">January 4, 2024</p>
+        <p class="date">April 19, 2024</p>
       </div>
     </div>
     
@@ -188,15 +188,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#preparation" id="toc-preparation" class="nav-link active" data-scroll-target="#preparation">Preparation</a></li>
-  <li><a href="#plotting" id="toc-plotting" class="nav-link" data-scroll-target="#plotting">Plotting</a>
+  <li><a href="#tldr" id="toc-tldr" class="nav-link active" data-scroll-target="#tldr">TL;DR</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#unzipping-the-.kmz-to-.kml" id="toc-unzipping-the-.kmz-to-.kml" class="nav-link" data-scroll-target="#unzipping-the-.kmz-to-.kml">Unzipping the <code>.kmz</code> to <code>.kml</code></a></li>
+  <li><a href="#read-in-the-.kml-file" id="toc-read-in-the-.kml-file" class="nav-link" data-scroll-target="#read-in-the-.kml-file">Read in the <code>.kml</code> file</a></li>
+  <li><a href="#sorting-the-.kml-content" id="toc-sorting-the-.kml-content" class="nav-link" data-scroll-target="#sorting-the-.kml-content">Sorting the <code>.kml</code> content</a></li>
+  <li><a href="#manipulating-the-data" id="toc-manipulating-the-data" class="nav-link" data-scroll-target="#manipulating-the-data">Manipulating the data</a>
   <ul class="collapse">
-  <li><a href="#basic-map" id="toc-basic-map" class="nav-link" data-scroll-target="#basic-map">Basic map</a></li>
-  <li><a href="#intermediate-map" id="toc-intermediate-map" class="nav-link" data-scroll-target="#intermediate-map">Intermediate map</a></li>
-  <li><a href="#prettier-map" id="toc-prettier-map" class="nav-link" data-scroll-target="#prettier-map">Prettier map</a></li>
-  <li><a href="#prettier-map-with-ocean" id="toc-prettier-map-with-ocean" class="nav-link" data-scroll-target="#prettier-map-with-ocean">Prettier map with ocean</a></li>
-  <li><a href="#advanced-stuff" id="toc-advanced-stuff" class="nav-link" data-scroll-target="#advanced-stuff">Advanced stuff</a></li>
+  <li><a href="#extracting-information-from-the-name" id="toc-extracting-information-from-the-name" class="nav-link" data-scroll-target="#extracting-information-from-the-name">Extracting information from the <code>Name</code></a></li>
+  <li><a href="#calculating-area" id="toc-calculating-area" class="nav-link" data-scroll-target="#calculating-area">Calculating area</a></li>
   </ul></li>
+  <li><a href="#alternative-using-terra" id="toc-alternative-using-terra" class="nav-link" data-scroll-target="#alternative-using-terra">Alternative using <code>terra</code></a></li>
   </ul>
 </nav>
     </div>
@@ -207,216 +209,264 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>In this post, I create a basic world map – specifically, a Choropleth map. That means we colour the countries by a specific variable.</p>
-<section id="preparation" class="level1">
-<h1>Preparation</h1>
-<p>First, I load all necessary libraries.</p>
+<p>When working with spatial data, one thing I’ve noticed is: there’s a lot of obscure data formats. And with every one of them, it takes me a while to figure out how to handle them in <code>R</code>. So I decided to make a series of blog posts on how to handle some of the spatial formats I’ve come across.</p>
+<p>This post is on <code>.kmz</code> files. If you’re working with Google Earth Pro, this is the format your vector files will be exported in. Recently, I’ve worked quite a bit with Google Earth Pro to collect data on landfills by hand. You’ll find an example <code>.kmz</code> file <a href="https://sarahzeller.github.io/assets/Agbogbloshie.kmz">here</a>.</p>
+<section id="tldr" class="level1">
+<h1>TL;DR</h1>
+<p>For a <code>.kmz</code> file, follow these steps:</p>
+<ol type="1">
+<li>Unzip the <code>.kmz</code>, e.g.&nbsp;using <code>archive::archive_extract</code></li>
+<li>Read in the resulting <code>.kml</code> file using <code>sf</code> or <code>terra</code></li>
+<li>Make sure you only have the geometry type you want – (multi)polygons.</li>
+</ol>
+</section>
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<p>Let’s start by loading the necessary libraries. We’ll need <code>archive</code> to unpack our <code>.kmz</code> file. With <code>sf</code>, we can then read the corresponding file in. <code>dplyr</code> will help us wrangle the data once they’re read in. With <code>ggplot2</code>, we can visualize our data. <code>units</code> helps wrangling with different area units.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(countrycode)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rnaturalearth)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggspatial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(archive)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(units)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Then, I declare some countries. I standardize their names with the package <code>countrycode</code>, so that we get these countries’ ISO3-codes.</p>
+<p>Now, let’s download our file. For this, we use the URL I’ve mentioned before. Also, we’re creating a temporary file into which we load this file – <code>kmz_path</code>. Watch out, though: it’s a binary file, so we need to add the corresponding argument to the function <code>download.file</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>my_countries <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Afghanistan"</span>,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Federal Republic of Germany"</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"USA"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>my_countries_clean <span class="ot">&lt;-</span> <span class="fu">countrycode</span>(my_countries,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">origin =</span> <span class="st">"country.name"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">destination =</span> <span class="st">"iso3c"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>kmz_url <span class="ot">&lt;-</span> <span class="st">"https://sarahzeller.github.io/assets/Agbogbloshie.kmz"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>kmz_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".kmz"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">url =</span> kmz_url,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">destfile =</span> kmz_path,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># it's a binary file</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">"wb"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>I then load the data for the map. It’s saved in a format called <code>sf</code>, which stands for spatial feature. We can treat it just like any other data frame, but each row has a column called “geometry”, from which the coordinates of the row can be plotted – in this case, a country’s outline.</p>
-<p>Then, we create a new variable: we check for each observation if it’s part of our <code>my_countries_clean</code> vector.</p>
+</section>
+<section id="unzipping-the-.kmz-to-.kml" class="level1">
+<h1>Unzipping the <code>.kmz</code> to <code>.kml</code></h1>
+<p>The first step is to unzip our <code>.kmz</code>, which hides <code>.kml</code> files underneath. In our simple case, it’s just a single <code>.kml</code> file. We can use the <code>archive_extract</code> command for this. I’m using temp files here, but feel free to exchange them for your own file paths. In the end, we’re checking out everything that was zipped up. In this case, it’s just a single file: <code>doc.kml</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>world <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">returnclass =</span> <span class="st">"sf"</span>) <span class="sc">|&gt;</span> <span class="co"># load world</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check for each country: is it in my_countries_clean?</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">is_my_country =</span> iso_a3 <span class="sc">%in%</span> my_countries_clean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kml_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">archive_extract</span>(<span class="at">archive =</span> kmz_path,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">dir =</span> kml_path)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># check out the contents</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>kml_path <span class="sc">|&gt;</span> <span class="fu">list.files</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "doc.kml"</code></pre>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+</div>
+</section>
+<section id="read-in-the-.kml-file" class="level1">
+<h1>Read in the <code>.kml</code> file</h1>
+<p>Now that we’ve gotten to our <code>.kml</code> file, let’s read it into <code>R</code>. Since this is not raster, but vector data, we’re using the library <code>sf</code> for this task. We’re working with a <code>temp</code> file, so we need the <code>list.files</code> function to find out exactly where the file is that we’re interested in.</p>
+<p>Now that we’ve read it in, we can see that there are two different types of geometries in this file:</p>
+<ul>
+<li>point geometry (row 1)</li>
+<li>multypolygon geometries (row 2–3)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie <span class="ot">&lt;-</span> kml_path <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list.files</span>(<span class="at">full.names =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_sf</span>()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>agbogbloshie <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 3 features and 2 fields
+Geometry type: GEOMETRY
+Dimension:     XYZ
+Bounding box:  xmin: -0.2311228 ymin: 5.54208 xmax: -0.2246721 ymax: 5.554326
+z_range:       zmin: 0 zmax: 0
+Geodetic CRS:  WGS 84
+# A tibble: 3 × 3
+  Name         Description                                              geometry
+  &lt;chr&gt;        &lt;chr&gt;                                              &lt;GEOMETRY [°]&gt;
+1 Agbogbloshie ""                                POINT Z (-0.2264589 5.548876 0)
+2 stand_2020   ""          MULTIPOLYGON Z (((-0.2311228 5.554326 0, -0.2291702 …
+3 stand_2018   ""          MULTIPOLYGON Z (((-0.2304394 5.552348 0, -0.2304295 …</code></pre>
+</div>
+</div>
+</section>
+<section id="sorting-the-.kml-content" class="level1">
+<h1>Sorting the <code>.kml</code> content</h1>
+<p>We’ve seen that there’s two different types of geometries in this <code>.kml</code> file. Let’s unpack these into two objects. To do this, we use the geometry types of each row, and simply filter for points and multipolygons.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie_point <span class="ot">&lt;-</span> agbogbloshie <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">st_geometry_type</span>(geometry) <span class="sc">==</span> <span class="st">"POINT"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon <span class="ot">&lt;-</span> agbogbloshie <span class="sc">|&gt;</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">st_geometry_type</span>(geometry) <span class="sc">==</span> <span class="st">"MULTIPOLYGON"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="manipulating-the-data" class="level1">
+<h1>Manipulating the data</h1>
+<p>Now that we’ve gotten the data into a format we can work with, let’s add some information. The first thing is to put the information contained in the <code>Name</code> column into a readable format. Next thing, we want to compute the area of our polygons.</p>
+<section id="extracting-information-from-the-name" class="level2">
+<h2 class="anchored" data-anchor-id="extracting-information-from-the-name">Extracting information from the <code>Name</code></h2>
+<p>When we check out our <code>agbogbloshie_polygon</code> data frame, we can see that there’s information contained in the <code>Name</code> column, specifically: the year for which the polygon shape is valid. So let’s extract that <code>numeric</code> information from the <code>character</code> column! We can do that using the <code>parse_number</code> function from the <code>readr</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon <span class="ot">&lt;-</span> agbogbloshie_polygon <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> readr<span class="sc">::</span><span class="fu">parse_number</span>(Name))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 2 features and 3 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XYZ
+Bounding box:  xmin: -0.2311228 ymin: 5.54208 xmax: -0.2246721 ymax: 5.554326
+z_range:       zmin: 0 zmax: 0
+Geodetic CRS:  WGS 84
+# A tibble: 2 × 4
+  Name       Description                                          geometry  year
+* &lt;chr&gt;      &lt;chr&gt;                                      &lt;MULTIPOLYGON [°]&gt; &lt;dbl&gt;
+1 stand_2020 ""          Z (((-0.2311228 5.554326 0, -0.2291702 5.549969 …  2020
+2 stand_2018 ""          Z (((-0.2304394 5.552348 0, -0.2304295 5.552299 …  2018</code></pre>
+</div>
+</div>
+<p>Let’s use this information to plot the landfill in the two different years! Seems like the landfill grew quite a bit in between.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> agbogbloshie_polygon) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>year) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> agbogbloshie_point) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  ggspatial<span class="sc">::</span><span class="fu">annotation_scale</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-landfill" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-landfill-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-landfill-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-landfill-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Agbogbloshie landfill over time
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="calculating-area" class="level2">
+<h2 class="anchored" data-anchor-id="calculating-area">Calculating area</h2>
+<p>As a next step, let’s calculate the area of these polygons. After all, it’s interesting to see if this landfill shrinks or grows!</p>
+<p>For now, our data are <em>unprojected</em>, though. We can check this by getting the coordinate reference system (CRS) of our data. The output is very long and includes a lot of information, but we only need to focus on the first line, the <em>User input</em>. The next lines show the corresponding <em>well-known text (wkt)</em>, which details exactly how the CRS works. We can see here that the CRS is still <em>WGS 84</em>, which means – unprojected.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(agbogbloshie)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Coordinate Reference System:
+  User input: WGS 84 
+  wkt:
+GEOGCRS["WGS 84",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1]]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS["geodetic latitude (Lat)",north,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433]],
+        AXIS["geodetic longitude (Lon)",east,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433]],
+    ID["EPSG",4326]]</code></pre>
+</div>
+</div>
+<p>However, we know that the world is shaped like a potato, and that these unprojected data are biased. To correct for this, we first need to project the data into a CRS that’s accurate for that world region when it comes to area – we also call this area-preserving projection. The official CRS for Ghana, where this landfill is located, has the EPSG code <code>2136</code>. Once we’ve projected the polygons, we can easily calculate the area with the <code>sf</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon <span class="ot">&lt;-</span> agbogbloshie_polygon <span class="sc">|&gt;</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="st">"epsg:2136"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">st_area</span>(geometry)) </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 2 features and 4 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XYZ
+Bounding box:  xmin: 1179342 ymin: 316685.8 xmax: 1181692 ymax: 321125.3
+z_range:       zmin: 0 zmax: 0
+Projected CRS: Accra / Ghana National Grid
+# A tibble: 2 × 5
+  Name       Description                                   geometry  year   area
+* &lt;chr&gt;      &lt;chr&gt;                                   &lt;MULTIPOLYGON&gt; &lt;dbl&gt;  [m^2]
+1 stand_2020 ""          Z (((1179342 321125.3 0, 1180054 319545.7…  2020 2.00e5
+2 stand_2018 ""          Z (((1179591 320408.3 0, 1179595 320390.5…  2018 1.98e5</code></pre>
+</div>
+</div>
+<p>You’ll notice that the <code>area</code> column has a specific format: it’s a <code>unit</code>. This package makes it easy to convert values from one unit into another. Let’s see how we can convert the area into hectares. Afterwards, let’s drop the <code>unit</code> because we have the data in the final shape we want them.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon <span class="ot">&lt;-</span> agbogbloshie_polygon <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area_ha =</span> <span class="fu">set_units</span>(area, <span class="st">"ha"</span>) <span class="sc">|&gt;</span> <span class="fu">drop_units</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And there we have it, a data frame with the attributes that we need! Let’s check out the area in comparison. We see that there’s not that much difference!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> agbogbloshie_polygon) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">x =</span> year <span class="sc">|&gt;</span> <span class="fu">as.character</span>(), <span class="at">y =</span> area_ha)) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Area (ha)"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-bar-plot" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bar-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-bar-plot-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bar-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Agbogbloshie landfill area over time
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="alternative-using-terra" class="level1">
+<h1>Alternative using <code>terra</code></h1>
+<p>If you prefer working with <code>terra</code>, e.g.&nbsp;because you need to combine your polygon data with raster data, you can of course also read in the <code>.kml</code> data. Since this is not the focus of this post, here’s a quick walk-through.</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If we start off from a data frame instead of a vector, we would <code>merge</code> the two data frames. Then, we don’t just end up with a Boolean variable, but with all of the variables of the joint data frame.</p>
+<p><code>vect</code> just drops the point geometry.</p>
 </div>
 </div>
-</section>
-<section id="plotting" class="level1">
-<h1>Plotting</h1>
-<p>Now, we’re ready to plot our map!</p>
-<section id="basic-map" class="level2">
-<h2 class="anchored" data-anchor-id="basic-map">Basic map</h2>
-<p>We can simply do this with <code>ggplot</code>, with the function <code>geom_sf</code>. It takes normal <code>aes</code>thetics, so we can just hand it our variable of interest – <code>is_my_country</code>. Since this is a map, it makes the most sense to just fill the polygons according to this variable, so we use the <code>fill</code> aesthetic.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot an sf object</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> world,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>          <span class="co"># fill it according to my variable</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>          <span class="fu">aes</span>(<span class="at">fill =</span> is_my_country))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div id="fig-map-basic" class="quarto-figure quarto-figure-center quarto-float anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-map-basic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-map-basic-1.png" class="img-fluid figure-img" width="672">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyterra)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>agbogbloshie_terra <span class="ot">&lt;-</span> kml_path <span class="sc">|&gt;</span>  </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select first file there</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list.files</span>(<span class="at">full.names =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># read in with terra</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vect</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">project</span>(<span class="st">"epsg:2136"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># expanse is an odd function where we need to input the above again, that's</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># why I added the tidyverse pipe and the dot.</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">expanse</span>(.))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-map-basic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Choropleth map of my countries – basic
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="intermediate-map" class="level2">
-<h2 class="anchored" data-anchor-id="intermediate-map">Intermediate map</h2>
-<p>We now decrease some of the clutter. We get rid of the legend since it’s just a Boolean – we can indicate this in our title/caption. We also choose different colours, and get rid of the gridlines.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot an sf object</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> world,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>          <span class="co"># fill it according to my variable</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>          <span class="fu">aes</span>(<span class="at">fill =</span> is_my_country),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>         <span class="co"># don't show the legend: it's just true or false, can be shown in title</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make colours prettier</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"wheat"</span>)) <span class="sc">+</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove clutter</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div id="fig-map-intermediate" class="quarto-figure quarto-figure-center quarto-float anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-map-intermediate-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-map-intermediate-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-map-intermediate-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Choropleth map of my countries (in yellow) – intermediate
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="prettier-map" class="level2">
-<h2 class="anchored" data-anchor-id="prettier-map">Prettier map</h2>
-<p>It doesn’t quite look like we’re used to, though. Check out the comments to see what we’ve changed.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot an sf object</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> world,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># fill it according to my variable</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill =</span> is_my_country),</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># make borders lighter</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"grey80"</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># don't show the legend: it's just true or false, can be shown in title</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># add country labels</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># get the data just for the countries we want to show</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> world <span class="sc">|&gt;</span> <span class="fu">filter</span>(is_my_country <span class="sc">==</span> <span class="cn">TRUE</span>),</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># get the sovereignt label, and transform it to upper case</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> admin <span class="sc">|&gt;</span> <span class="fu">toupper</span>()),</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># make it not as dark</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"grey30"</span>,</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># decrease size</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">2.5</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make colours prettier</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"wheat"</span>)) <span class="sc">+</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># change to a nicer projection: equal area (more accurate)</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">crs =</span> <span class="st">"ESRI:54009"</span>) <span class="sc">+</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove clutter</span></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div id="fig-map-advanced" class="quarto-figure quarto-figure-center quarto-float anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-map-advanced-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-map-advanced-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-map-advanced-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Choropleth map of my countries – prettier version
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="prettier-map-with-ocean" class="level2">
-<h2 class="anchored" data-anchor-id="prettier-map-with-ocean">Prettier map with ocean</h2>
-<p>There’s just some lines of code you need to add to have a round earth/rounded sea. We need to create a polygon that has just the shape of the earth. We can do this with <code>st_graticule</code>, and then <code>st_cast</code> it to a polygon. Then, we can simply plot this polygon at the beginning of our <code>ggplot</code>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>grat <span class="ot">&lt;-</span> <span class="fu">st_graticule</span>() <span class="sc">|&gt;</span> <span class="fu">st_cast</span>(<span class="st">'POLYGON'</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># this is the new line</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> grat, <span class="at">fill =</span> <span class="st">"#d7ecfa"</span>, <span class="at">col =</span> <span class="st">"#d7ecfa"</span>) <span class="sc">+</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># now everything is the same as before</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> world,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill =</span> is_my_country),</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"grey80"</span>,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># add country labels</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> world <span class="sc">|&gt;</span> <span class="fu">filter</span>(is_my_country <span class="sc">==</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> admin <span class="sc">|&gt;</span> <span class="fu">toupper</span>()),</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"grey30"</span>,</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">2.5</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make colours prettier</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"wheat"</span>)) <span class="sc">+</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># change to a nicer projection: equal area (more accurate)</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">crs =</span> <span class="st">"ESRI:54009"</span>) <span class="sc">+</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove clutter</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div id="fig-earth-round" class="quarto-figure quarto-figure-center quarto-float anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-earth-round-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-earth-round-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-earth-round-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: Choropleth map of my countries – round earth
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="advanced-stuff" class="level2">
-<h2 class="anchored" data-anchor-id="advanced-stuff">Advanced stuff</h2>
-<p>If you’re really interested, you can check out the following on top:</p>
-<ul>
-<li>graticules (latitude/longitude)</li>
-<li>North arrow (not recommended for world maps, though)</li>
-<li>scale (not recommended for most world maps, though)</li>
-</ul>
 
 
-</section>
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{zeller2024,
   author = {Zeller, Sarah},
-  title = {Creating a Map with `Ggplot2`},
-  date = {2024-01-04},
-  url = {https://sarahzeller.github.io/blog/posts/creating-a-basic-map/},
+  title = {Opening `.kmz` Files},
+  date = {2024-04-19},
+  url = {https://sarahzeller.github.io/blog/posts/opening-kmz-files/},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-zeller2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-Zeller, Sarah. 2024. <span>“Creating a Map with `Ggplot2`.”</span>
-January 4, 2024. <a href="https://sarahzeller.github.io/blog/posts/creating-a-basic-map/">https://sarahzeller.github.io/blog/posts/creating-a-basic-map/</a>.
+Zeller, Sarah. 2024. <span>“Opening `.kmz` Files.”</span> April 19,
+2024. <a href="https://sarahzeller.github.io/blog/posts/opening-kmz-files/">https://sarahzeller.github.io/blog/posts/opening-kmz-files/</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

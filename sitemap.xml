@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://sarahzeller.github.io/index.html</loc>
+    <lastmod>2024-04-19T12:31:59.592Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/opening-kmz-files/index.html</loc>
+    <lastmod>2024-04-19T12:31:59.588Z</lastmod>
+  </url>
+  <url>
     <loc>https://sarahzeller.github.io/blog/posts/creating-a-basic-map/index.html</loc>
-    <lastmod>2024-02-24T13:21:14.365Z</lastmod>
+    <lastmod>2024-04-19T12:31:59.588Z</lastmod>
   </url>
   <url>
     <loc>https://sarahzeller.github.io/blog/posts/showing-regression-results/index.html</loc>
-    <lastmod>2024-02-24T13:21:14.369Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/index.html</loc>
-    <lastmod>2024-02-24T13:21:14.369Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/index.html</loc>
-    <lastmod>2024-02-24T13:21:14.365Z</lastmod>
+    <lastmod>2024-04-19T12:31:59.592Z</lastmod>
   </url>
   <url>
     <loc>https://sarahzeller.github.io/blog/posts/opening-nc-files/index.html</loc>
-    <lastmod>2024-02-24T13:21:14.369Z</lastmod>
+    <lastmod>2024-04-19T12:31:59.592Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/index.html</loc>
+    <lastmod>2024-04-19T12:31:59.588Z</lastmod>
   </url>
 </urlset>
