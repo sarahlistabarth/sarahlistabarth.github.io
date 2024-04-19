@@ -1,0 +1,271 @@
+---
+author: Sarah Zeller
+title: Opening `.kmz` files
+date: "2024-04-19"
+image: "landfills.PNG"
+categories: [code, spatial formats]
+citation:
+  url: https://sarahzeller.github.io/blog/posts/opening-kmz-files/
+
+format:
+  html:
+    toc: true
+
+execute:
+  warning: false
+  
+editor: 
+  markdown:
+    wrap: sentence
+---
+
+When working with spatial data, one thing I've noticed is: there's a lot of obscure data formats.
+And with every one of them, it takes me a while to figure out how to handle them in `R`.
+So I decided to make a series of blog posts on how to handle some of the spatial formats I've come across.
+
+This post is on `.kmz` files.
+If you're working with Google Earth Pro, this is the format your vector files will be exported in.
+Recently, I've worked quite a bit with Google Earth Pro to collect data on landfills by hand.
+You'll find an example `.kmz` file [here](https://sarahzeller.github.io/assets/Agbogbloshie.kmz).
+
+# TL;DR
+
+For a `.kmz` file, follow these steps:
+
+1.    Unzip the `.kmz`, e.g. using `archive::archive_extract`
+2.    Read in the resulting `.kml` file using `sf` or `terra`
+3.    Make sure you only have the geometry type you want -- (multi)polygons.
+
+# Setup
+
+Let's start by loading the necessary libraries.
+We'll need `archive` to unpack our `.kmz` file.
+With `sf`, we can then read the corresponding file in.
+`dplyr` will help us wrangle the data once they're read in.
+With `ggplot2`, we can visualize our data.
+`units` helps wrangling with different area units.
+
+```{r}
+#| label: load-libraries
+
+library(archive)
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(units)
+```
+Now, let's download our file.
+For this, we use the URL I've mentioned before.
+Also, we're creating a temporary file into which we load this file -- `kmz_path`.
+Watch out, though: it's a binary file, so we need to add the corresponding argument to the function `download.file`.
+
+```{r}
+#| label: load-data
+#| eval: false
+
+kmz_url <- "https://sarahzeller.github.io/assets/Agbogbloshie.kmz"
+
+kmz_path <- tempfile(fileext = ".kmz")
+download.file(
+  url = kmz_url,
+  destfile = kmz_path,
+  # it's a binary file
+  mode = "wb")
+
+```
+
+# Unzipping the `.kmz` to `.kml`
+
+The first step is to unzip our `.kmz`, which hides `.kml` files underneath.
+In our simple case, it's just a single `.kml` file.
+We can use the `archive_extract` command for this.
+I'm using temp files here, but feel free to exchange them for your own file paths.
+In the end, we're checking out everything that was zipped up.
+In this case, it's just a single file: `doc.kml`.
+
+```{r}
+#| label: change-kmz-path
+#| eval: true
+#| echo: false
+
+library(here)
+kmz_path <- here("assets/Agbogbloshie.kmz")
+```
+
+
+```{r}
+#| label: unzip-kmz
+
+kml_path <- tempfile()
+
+archive_extract(archive = kmz_path,
+                dir = kml_path)
+
+# check out the contents
+kml_path |> list.files()
+```
+
+# Read in the `.kml` file
+
+Now that we've gotten to our `.kml` file, let's read it into `R`.
+Since this is not raster, but vector data, we're using the library `sf` for this task.
+We're working with a `temp` file, so we need the `list.files` function to find out exactly where the file is that we're interested in.
+
+Now that we've read it in, we can see that there are two different types of geometries in this file: 
+
+-   point geometry (row 1) 
+-   multypolygon geometries (row 2--3)
+
+
+```{r}
+#| label: read-kml
+
+agbogbloshie <- kml_path |> 
+  list.files(full.names = TRUE) |> 
+  read_sf()
+
+agbogbloshie |> head()
+```
+# Sorting the `.kml` content
+
+We've seen that there's two different types of geometries in this `.kml` file. 
+Let's unpack these into two objects.
+To do this, we use the geometry types of each row, and simply filter for points and multipolygons.
+
+```{r}
+#| label: sort-kml
+
+agbogbloshie_point <- agbogbloshie |> 
+  filter(st_geometry_type(geometry) == "POINT")
+
+agbogbloshie_polygon <- agbogbloshie |> 
+  filter(st_geometry_type(geometry) == "MULTIPOLYGON")
+  
+```
+
+
+# Manipulating the data
+
+Now that we've gotten the data into a format we can work with, let's add some information.
+The first thing is to put the information contained in the `Name` column into a readable format.
+Next thing, we want to compute the area of our polygons.
+
+## Extracting information from the `Name`
+
+When we check out our `agbogbloshie_polygon` data frame, we can see that there's information contained in the `Name` column, specifically: the year for which the polygon shape is valid.
+So let's extract that `numeric` information from the `character` column!
+We can do that using the `parse_number` function from the `readr` package.
+
+```{r}
+#| label: get-year 
+
+agbogbloshie_polygon <- agbogbloshie_polygon |> 
+  mutate(year = readr::parse_number(Name))
+
+agbogbloshie_polygon
+```
+
+Let's use this information to plot the landfill in the two different years!
+Seems like the landfill grew quite a bit in between.
+
+```{r}
+#| label: fig-landfill
+#| fig-cap: Agbogbloshie landfill over time
+
+ggplot() +
+  geom_sf(data = agbogbloshie_polygon) +
+  facet_wrap(~year) +
+  geom_sf(data = agbogbloshie_point) +
+  theme_void() +
+  ggspatial::annotation_scale()
+```
+## Calculating area
+
+As a next step, let's calculate the area of these polygons.
+After all, it's interesting to see if this landfill shrinks or grows!
+
+For now, our data are *unprojected*, though.
+We can check this by getting the coordinate reference system (CRS) of our data.
+The output is very long and includes a lot of information, but we only need to focus on the first line, the *User input*.
+The next lines show the corresponding *well-known text (wkt)*, which details exactly how the CRS works.
+We can see here that the CRS is still *WGS 84*, which means -- unprojected.
+
+```{r}
+#| label: check-crs
+
+st_crs(agbogbloshie)
+```
+
+However, we know that the world is shaped like a potato, and that these unprojected data are biased.
+To correct for this, we first need to project the data into a CRS that's accurate for that world region when it comes to area -- we also call this area-preserving projection.
+The official CRS for Ghana, where this landfill is located, has the EPSG code `2136`.
+Once we've projected the polygons, we can easily calculate the area with the `sf` package.
+
+```{r}
+#| label: project
+
+agbogbloshie_polygon <- agbogbloshie_polygon |> 
+  st_transform(crs = "epsg:2136") |> 
+  mutate(area = st_area(geometry)) 
+
+agbogbloshie_polygon
+  
+```
+
+You'll notice that the `area` column has a specific format: it's a `unit`.
+This package makes it easy to convert values from one unit into another.
+Let's see how we can convert the area into hectares.
+Afterwards, let's drop the `unit` because we have the data in the final shape we want them.
+
+```{r}
+#| label: convert-to-ha
+
+agbogbloshie_polygon <- agbogbloshie_polygon |> 
+  mutate(area_ha = set_units(area, "ha") |> drop_units())
+```
+
+And there we have it, a data frame with the attributes that we need!
+Let's check out the area in comparison.
+We see that there's not that much difference!
+
+```{r}
+#| label: fig-bar-plot
+#| fig-cap: Agbogbloshie landfill area over time
+
+ggplot(data = agbogbloshie_polygon) +
+  geom_col(aes(x = year |> as.character(), y = area_ha)) +
+  coord_flip() +
+  labs(y = "Area (ha)",
+       x = "") +
+  theme_minimal()
+```
+
+# Alternative using `terra`
+
+If you prefer working with `terra`, e.g. because you need to combine your polygon data with raster data, you can of course also read in the `.kml` data.
+Since this is not the focus of this post, here's a quick walk-through.
+
+::: {.callout-note}
+`vect` just drops the point geometry.
+:::
+
+```{r}
+#| label: with-terra
+#| eval: false
+
+library(terra)
+library(tidyterra)
+library(tidyverse)
+
+agbogbloshie_terra <- kml_path |>  
+  # select first file there
+  list.files(full.names = TRUE) |> 
+  pluck(1) |> 
+  # read in with terra
+  vect() |> 
+  project("epsg:2136") %>%
+  # expanse is an odd function where we need to input the above again, that's
+  # why I added the tidyverse pipe and the dot.
+  mutate(area = expanse(.))
+```
+
