@@ -2,6 +2,7 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/posts/reading-csv-with-2row-colnames/index.html",
       "/blog/posts/opening-kmz-files/index.html",
       "/blog/posts/opening-nc-files/index.html",
       "/blog/posts/creating-a-basic-map/index.html",
