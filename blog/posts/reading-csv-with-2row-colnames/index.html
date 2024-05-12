@@ -334,7 +334,7 @@ Note
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(rownames<span class="sc">$</span>colnames)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>vote_results <span class="sc">|&gt;</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">8</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">7</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  wahlkreis_nr                     wahlkreisname ungultige_erststimmen
@@ -343,14 +343,7 @@ Note
 3            3      Steinburg – Dithmarschen Süd                  1037
 4            4             Rendsburg-Eckernförde                  1092
 5            5                              Kiel                   853
-6            6                 Plön – Neumünster                  1307
-  gultige_erststimmen
-1              126428
-2               96701
-3               97776
-4              110876
-5               93038
-6               89525</code></pre>
+6            6                 Plön – Neumünster                  1307</code></pre>
 </div>
 </div>
 </section>
@@ -367,7 +360,7 @@ Then, we’ll pivot the data longer to separate the party from the vote type.</p
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>vote_results_clean <span class="ot">&lt;-</span> vote_results <span class="sc">|&gt;</span> </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">matches</span>(<span class="st">"stimmen"</span>)), <span class="sc">~</span> stringr<span class="sc">::</span><span class="fu">str_replace</span>(.x, <span class="st">"_([erst|zweit])"</span>, <span class="st">".</span><span class="sc">\\</span><span class="st">1"</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">matches</span>(<span class="st">"stimmen"</span>),</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"party"</span>, <span class="st">"vote_type"</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"vote_receiver"</span>, <span class="st">"vote_type"</span>),</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"vote_count"</span></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>               )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -377,15 +370,15 @@ Then, we’ll pivot the data longer to separate the party from the vote type.</p
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>vote_results_clean <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 9
-  wahlkreis_nr wahlkreisname land  wahlbezirksart wahlberechtigte wahlende party
-         &lt;int&gt; &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;                    &lt;int&gt;    &lt;int&gt; &lt;chr&gt;
-1            1 Flensburg – … SH    Urne                    231536   127698 ungu…
-2            1 Flensburg – … SH    Urne                    231536   127698 gult…
-3            1 Flensburg – … SH    Urne                    231536   127698 cdu  
-4            1 Flensburg – … SH    Urne                    231536   127698 spd  
-5            1 Flensburg – … SH    Urne                    231536   127698 af_d 
-6            1 Flensburg – … SH    Urne                    231536   127698 fdp  
-# ℹ 2 more variables: vote_type &lt;chr&gt;, vote_count &lt;int&gt;</code></pre>
+  wahlkreis_nr wahlkreisname       land  wahlbezirksart wahlberechtigte wahlende
+         &lt;int&gt; &lt;chr&gt;               &lt;chr&gt; &lt;chr&gt;                    &lt;int&gt;    &lt;int&gt;
+1            1 Flensburg – Schles… SH    Urne                    231536   127698
+2            1 Flensburg – Schles… SH    Urne                    231536   127698
+3            1 Flensburg – Schles… SH    Urne                    231536   127698
+4            1 Flensburg – Schles… SH    Urne                    231536   127698
+5            1 Flensburg – Schles… SH    Urne                    231536   127698
+6            1 Flensburg – Schles… SH    Urne                    231536   127698
+# ℹ 3 more variables: vote_receiver &lt;chr&gt;, vote_type &lt;chr&gt;, vote_count &lt;int&gt;</code></pre>
 </div>
 </div>
 </section>
