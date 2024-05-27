@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Sarah Zeller">
-<meta name="dcterms.date" content="2024-04-19">
+<meta name="dcterms.date" content="2024-05-27">
 
 <title>Sarah Zeller - Opening .kmz files</title>
 <style>
@@ -172,7 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 19, 2024</p>
+        <p class="date">May 27, 2024</p>
       </div>
     </div>
     
@@ -196,6 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#manipulating-the-data" id="toc-manipulating-the-data" class="nav-link" data-scroll-target="#manipulating-the-data">Manipulating the data</a>
   <ul class="collapse">
   <li><a href="#extracting-information-from-the-name" id="toc-extracting-information-from-the-name" class="nav-link" data-scroll-target="#extracting-information-from-the-name">Extracting information from the <code>Name</code></a></li>
+  <li><a href="#summarizing-into-one-polygon" id="toc-summarizing-into-one-polygon" class="nav-link" data-scroll-target="#summarizing-into-one-polygon">Summarizing into one polygon</a></li>
   <li><a href="#calculating-area" id="toc-calculating-area" class="nav-link" data-scroll-target="#calculating-area">Calculating area</a></li>
   </ul></li>
   <li><a href="#alternative-using-terra" id="toc-alternative-using-terra" class="nav-link" data-scroll-target="#alternative-using-terra">Alternative using <code>terra</code></a></li>
@@ -222,17 +223,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<p>Let’s start by loading the necessary libraries. We’ll need <code>archive</code> to unpack our <code>.kmz</code> file. With <code>sf</code>, we can then read the corresponding file in. <code>dplyr</code> will help us wrangle the data once they’re read in. With <code>ggplot2</code>, we can visualize our data. <code>units</code> helps wrangling with different area units.</p>
+<p>Let’s start by loading the necessary libraries. We’ll need <code>archive</code> to unpack our <code>.kmz</code> file. With <code>sf</code>, we can then read the corresponding file in. <code>dplyr</code> will help us wrangle the data once they’re read in. With <code>ggplot2</code>, we can visualize our data. <code>units</code> helps wrangling with different area units. <code>unglue</code> is a package that helps us extract information from strings.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(archive)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(units)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(units)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(unglue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, let’s download our file. For this, we use the URL I’ve mentioned before. Also, we’re creating a temporary file into which we load this file – <code>kmz_path</code>. Watch out, though: it’s a binary file, so we need to add the corresponding argument to the function <code>download.file</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>kmz_url <span class="ot">&lt;-</span> <span class="st">"https://sarahzeller.github.io/assets/Agbogbloshie.kmz"</span></span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>kmz_url <span class="ot">&lt;-</span> <span class="st">"https://github.com/sarahzeller/sarahzeller.github.io/blob/main/assets/Agbogbloshie.kmz"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>kmz_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".kmz"</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(</span>
@@ -273,18 +275,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>agbogbloshie <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simple feature collection with 3 features and 2 fields
+<pre><code>Simple feature collection with 6 features and 2 fields
 Geometry type: GEOMETRY
 Dimension:     XYZ
-Bounding box:  xmin: -0.2311228 ymin: 5.54208 xmax: -0.2246721 ymax: 5.554326
+Bounding box:  xmin: -0.2311228 ymin: 5.54208 xmax: -0.2246721 ymax: 5.556922
 z_range:       zmin: 0 zmax: 0
 Geodetic CRS:  WGS 84
-# A tibble: 3 × 3
-  Name         Description                                              geometry
-  &lt;chr&gt;        &lt;chr&gt;                                              &lt;GEOMETRY [°]&gt;
-1 Agbogbloshie ""                                POINT Z (-0.2264589 5.548876 0)
-2 stand_2020   ""          MULTIPOLYGON Z (((-0.2311228 5.554326 0, -0.2291702 …
-3 stand_2018   ""          MULTIPOLYGON Z (((-0.2304394 5.552348 0, -0.2304295 …</code></pre>
+# A tibble: 6 × 3
+  Name                    Description                                   geometry
+  &lt;chr&gt;                   &lt;chr&gt;                                   &lt;GEOMETRY [°]&gt;
+1 Agbogbloshie            ""                     POINT Z (-0.2264589 5.548876 0)
+2 Agbogbloshie_02_2020    ""          MULTIPOLYGON Z (((-0.2311228 5.554326 0, …
+3 Agbogbloshie_10_2018    ""          MULTIPOLYGON Z (((-0.2304394 5.552348 0, …
+4 Agblogbloshie 10_2016   ""          MULTIPOLYGON Z (((-0.2292498 5.550126 0, …
+5 Agbogbloshie_10_2018_02 ""          MULTIPOLYGON Z (((-0.229426 5.553367 0, -…
+6 Agbogbloshie_10_2018_03 ""          MULTIPOLYGON Z (((-0.2264083 5.550984 0, …</code></pre>
 </div>
 </div>
 </section>
@@ -304,24 +309,39 @@ Geodetic CRS:  WGS 84
 <p>Now that we’ve gotten the data into a format we can work with, let’s add some information. The first thing is to put the information contained in the <code>Name</code> column into a readable format. Next thing, we want to compute the area of our polygons.</p>
 <section id="extracting-information-from-the-name" class="level2">
 <h2 class="anchored" data-anchor-id="extracting-information-from-the-name">Extracting information from the <code>Name</code></h2>
-<p>When we check out our <code>agbogbloshie_polygon</code> data frame, we can see that there’s information contained in the <code>Name</code> column, specifically: the year for which the polygon shape is valid. So let’s extract that <code>numeric</code> information from the <code>character</code> column! We can do that using the <code>parse_number</code> function from the <code>readr</code> package.</p>
+<p>When we check out our <code>agbogbloshie_polygon</code> data frame, we can see that there’s information contained in the <code>Name</code> column, specifically: the year for which the polygon shape is valid. So let’s extract that <code>numeric</code> information from the <code>character</code> column! Because the description is quite long and has much information included – and it’s always formatted the same way –, we’ll use the <code>unglue</code> package to extract the information. Also, the landfill is misspelt in some cases, so we need to account for that.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon <span class="ot">&lt;-</span> agbogbloshie_polygon <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> readr<span class="sc">::</span><span class="fu">parse_number</span>(Name))</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unglue_unnest</span>(Name, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">patterns =</span> <span class="fu">c</span>(<span class="st">"{landfill_name}_{month}_{year}_{polygon_no}"</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"{landfill_name}_{month}_{year}"</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"{landfill_name} {month}_{year}"</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">landfill_name =</span> <span class="fu">case_match</span>(landfill_name,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Agblogbloshie"</span> <span class="sc">~</span> <span class="st">"Agbogbloshie"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Agbogbgloshie"</span> <span class="sc">~</span> <span class="st">"Agbogbloshie"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">.default =</span> <span class="st">"Agbogbloshie"</span>))</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simple feature collection with 2 features and 3 fields
+<pre><code>Simple feature collection with 8 features and 6 fields
 Geometry type: MULTIPOLYGON
 Dimension:     XYZ
-Bounding box:  xmin: -0.2311228 ymin: 5.54208 xmax: -0.2246721 ymax: 5.554326
+Bounding box:  xmin: -0.2311228 ymin: 5.54208 xmax: -0.2246721 ymax: 5.556922
 z_range:       zmin: 0 zmax: 0
 Geodetic CRS:  WGS 84
-# A tibble: 2 × 4
-  Name       Description                                          geometry  year
-* &lt;chr&gt;      &lt;chr&gt;                                      &lt;MULTIPOLYGON [°]&gt; &lt;dbl&gt;
-1 stand_2020 ""          Z (((-0.2311228 5.554326 0, -0.2291702 5.549969 …  2020
-2 stand_2018 ""          Z (((-0.2304394 5.552348 0, -0.2304295 5.552299 …  2018</code></pre>
+# A tibble: 8 × 7
+  Name                     Description landfill_name month year  polygon_no
+* &lt;chr&gt;                    &lt;chr&gt;       &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     
+1 Agbogbloshie_02_2020     ""          Agbogbloshie  02    2020  &lt;NA&gt;      
+2 Agbogbloshie_10_2018     ""          Agbogbloshie  10    2018  &lt;NA&gt;      
+3 Agblogbloshie 10_2016    ""          Agbogbloshie  10    2016  &lt;NA&gt;      
+4 Agbogbloshie_10_2018_02  ""          Agbogbloshie  10    2018  02        
+5 Agbogbloshie_10_2018_03  ""          Agbogbloshie  10    2018  03        
+6 Agbogbgloshie_02_2020_02 ""          Agbogbloshie  02    2020  02        
+7 Agbogbloshie_02_2020_03  ""          Agbogbloshie  02    2020  03        
+8 Agbogbloshie_10_2016_02  ""          Agbogbloshie  10    2016  02        
+# ℹ 1 more variable: geometry &lt;MULTIPOLYGON [°]&gt;</code></pre>
 </div>
 </div>
 <p>Let’s use this information to plot the landfill in the two different years! Seems like the landfill grew quite a bit in between.</p>
@@ -345,13 +365,28 @@ Figure&nbsp;1: Agbogbloshie landfill over time
 </div>
 </div>
 </div>
+<p>This looks good! However, we can see that the landfills consist of multiple polygons. Let’s get them together.</p>
+</section>
+<section id="summarizing-into-one-polygon" class="level2">
+<h2 class="anchored" data-anchor-id="summarizing-into-one-polygon">Summarizing into one polygon</h2>
+<p>In every year, we have more than one polygon. We want to collapse these into a single multipolygon. For that, we need to summarize them by <code>year</code> and <code>landfill</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon <span class="ot">&lt;-</span> agbogbloshie_polygon <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_zm</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="st">"ESRI:54009"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_make_valid</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># summarize geometry into multipolygons</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(landfill_name, year, month) <span class="sc">|&gt;</span> </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="calculating-area" class="level2">
 <h2 class="anchored" data-anchor-id="calculating-area">Calculating area</h2>
 <p>As a next step, let’s calculate the area of these polygons. After all, it’s interesting to see if this landfill shrinks or grows!</p>
 <p>For now, our data are <em>unprojected</em>, though. We can check this by getting the coordinate reference system (CRS) of our data. The output is very long and includes a lot of information, but we only need to focus on the first line, the <em>User input</em>. The next lines show the corresponding <em>well-known text (wkt)</em>, which details exactly how the CRS works. We can see here that the CRS is still <em>WGS 84</em>, which means – unprojected.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(agbogbloshie)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(agbogbloshie)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Coordinate Reference System:
   User input: WGS 84 
@@ -374,38 +409,38 @@ GEOGCRS["WGS 84",
 </div>
 <p>However, we know that the world is shaped like a potato, and that these unprojected data are biased. To correct for this, we first need to project the data into a CRS that’s accurate for that world region when it comes to area – we also call this area-preserving projection. The official CRS for Ghana, where this landfill is located, has the EPSG code <code>2136</code>. Once we’ve projected the polygons, we can easily calculate the area with the <code>sf</code> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon <span class="ot">&lt;-</span> agbogbloshie_polygon <span class="sc">|&gt;</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="st">"epsg:2136"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">st_area</span>(geometry)) </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon <span class="ot">&lt;-</span> agbogbloshie_polygon <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="st">"epsg:2136"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">st_area</span>(geometry)) </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simple feature collection with 2 features and 4 fields
+<pre><code>Simple feature collection with 3 features and 4 fields
 Geometry type: MULTIPOLYGON
-Dimension:     XYZ
-Bounding box:  xmin: 1179342 ymin: 316685.8 xmax: 1181692 ymax: 321125.3
-z_range:       zmin: 0 zmax: 0
+Dimension:     XY
+Bounding box:  xmin: 1179342 ymin: 316685.8 xmax: 1181692 ymax: 322068
 Projected CRS: Accra / Ghana National Grid
-# A tibble: 2 × 5
-  Name       Description                                   geometry  year   area
-* &lt;chr&gt;      &lt;chr&gt;                                   &lt;MULTIPOLYGON&gt; &lt;dbl&gt;  [m^2]
-1 stand_2020 ""          Z (((1179342 321125.3 0, 1180054 319545.7…  2020 2.00e5
-2 stand_2018 ""          Z (((1179591 320408.3 0, 1179595 320390.5…  2018 1.98e5</code></pre>
+# A tibble: 3 × 5
+  landfill_name year  month                                      geometry   area
+* &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;                                &lt;MULTIPOLYGON&gt;  [m^2]
+1 Agbogbloshie  2016  10    (((1180085 320017.8, 1180468 319802.8, 11805… 2.41e5
+2 Agbogbloshie  2018  10    (((1180357 319898.9, 1180372 319891.8, 11803… 2.94e5
+3 Agbogbloshie  2020  02    (((1179921 320055.5, 1179936 320041.3, 11799… 2.56e5</code></pre>
 </div>
 </div>
 <p>You’ll notice that the <code>area</code> column has a specific format: it’s a <code>unit</code>. This package makes it easy to convert values from one unit into another. Let’s see how we can convert the area into hectares. Afterwards, let’s drop the <code>unit</code> because we have the data in the final shape we want them.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon <span class="ot">&lt;-</span> agbogbloshie_polygon <span class="sc">|&gt;</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area_ha =</span> <span class="fu">set_units</span>(area, <span class="st">"ha"</span>) <span class="sc">|&gt;</span> <span class="fu">drop_units</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie_polygon <span class="ot">&lt;-</span> agbogbloshie_polygon <span class="sc">|&gt;</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area_ha =</span> <span class="fu">set_units</span>(area, <span class="st">"ha"</span>) <span class="sc">|&gt;</span> <span class="fu">drop_units</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And there we have it, a data frame with the attributes that we need! Let’s check out the area in comparison. We see that there’s not that much difference!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> agbogbloshie_polygon) <span class="sc">+</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">x =</span> year <span class="sc">|&gt;</span> <span class="fu">as.character</span>(), <span class="at">y =</span> area_ha)) <span class="sc">+</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Area (ha)"</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> agbogbloshie_polygon) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">x =</span> year <span class="sc">|&gt;</span> <span class="fu">as.character</span>(), <span class="at">y =</span> area_ha)) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Area (ha)"</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-bar-plot" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -438,20 +473,37 @@ Note
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyterra)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>agbogbloshie_terra <span class="ot">&lt;-</span> kml_path <span class="sc">|&gt;</span>  </span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select first file there</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list.files</span>(<span class="at">full.names =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># read in with terra</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vect</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">project</span>(<span class="st">"epsg:2136"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># expanse is an odd function where we need to input the above again, that's</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># why I added the tidyverse pipe and the dot.</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">expanse</span>(.))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyterra)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>agbogbloshie_terra <span class="ot">&lt;-</span> kml_path <span class="sc">|&gt;</span>  </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select first file there</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list.files</span>(<span class="at">full.names =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># read in with terra</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vect</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">project</span>(<span class="st">"epsg:2136"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># expanse is an odd function where we need to input the above again, that's</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># why I added the tidyverse pipe and the dot.</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">expanse</span>(., <span class="at">unit =</span> <span class="st">"ha"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Lastly, let’s account for the misspelt names in the <code>landfill_name</code> column. Also, let’s sum the area per year.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>agbogbloshie_terra_clean <span class="ot">&lt;-</span> agbogbloshie_terra <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unglue_unnest</span>(Name, </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">patterns =</span> <span class="fu">c</span>(<span class="st">"{landfill_name}_{month}_{year}_{polygon_no}"</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"{landfill_name}_{month}_{year}"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"{landfill_name} {month}_{year}"</span>),</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">landfill_name =</span> <span class="fu">case_match</span>(landfill_name,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Agblogbloshie"</span> <span class="sc">~</span> <span class="st">"Agbogbloshie"</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Agbogbgloshie"</span> <span class="sc">~</span> <span class="st">"Agbogbloshie"</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">.default =</span> <span class="st">"Agbogbloshie"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(landfill_name, year) <span class="sc">|&gt;</span> </span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">area_ha =</span> <span class="fu">sum</span>(area)) <span class="sc">|&gt;</span> </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
@@ -460,13 +512,13 @@ Note
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{zeller2024,
   author = {Zeller, Sarah},
   title = {Opening `.kmz` Files},
-  date = {2024-04-19},
+  date = {2024-05-27},
   url = {https://sarahzeller.github.io/blog/posts/opening-kmz-files/},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-zeller2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-Zeller, Sarah. 2024. <span>“Opening `.kmz` Files.”</span> April 19,
-2024. <a href="https://sarahzeller.github.io/blog/posts/opening-kmz-files/">https://sarahzeller.github.io/blog/posts/opening-kmz-files/</a>.
+Zeller, Sarah. 2024. <span>“Opening `.kmz` Files.”</span> May 27, 2024.
+<a href="https://sarahzeller.github.io/blog/posts/opening-kmz-files/">https://sarahzeller.github.io/blog/posts/opening-kmz-files/</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
