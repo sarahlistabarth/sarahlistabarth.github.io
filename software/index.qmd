@@ -1,5 +1,5 @@
 ---
-title: "{{< fa laptop >}} Software"
+title: "Software"
 description: "A list of my software projects"
 listing:
   - id: r
@@ -10,10 +10,9 @@ page-layout: full
 toc: true
 toc-location: right
 toc-title: Language
+css:
+  - /_extensions/quarto-ext/fontawesome/assets/css/all.css
 ---
-
-
 
 :::{#r}
 :::
-
