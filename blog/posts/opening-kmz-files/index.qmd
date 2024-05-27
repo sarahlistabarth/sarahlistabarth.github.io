@@ -1,7 +1,7 @@
 ---
 author: Sarah Zeller
 title: Opening `.kmz` files
-date: "2024-04-19"
+date: "2024-05-27"
 image: "landfills.PNG"
 categories: [code, spatial formats]
 citation:
@@ -32,9 +32,9 @@ You'll find an example `.kmz` file [here](https://sarahzeller.github.io/assets/A
 
 For a `.kmz` file, follow these steps:
 
-1.    Unzip the `.kmz`, e.g. using `archive::archive_extract`
-2.    Read in the resulting `.kml` file using `sf` or `terra`
-3.    Make sure you only have the geometry type you want -- (multi)polygons.
+1.  Unzip the `.kmz`, e.g. using `archive::archive_extract`
+2.  Read in the resulting `.kml` file using `sf` or `terra`
+3.  Make sure you only have the geometry type you want -- (multi)polygons.
 
 # Setup
 
@@ -44,6 +44,7 @@ With `sf`, we can then read the corresponding file in.
 `dplyr` will help us wrangle the data once they're read in.
 With `ggplot2`, we can visualize our data.
 `units` helps wrangling with different area units.
+`unglue` is a package that helps us extract information from strings.
 
 ```{r}
 #| label: load-libraries
@@ -53,7 +54,9 @@ library(sf)
 library(dplyr)
 library(ggplot2)
 library(units)
+library(unglue)
 ```
+
 Now, let's download our file.
 For this, we use the URL I've mentioned before.
 Also, we're creating a temporary file into which we load this file -- `kmz_path`.
@@ -63,7 +66,7 @@ Watch out, though: it's a binary file, so we need to add the corresponding argum
 #| label: load-data
 #| eval: false
 
-kmz_url <- "https://sarahzeller.github.io/assets/Agbogbloshie.kmz"
+kmz_url <- "https://github.com/sarahzeller/sarahzeller.github.io/blob/main/assets/Agbogbloshie.kmz"
 
 kmz_path <- tempfile(fileext = ".kmz")
 download.file(
@@ -92,7 +95,6 @@ library(here)
 kmz_path <- here("assets/Agbogbloshie.kmz")
 ```
 
-
 ```{r}
 #| label: unzip-kmz
 
@@ -111,11 +113,10 @@ Now that we've gotten to our `.kml` file, let's read it into `R`.
 Since this is not raster, but vector data, we're using the library `sf` for this task.
 We're working with a `temp` file, so we need the `list.files` function to find out exactly where the file is that we're interested in.
 
-Now that we've read it in, we can see that there are two different types of geometries in this file: 
+Now that we've read it in, we can see that there are two different types of geometries in this file:
 
--   point geometry (row 1) 
+-   point geometry (row 1)
 -   multypolygon geometries (row 2--3)
-
 
 ```{r}
 #| label: read-kml
@@ -126,9 +127,10 @@ agbogbloshie <- kml_path |>
 
 agbogbloshie |> head()
 ```
+
 # Sorting the `.kml` content
 
-We've seen that there's two different types of geometries in this `.kml` file. 
+We've seen that there's two different types of geometries in this `.kml` file.
 Let's unpack these into two objects.
 To do this, we use the geometry types of each row, and simply filter for points and multipolygons.
 
@@ -143,7 +145,6 @@ agbogbloshie_polygon <- agbogbloshie |>
   
 ```
 
-
 # Manipulating the data
 
 Now that we've gotten the data into a format we can work with, let's add some information.
@@ -154,13 +155,22 @@ Next thing, we want to compute the area of our polygons.
 
 When we check out our `agbogbloshie_polygon` data frame, we can see that there's information contained in the `Name` column, specifically: the year for which the polygon shape is valid.
 So let's extract that `numeric` information from the `character` column!
-We can do that using the `parse_number` function from the `readr` package.
+Because the description is quite long and has much information included -- and it's always formatted the same way --, we'll use the `unglue` package to extract the information.
+Also, the landfill is misspelt in some cases, so we need to account for that.
 
 ```{r}
 #| label: get-year 
 
 agbogbloshie_polygon <- agbogbloshie_polygon |> 
-  mutate(year = readr::parse_number(Name))
+  unglue_unnest(Name, 
+                patterns = c("{landfill_name}_{month}_{year}_{polygon_no}",
+                             "{landfill_name}_{month}_{year}",
+                             "{landfill_name} {month}_{year}"),
+                remove = FALSE) |> 
+  mutate(landfill_name = case_match(landfill_name,
+                                    "Agblogbloshie" ~ "Agbogbloshie",
+                                    "Agbogbgloshie" ~ "Agbogbloshie",
+                                    .default = "Agbogbloshie"))
 
 agbogbloshie_polygon
 ```
@@ -179,6 +189,31 @@ ggplot() +
   theme_void() +
   ggspatial::annotation_scale()
 ```
+This looks good!
+However, we can see that the landfills consist of multiple polygons.
+Let's get them together.
+
+## Summarizing into one polygon
+
+In every year, we have more than one polygon.
+We want to collapse these into a single multipolygon.
+For that, we need to summarize them by `year` and `landfill`.
+
+```{r}
+#| label: summarize-polygons
+agbogbloshie_polygon <- agbogbloshie_polygon |> 
+  st_zm() |> 
+  st_transform(crs = "ESRI:54009") |> 
+  st_make_valid() |> 
+  # summarize geometry into multipolygons
+  group_by(landfill_name, year, month) |> 
+  summarize() |> 
+  ungroup()
+
+```
+
+
+
 ## Calculating area
 
 As a next step, let's calculate the area of these polygons.
@@ -245,7 +280,7 @@ ggplot(data = agbogbloshie_polygon) +
 If you prefer working with `terra`, e.g. because you need to combine your polygon data with raster data, you can of course also read in the `.kml` data.
 Since this is not the focus of this post, here's a quick walk-through.
 
-::: {.callout-note}
+::: callout-note
 `vect` just drops the point geometry.
 :::
 
@@ -266,6 +301,28 @@ agbogbloshie_terra <- kml_path |>
   project("epsg:2136") %>%
   # expanse is an odd function where we need to input the above again, that's
   # why I added the tidyverse pipe and the dot.
-  mutate(area = expanse(.))
+  mutate(area = expanse(., unit = "ha"))
+```
+Lastly, let's account for the misspelt names in the `landfill_name` column.
+Also, let's sum the area per year.
+
+```{r}
+#| label: with-terra-cleanup
+#| eval: false
+agbogbloshie_terra_clean <- agbogbloshie_terra |> 
+  as.data.frame() |> 
+  unglue_unnest(Name, 
+                patterns = c("{landfill_name}_{month}_{year}_{polygon_no}",
+                             "{landfill_name}_{month}_{year}",
+                             "{landfill_name} {month}_{year}"),
+                remove = FALSE) |> 
+  mutate(landfill_name = case_match(landfill_name,
+                                    "Agblogbloshie" ~ "Agbogbloshie",
+                                    "Agbogbgloshie" ~ "Agbogbloshie",
+                                    .default = "Agbogbloshie")) |> 
+  group_by(landfill_name, year) |> 
+  summarize(area_ha = sum(area)) |> 
+  ungroup()
+  
 ```
 
