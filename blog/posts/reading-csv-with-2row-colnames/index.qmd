@@ -1,0 +1,221 @@
+---
+author: Sarah Zeller
+title: "Reading a `csv` file with 2-row column names"
+description: "Sometimes, `csv` files have 2-row column names. I create a function to deal with this."
+date: "2024-05-05"
+categories: [code, data]
+image: "two_row_colnames.PNG"
+citation: 
+  url: https://sarahzeller.github.io/blog/posts/reading-csv-with-2row-colnames/
+
+format:
+  html:
+    toc: true
+
+execute:
+  warning: false
+  
+editor: 
+  markdown:
+    wrap: sentence
+---
+
+I recently wanted to check out election results from the last German *Bundestag* election, and read them into `R`.
+The data was saved in a `csv` file -- so far, so good.
+But the column names were spread over two rows.
+😱
+
+This means I'm losing valuable information if I'm only reading the first row of column names.
+Additionally, the types of the rows get messed up, since the second row of the column names is read as data -- specifically, `character` data.
+
+So, I wanted to combine both rows of column names into one.
+Here's how I did it in R.
+
+# Data
+
+You'll find the `csv` file I was trying to read [here](https://www.bundeswahlleiterin.de/dam/jcr/62868510-b616-443c-97b4-71847916d543/btw2021_brief_wkr.csv).
+It shows the federal election results, aggregated to the level of the electoral districts.
+In Germany, you have two votes: the first one is for a candidate, the second one for a party.
+Here's a snapshot of the file when you load it into `Excel` .
+
+![](two_row_colnames.PNG)
+
+You can see two issues.
+
+1.  The copyright information and title are saved in column `A` (rows 1 and 3).
+    We can solve this easily by skipping over those rows when we read the `csv` file into R.
+
+2.  The column names are spread over two rows: 4 and 5.
+    This issue, we can't solve that quickly.
+
+So let's check out the structure of the column names.
+The columns A--F that only need one row for the column names identify the voting district; the columns that follow identify the results.
+Row 6 always indicates whether it's the first or second vote result.
+
+::: callout-note
+Two-row column names are not always so clearly structured.
+:::
+
+So what's the plan?
+We want to do the following:
+
+1.    Read the first column name row.
+2.    Read the second column name row.
+3.    Combine those two rows into one.
+4.    Read the data into R.
+5.    Replace the column names with the combined column names.
+
+Let's get started 🚀
+
+# Preparation
+
+Let's load the data first.
+We'll create a `temp_file` to store the data, but feel free to download it into any folder you like.
+
+```{r}
+#| label: load-data
+
+temp_file <- tempfile(fileext = ".csv")
+download.file(url = "https://www.bundeswahlleiterin.de/dam/jcr/62868510-b616-443c-97b4-71847916d543/btw2021_brief_wkr.csv",
+              destfile = temp_file)
+```
+
+Next, let's load the needed packages.
+We'll use `janitor` to clean the column names, `tidyr` and `dplyr` to combine the two rows, and `rlang` to set the correct names.
+
+```{r}
+#| label: load-packages
+library(janitor)
+library(tidyr)
+library(dplyr)
+library(rlang)
+```
+
+
+# Reading the column names
+
+## Reading the first row
+
+There's probably many ways to do this, but I decided to go for the following approach: 
+
+1. read in the `csv` file starting at the first column name row
+2. clean the column names
+3. store the column names in a variable
+
+To read in the first row of column names, we can use the `read.csv2()` function.
+We'll skip the first three rows (which only contain metadata) and read in only one row, since we don't need the content for now.
+Then, we'll clean the column names with `janitor::clean_names()` to make sure that they're formatted like we want them to.
+Lastly, I'm removing the numbers that are attached at the end since some of the variable names so far are not unique (since they're still missing the second row).
+
+```{r}
+#| label: read-colname-row1
+#| eval: false
+
+colnames_row1 <- read.csv2(temp_file, skip = 4, nrows = 1) |>
+janitor::clean_names() |> 
+  colnames() |> 
+  gsub("_[[:digit:]].*", "", x = _) 
+```
+
+## Reading both column names
+
+We could repeat this procedure for the second row of column names.
+However, it's better to create a function for this case.
+We simply take the pipeline from before and put it into a function.
+
+```{r}
+#| label: read-colname-function
+
+read_colnames <- function(path, skip_rows = 4, no_rows = 1) {
+  path |> 
+    read.csv2(skip = skip_rows, nrows = no_rows) |> 
+    janitor::clean_names() |> 
+    colnames() |> 
+    gsub("_[[:digit:]].*", "", x = _)
+}
+
+```
+
+# Combine the row names
+
+Now, we can easily read in both rows of column names using this function.
+All we need to do is change the number of rows to skip.
+We'll put them in a `data.frame` together so we can manipulate them easily.
+
+To bring the two rows together, we simply check if there's actually anything inside `row_2` (i.e. something that is not parsed as `"x"`).
+If there is not, we just take the contents of `row_1`.
+Otherwise, we paste `row_1` and `row_2` together.
+
+
+```{r}
+#| label: read-colnames-both-rows
+
+rownames <- data.frame(
+  row_1 = read_colnames(temp_file, skip_rows = 4),
+  row_2 = read_colnames(temp_file, skip_rows = 5)
+) |>
+  mutate(colnames = ifelse(row_2 == "x", 
+                           row_1, 
+                           paste(row_1, row_2, sep = "_")))
+
+rownames |> head()
+```
+
+Yay, now we have the column names we want in a single vector -- `rownames$colnames` 🥳
+All that's left to do is to read in the data and replace the column names.
+
+# Read in the data and replace the column names
+
+Let's read in the data.
+We'll skip the first three rows and the first row of column names.
+Then, we'll replace the column names with the combined column names.
+
+And there we go -- a properly read in `csv` file with two-row column names 🎉
+
+```{r}
+#| label: read-data
+vote_results <- read.csv2(temp_file, skip = 5) |>
+  setNames(rownames$colnames)
+  
+vote_results |>
+  select(1:2, 7) |> 
+  head()
+```
+
+# One step further -- considering the second row meaning
+
+In this specific data set, the second row of the column names has a specific meaning: 
+
+-   `erststimmen` indicates the first vote
+-   `zweitstimmen` indicates the second vote
+
+We can disentangle the data set to respect this information.
+Since the names contain underscores that are apart from the one separating the first and second row, we'll go a bit hacky here and replace the underscore before `erststimme` or `zweitstimme` with a dot.  
+Then, we'll pivot the data longer to separate the party from the vote type.
+
+```{r}
+#| label: disentangle-data
+
+vote_results_clean <- vote_results |> 
+  rename_at(vars(matches("stimmen")), ~ stringr::str_replace(.x, "_([erst|zweit])", ".\\1")) |>
+  pivot_longer(cols = matches("stimmen"),
+               names_to = c("vote_receiver", "vote_type"),
+               names_sep = "\\.",
+               values_to = "vote_count"
+               )
+```
+
+And there we have it -- a clean data set with the correct column names and the vote type separated.
+Yay!
+
+```{r}
+#| label: show-data
+vote_results_clean |> head()
+```
+
+# An alternative
+
+I only found out later that there's actually a whole package dedicated to reading in files with odd formatting, including two-row column names: [`unheadr`](https://github.com/luisDVA/unheadr).
+It's a great package that does exactly what we did here -- and more.
+
+If you want to use it specifically for column names with more than one row to them, you can use their function `mash_colnames`; it does pretty much what we did here, and extends the functionality to column names with more than two rows.

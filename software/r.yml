@@ -1,0 +1,11 @@
+- title: "donutsR"
+  description: |
+    Provides a set of functions to implement donut analyses in R –
+    for when you're unsure which distance to a point of interest still counts as treated.
+  github: https://github.com/sarahzeller/donutsR
+  documentation: https://sarahzeller.github.io/donutsR/
+- title: "tud"
+  description: |
+    Quarto template in TUD corporate design for presentations and extendes abstracts –
+    for both typst and latex output.
+  github: https://sarahzeller.github.io/tud/

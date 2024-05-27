@@ -12,6 +12,8 @@ website:
         text: CV
       - href: blog/index.qmd
         text: Blog
+      - href: software/index.qmd
+        text: Software
         
 
 format:

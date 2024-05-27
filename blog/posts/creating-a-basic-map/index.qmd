@@ -1,9 +1,11 @@
 ---
-author: Sarah
+author: Sarah Zeller
 title: "Creating a map with `ggplot2`"
-date: "2023-11-28"
+date: "2024-01-04"
 categories: [code, visualization]
-image: "map.jpg"
+image: "map.png"
+citation: 
+  url: https://sarahzeller.github.io/blog/posts/creating-a-basic-map/
 
 format:
   html:
@@ -136,11 +138,48 @@ ggplot() +
   # change to a nicer projection: equal area (more accurate)
   coord_sf(crs = "ESRI:54009") +
   # remove clutter
-  theme_void() +
-  # add blue background for water
-  theme(panel.background = element_rect(fill = alpha("cornflowerblue", .4),
-                                        colour = NA)) 
+  theme_void()
 ```
+
+## Prettier map with ocean
+
+There's just some lines of code you need to add to have a round earth/rounded sea.
+We need to create a polygon that has just the shape of the earth. 
+We can do this with `st_graticule`, and then `st_cast` it to a polygon.
+Then, we can simply plot this polygon at the beginning of our `ggplot`.
+
+```{r}
+#| label: fig-earth-round
+#| fig-cap: Choropleth map of my countries -- round earth
+
+grat <- st_graticule() |> st_cast('POLYGON')
+
+ggplot() +
+  # this is the new line
+  geom_sf(data = grat, fill = "#d7ecfa", col = "#d7ecfa") +
+  # now everything is the same as before
+  geom_sf(
+    data = world,
+    aes(fill = is_my_country),
+    col = "grey80",
+    show.legend = FALSE
+  ) +
+  # add country labels
+  geom_sf_text(
+    data = world |> filter(is_my_country == TRUE),
+    aes(label = admin |> toupper()),
+    col = "grey30",
+    size = 2.5
+  ) +
+  # make colours prettier
+  scale_fill_manual(values = c("white", "wheat")) +
+  # change to a nicer projection: equal area (more accurate)
+  coord_sf(crs = "ESRI:54009") +
+  # remove clutter
+  theme_void()
+
+```
+
 
 ## Advanced stuff
 
