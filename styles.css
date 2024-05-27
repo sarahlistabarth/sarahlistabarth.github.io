@@ -1,1 +1,12 @@
 /* css styles */
+.software-links {
+    display: flex;
+    gap: 1em;
+    list-style-type: none;
+    padding-left: 0;
+    font-size: smaller;
+    
+    i {
+      margin-right: 0.5em;
+    }
+}

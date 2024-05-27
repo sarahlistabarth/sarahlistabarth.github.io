@@ -1,0 +1,29 @@
+```{=html}
+<div class="softwares">
+    <% for (const software of items) { %>
+    <div>
+        <h3>
+            <%= software.title %> 
+        </h3>
+        <p><%= software.description %></p>
+
+        <ul class="software-links">
+            <% if (software.github) { %>
+            <li>
+                <a href="<%- software.github %>">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+            </li>
+            <% } %>
+            <% if (software.documentation) { %>
+            <li class="software-link">
+                <a href="<%- software.documentation %>">
+                    <i class="fas fa-book"></i> Documentation
+                </a>
+            </li>
+            <% } %>
+        </ul>
+    </div>
+    <% } %>
+</div>
+```

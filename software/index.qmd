@@ -1,0 +1,19 @@
+---
+title: "{{< fa laptop >}} Software"
+description: "A list of my software projects"
+listing:
+  - id: r
+    contents: r.yml
+    sort: "date desc"
+    template: software-listing.ejs
+page-layout: full
+toc: true
+toc-location: right
+toc-title: Language
+---
+
+
+
+:::{#r}
+:::
+
