@@ -2,34 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sarahzeller.github.io/software/index.html</loc>
-    <lastmod>2024-06-16T11:43:42.417Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/showing-regression-results/index.html</loc>
-    <lastmod>2024-06-16T11:43:42.413Z</lastmod>
+    <lastmod>2025-02-02T18:16:38.244Z</lastmod>
   </url>
   <url>
     <loc>https://sarahzeller.github.io/blog/posts/reading-csv-with-2row-colnames/index.html</loc>
-    <lastmod>2024-06-16T11:43:42.413Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/index.html</loc>
-    <lastmod>2024-06-16T11:43:42.409Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/index.html</loc>
-    <lastmod>2024-06-16T11:43:42.417Z</lastmod>
+    <lastmod>2025-02-02T18:16:38.241Z</lastmod>
   </url>
   <url>
     <loc>https://sarahzeller.github.io/blog/posts/opening-nc-files/index.html</loc>
-    <lastmod>2024-06-16T11:43:42.413Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/opening-kmz-files/index.html</loc>
-    <lastmod>2024-06-16T11:43:42.413Z</lastmod>
+    <lastmod>2025-02-02T18:16:38.241Z</lastmod>
   </url>
   <url>
     <loc>https://sarahzeller.github.io/blog/posts/creating-a-basic-map/index.html</loc>
-    <lastmod>2024-06-16T11:43:42.409Z</lastmod>
+    <lastmod>2025-02-02T18:16:38.238Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/index.html</loc>
+    <lastmod>2025-02-02T18:16:38.238Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/opening-kmz-files/index.html</loc>
+    <lastmod>2025-02-02T18:16:38.240Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/locator-map/index.html</loc>
+    <lastmod>2025-02-02T18:16:38.240Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/showing-regression-results/index.html</loc>
+    <lastmod>2025-02-02T18:16:38.241Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/index.html</loc>
+    <lastmod>2025-02-02T18:16:38.244Z</lastmod>
   </url>
 </urlset>
