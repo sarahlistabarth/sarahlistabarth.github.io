@@ -1,0 +1,197 @@
+---
+author: Sarah Zeller
+title: "Sending automated emails"
+date: "2025-02-12"
+categories: [code, visualization]
+image: "mail.webp"
+citation: 
+  url: https://sarahzeller.github.io/blog/posts/sending-automated-emails/
+
+format:
+  html:
+    toc: true
+
+execute:
+  warning: false
+  eval: false
+---
+
+I recently needed to send out an email to many recipients, with only slight changes in the text.
+And I figured -- this must be something we can do with `R`, right?
+
+Luckily enough, there's the `RDCOMClient` library which lets `R` access some programs, including Outlook.
+So if you have Outlook set up on your computer, this approach will work like a charm.
+Actually, it was kind of scary for me: this really works, and real emails get sent. 😱
+
+::: callout-note
+This approach only works on Windows computers.
+:::
+
+
+## Preparation
+
+What do we need?
+
+-   the `RDCOMClient` library
+-   a `data.frame` including the email addresses and the bit we want changed
+-   a template text
+
+So let's start by loading the needed libraries.
+We already talked about `RDCOMClient`. `dplyr` and `glue` make pasting our template and our information together easier, and `purrr` will allow us to loop over our info `data.frame`.
+
+```{r}
+#| label: packages
+
+library(glue)
+library(dplyr)
+library(RDCOMClient)
+library(purrr)
+```
+
+Let's start with our template! 
+We'll make it nice and short.
+
+```{r}
+#| label: template
+#| eval: true
+
+template <- "Good morning!
+Do you enjoy {food}?
+Have a great day."
+```
+
+
+Next, we'd load our `data.frame`; for this showcase purpose, we'll just make it up from scratch.
+We'll combine our template and our bit of information into a new column, `text`.
+
+```{r}
+#| label: info-data-frame
+#| eval: true
+info <- tibble::tribble(
+  ~email, ~info,
+  "anna@example.com", "apples",
+  "bernardo@example.com", "bananas",
+  "charlie@example.com", "chocolate",
+  "donald@example.com", "donuts"
+) |> 
+  dplyr::mutate(text = glue::glue(template, food = info))
+```
+
+
+```{r}
+#| label: show-info
+#| eval: true
+info |> kableExtra::kbl()
+```
+
+## Mail function
+
+Next, let's set up the function which we will map over to send our mails!
+Let's start by understanding what `RDCOMClient` does for us.
+
+### Open Outlook
+
+The first thing we want to do -- and just once -- is to open the Outlook app.
+
+```{r}
+#| label: open-Outlook
+
+Outlook <- COMCreate("Outlook.Application")
+
+```
+
+
+### Create an email
+
+We need to start off by creating an email -- just like when you're in Outlook, you click on `Create`.
+We're telling `RDCOMClient` that it's Outlook we want to use by putting it first, and we put the command we want executed after the `$` sign.
+
+Let's also save this email to an object, so that we can work on it again after.
+
+```{r}
+#| label: create-email
+Email <- Outlook$CreateItem(0)
+```
+
+### Set recipient, subject and body
+
+What's the next thing you'd do when writing an email?
+You'd type in who you want to send the email to and what it's about -- recipient and subject.
+Then, you'd enter the text -- the body.
+
+We can do that using attributes of the `Email` object we've created.
+
+```{r}
+#| label: set-recipient-subject
+
+first_info <- info |> head(1)
+
+Email[["to"]] <- first_info$email
+Email[["subject"]] <- "Hello!"
+Email[["body"]] <- first_info$text
+
+```
+
+### Sending the email
+
+Lastly, we need to click on `Send`.
+This is, again, an `Outlook$` function, not an attribute.
+
+```{r}
+#| label: email-send
+
+Email$Send()
+```
+
+
+### Piecing together the pieces
+
+This is our final function, where we have incorporated everything we need.
+Note that we don't include opening Outlook -- this is something we only need to do once.
+We can now take this function and map over it.
+
+::: callout-tip
+Note that in our approach, we're using the same subject for all emails.
+You could, however, also map over this part.
+:::
+
+```{r}
+#| label: mail-function
+
+send_mail <- function(to = "",
+                      body = "",
+                      subject = "Hello from R"){
+  Email = Outlook$CreateItem(0)
+  Email[["to"]] = to
+  Email[["subject"]] = subject
+  Email[["body"]] = body
+  Email$Send()
+}
+```
+
+## Mapping over the function
+
+Let's now take `purr` to map over this!
+We'll need the `walk2` function, since we have two inputs for every mail that change: 
+
+-   email
+-   body/text
+
+```{r}
+#| label: lets-map
+
+Outlook <- COMCreate("Outlook.Application")
+walk2(.x = info$email,
+      .y = info$text,
+      .f = ~ send_mail(to = .x, body = .y))
+```
+
+And there we have it -- we can send out an email to Anna, Bernardo, Charlie and Donald all at once!
+You can check in your Outlook outbox that these emails actually sent.
+
+## Approaches without Outlook
+
+Using `RDCOMClient` to access Outlook is a bit hacky, but was exactly the right thing for me. 
+However, we could use a more direct approach, without using the Outlook user interface.
+
+[This](https://mailtrap.io/blog/r-send-email/) blogpost by mailtrap goes into detail about how you can achieve this.
