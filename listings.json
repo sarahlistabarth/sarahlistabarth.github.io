@@ -1,11 +1,8 @@
 [
   {
-    "listing": "/software/index.html",
-    "items": []
-  },
-  {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/posts/sending-automated-emails/index.html",
       "/blog/posts/locator-map/index.html",
       "/blog/posts/opening-kmz-files/index.html",
       "/blog/posts/reading-csv-with-2row-colnames/index.html",
@@ -13,5 +10,9 @@
       "/blog/posts/creating-a-basic-map/index.html",
       "/blog/posts/showing-regression-results/index.html"
     ]
+  },
+  {
+    "listing": "/software/index.html",
+    "items": []
   }
 ]

@@ -7,10 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Sarah Zeller">
-<meta name="dcterms.date" content="2024-05-05">
-<meta name="description" content="Sometimes, csv files have 2-row column names. I create a function to deal with this.">
+<meta name="dcterms.date" content="2025-02-12">
 
-<title>Reading a csv file with 2-row column names – Sarah Zeller</title>
+<title>Sending automated emails – Sarah Zeller</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -106,6 +105,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="../../../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../../../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="../../../styles.css">
@@ -156,15 +157,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Reading a <code>csv</code> file with 2-row column names</h1>
-                  <div>
-        <div class="description">
-          Sometimes, <code>csv</code> files have 2-row column names. I create a function to deal with this.
-        </div>
-      </div>
-                          <div class="quarto-categories">
+      <h1 class="title">Sending automated emails</h1>
+                                <div class="quarto-categories">
                 <div class="quarto-category">code</div>
-                <div class="quarto-category">data</div>
+                <div class="quarto-category">visualization</div>
               </div>
                   </div>
   </div>
@@ -182,7 +178,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">May 5, 2024</p>
+        <p class="date">February 12, 2025</p>
       </div>
     </div>
     
@@ -198,17 +194,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
-  <li><a href="#preparation" id="toc-preparation" class="nav-link" data-scroll-target="#preparation">Preparation</a></li>
-  <li><a href="#reading-the-column-names" id="toc-reading-the-column-names" class="nav-link" data-scroll-target="#reading-the-column-names">Reading the column names</a>
+  <li><a href="#preparation" id="toc-preparation" class="nav-link active" data-scroll-target="#preparation">Preparation</a></li>
+  <li><a href="#mail-function" id="toc-mail-function" class="nav-link" data-scroll-target="#mail-function">Mail function</a>
   <ul class="collapse">
-  <li><a href="#reading-the-first-row" id="toc-reading-the-first-row" class="nav-link" data-scroll-target="#reading-the-first-row">Reading the first row</a></li>
-  <li><a href="#reading-both-column-names" id="toc-reading-both-column-names" class="nav-link" data-scroll-target="#reading-both-column-names">Reading both column names</a></li>
+  <li><a href="#open-outlook" id="toc-open-outlook" class="nav-link" data-scroll-target="#open-outlook">Open Outlook</a></li>
+  <li><a href="#create-an-email" id="toc-create-an-email" class="nav-link" data-scroll-target="#create-an-email">Create an email</a></li>
+  <li><a href="#set-recipient-subject-and-body" id="toc-set-recipient-subject-and-body" class="nav-link" data-scroll-target="#set-recipient-subject-and-body">Set recipient, subject and body</a></li>
+  <li><a href="#sending-the-email" id="toc-sending-the-email" class="nav-link" data-scroll-target="#sending-the-email">Sending the email</a></li>
+  <li><a href="#piecing-together-the-pieces" id="toc-piecing-together-the-pieces" class="nav-link" data-scroll-target="#piecing-together-the-pieces">Piecing together the pieces</a></li>
   </ul></li>
-  <li><a href="#combine-the-row-names" id="toc-combine-the-row-names" class="nav-link" data-scroll-target="#combine-the-row-names">Combine the row names</a></li>
-  <li><a href="#read-in-the-data-and-replace-the-column-names" id="toc-read-in-the-data-and-replace-the-column-names" class="nav-link" data-scroll-target="#read-in-the-data-and-replace-the-column-names">Read in the data and replace the column names</a></li>
-  <li><a href="#one-step-further-considering-the-second-row-meaning" id="toc-one-step-further-considering-the-second-row-meaning" class="nav-link" data-scroll-target="#one-step-further-considering-the-second-row-meaning">One step further – considering the second row meaning</a></li>
-  <li><a href="#an-alternative" id="toc-an-alternative" class="nav-link" data-scroll-target="#an-alternative">An alternative</a></li>
+  <li><a href="#mapping-over-the-function" id="toc-mapping-over-the-function" class="nav-link" data-scroll-target="#mapping-over-the-function">Mapping over the function</a></li>
+  <li><a href="#approaches-without-outlook" id="toc-approaches-without-outlook" class="nav-link" data-scroll-target="#approaches-without-outlook">Approaches without Outlook</a></li>
   </ul>
 </nav>
     </div>
@@ -219,19 +215,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>I recently wanted to check out election results from the last German <em>Bundestag</em> election, and read them into <code>R</code>. The data was saved in a <code>csv</code> file – so far, so good. But the column names were spread over two rows. 😱</p>
-<p>This means I’m losing valuable information if I’m only reading the first row of column names. Additionally, the types of the rows get messed up, since the second row of the column names is read as data – specifically, <code>character</code> data.</p>
-<p>So, I wanted to combine both rows of column names into one. Here’s how I did it in R.</p>
-<section id="data" class="level1">
-<h1>Data</h1>
-<p>You’ll find the <code>csv</code> file I was trying to read <a href="https://www.bundeswahlleiterin.de/dam/jcr/62868510-b616-443c-97b4-71847916d543/btw2021_brief_wkr.csv">here</a>. It shows the federal election results, aggregated to the level of the electoral districts. In Germany, you have two votes: the first one is for a candidate, the second one for a party. Here’s a snapshot of the file when you load it into <code>Excel</code> .</p>
-<p><img src="two_row_colnames.PNG" class="img-fluid"></p>
-<p>You can see two issues.</p>
-<ol type="1">
-<li><p>The copyright information and title are saved in column <code>A</code> (rows 1 and 3). We can solve this easily by skipping over those rows when we read the <code>csv</code> file into R.</p></li>
-<li><p>The column names are spread over two rows: 4 and 5. This issue, we can’t solve that quickly.</p></li>
-</ol>
-<p>So let’s check out the structure of the column names. The columns A–F that only need one row for the column names identify the voting district; the columns that follow identify the results. Row 6 always indicates whether it’s the first or second vote result.</p>
+<p>I recently needed to send out an email to many recipients, with only slight changes in the text. And I figured – this must be something we can do with <code>R</code>, right?</p>
+<p>Luckily enough, there’s the <code>RDCOMClient</code> library which lets <code>R</code> access some programs, including Outlook. So if you have Outlook set up on your computer, this approach will work like a charm. Actually, it was kind of scary for me: this really works, and real emails get sent. 😱</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -242,168 +227,179 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Two-row column names are not always so clearly structured.</p>
+<p>This approach only works on Windows computers.</p>
 </div>
 </div>
-<p>So what’s the plan? We want to do the following:</p>
-<ol type="1">
-<li>Read the first column name row.</li>
-<li>Read the second column name row.</li>
-<li>Combine those two rows into one.</li>
-<li>Read the data into R.</li>
-<li>Replace the column names with the combined column names.</li>
-</ol>
-<p>Let’s get started 🚀</p>
-</section>
-<section id="preparation" class="level1">
-<h1>Preparation</h1>
-<p>Let’s load the data first. We’ll create a <code>temp_file</code> to store the data, but feel free to download it into any folder you like.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>temp_file <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".csv"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(<span class="at">url =</span> <span class="st">"https://www.bundeswahlleiterin.de/dam/jcr/62868510-b616-443c-97b4-71847916d543/btw2021_brief_wkr.csv"</span>,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">destfile =</span> temp_file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Next, let’s load the needed packages. We’ll use <code>janitor</code> to clean the column names, <code>tidyr</code> and <code>dplyr</code> to combine the two rows, and <code>rlang</code> to set the correct names.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlang)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="reading-the-column-names" class="level1">
-<h1>Reading the column names</h1>
-<section id="reading-the-first-row" class="level2">
-<h2 class="anchored" data-anchor-id="reading-the-first-row">Reading the first row</h2>
-<p>There’s probably many ways to do this, but I decided to go for the following approach:</p>
-<ol type="1">
-<li>read in the <code>csv</code> file starting at the first column name row</li>
-<li>clean the column names</li>
-<li>store the column names in a variable</li>
-</ol>
-<p>To read in the first row of column names, we can use the <code>read.csv2()</code> function. We’ll skip the first three rows (which only contain metadata) and read in only one row, since we don’t need the content for now. Then, we’ll clean the column names with <code>janitor::clean_names()</code> to make sure that they’re formatted like we want them to. Lastly, I’m removing the numbers that are attached at the end since some of the variable names so far are not unique (since they’re still missing the second row).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>colnames_row1 <span class="ot">&lt;-</span> <span class="fu">read.csv2</span>(temp_file, <span class="at">skip =</span> <span class="dv">4</span>, <span class="at">nrows =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gsub</span>(<span class="st">"_[[:digit:]].*"</span>, <span class="st">""</span>, <span class="at">x =</span> _) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="reading-both-column-names" class="level2">
-<h2 class="anchored" data-anchor-id="reading-both-column-names">Reading both column names</h2>
-<p>We could repeat this procedure for the second row of column names. However, it’s better to create a function for this case. We simply take the pipeline from before and put it into a function.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>read_colnames <span class="ot">&lt;-</span> <span class="cf">function</span>(path, <span class="at">skip_rows =</span> <span class="dv">4</span>, <span class="at">no_rows =</span> <span class="dv">1</span>) {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  path <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read.csv2</span>(<span class="at">skip =</span> skip_rows, <span class="at">nrows =</span> no_rows) <span class="sc">|&gt;</span> </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub</span>(<span class="st">"_[[:digit:]].*"</span>, <span class="st">""</span>, <span class="at">x =</span> _)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-</section>
-<section id="combine-the-row-names" class="level1">
-<h1>Combine the row names</h1>
-<p>Now, we can easily read in both rows of column names using this function. All we need to do is change the number of rows to skip. We’ll put them in a <code>data.frame</code> together so we can manipulate them easily.</p>
-<p>To bring the two rows together, we simply check if there’s actually anything inside <code>row_2</code> (i.e.&nbsp;something that is not parsed as <code>"x"</code>). If there is not, we just take the contents of <code>row_1</code>. Otherwise, we paste <code>row_1</code> and <code>row_2</code> together.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rownames <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">row_1 =</span> <span class="fu">read_colnames</span>(temp_file, <span class="at">skip_rows =</span> <span class="dv">4</span>),</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">row_2 =</span> <span class="fu">read_colnames</span>(temp_file, <span class="at">skip_rows =</span> <span class="dv">5</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">colnames =</span> <span class="fu">ifelse</span>(row_2 <span class="sc">==</span> <span class="st">"x"</span>, </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                           row_1, </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">paste</span>(row_1, row_2, <span class="at">sep =</span> <span class="st">"_"</span>)))</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>rownames <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>            row_1 row_2        colnames
-1    wahlkreis_nr     x    wahlkreis_nr
-2   wahlkreisname     x   wahlkreisname
-3            land     x            land
-4  wahlbezirksart     x  wahlbezirksart
-5 wahlberechtigte     x wahlberechtigte
-6        wahlende     x        wahlende</code></pre>
-</div>
-</div>
-<p>Yay, now we have the column names we want in a single vector – <code>rownames$colnames</code> 🥳 All that’s left to do is to read in the data and replace the column names.</p>
-</section>
-<section id="read-in-the-data-and-replace-the-column-names" class="level1">
-<h1>Read in the data and replace the column names</h1>
-<p>Let’s read in the data. We’ll skip the first three rows and the first row of column names. Then, we’ll replace the column names with the combined column names.</p>
-<p>And there we go – a properly read in <code>csv</code> file with two-row column names 🎉</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>vote_results <span class="ot">&lt;-</span> <span class="fu">read.csv2</span>(temp_file, <span class="at">skip =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(rownames<span class="sc">$</span>colnames)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>vote_results <span class="sc">|&gt;</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">7</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  wahlkreis_nr                     wahlkreisname ungultige_erststimmen
-1            1             Flensburg – Schleswig                  1270
-2            2 Nordfriesland – Dithmarschen Nord                  1002
-3            3      Steinburg – Dithmarschen Süd                  1037
-4            4             Rendsburg-Eckernförde                  1092
-5            5                              Kiel                   853
-6            6                 Plön – Neumünster                  1307</code></pre>
-</div>
-</div>
-</section>
-<section id="one-step-further-considering-the-second-row-meaning" class="level1">
-<h1>One step further – considering the second row meaning</h1>
-<p>In this specific data set, the second row of the column names has a specific meaning:</p>
+<section id="preparation" class="level2">
+<h2 class="anchored" data-anchor-id="preparation">Preparation</h2>
+<p>What do we need?</p>
 <ul>
-<li><code>erststimmen</code> indicates the first vote</li>
-<li><code>zweitstimmen</code> indicates the second vote</li>
+<li>the <code>RDCOMClient</code> library</li>
+<li>a <code>data.frame</code> including the email addresses and the bit we want changed</li>
+<li>a template text</li>
 </ul>
-<p>We can disentangle the data set to respect this information. Since the names contain underscores that are apart from the one separating the first and second row, we’ll go a bit hacky here and replace the underscore before <code>erststimme</code> or <code>zweitstimme</code> with a dot.<br>
-Then, we’ll pivot the data longer to separate the party from the vote type.</p>
+<p>So let’s start by loading the needed libraries. We already talked about <code>RDCOMClient</code>. <code>dplyr</code> and <code>glue</code> make pasting our template and our information together easier, and <code>purrr</code> will allow us to loop over our info <code>data.frame</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>vote_results_clean <span class="ot">&lt;-</span> vote_results <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">matches</span>(<span class="st">"stimmen"</span>)), <span class="sc">~</span> stringr<span class="sc">::</span><span class="fu">str_replace</span>(.x, <span class="st">"_([erst|zweit])"</span>, <span class="st">".</span><span class="sc">\\</span><span class="st">1"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">matches</span>(<span class="st">"stimmen"</span>),</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"vote_receiver"</span>, <span class="st">"vote_type"</span>),</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"vote_count"</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>               )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RDCOMClient)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>And there we have it – a clean data set with the correct column names and the vote type separated. Yay!</p>
+<p>Let’s start with our template! We’ll make it nice and short.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>vote_results_clean <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 9
-  wahlkreis_nr wahlkreisname       land  wahlbezirksart wahlberechtigte wahlende
-         &lt;int&gt; &lt;chr&gt;               &lt;chr&gt; &lt;chr&gt;                    &lt;int&gt;    &lt;int&gt;
-1            1 Flensburg – Schles… SH    Urne                    231536   127698
-2            1 Flensburg – Schles… SH    Urne                    231536   127698
-3            1 Flensburg – Schles… SH    Urne                    231536   127698
-4            1 Flensburg – Schles… SH    Urne                    231536   127698
-5            1 Flensburg – Schles… SH    Urne                    231536   127698
-6            1 Flensburg – Schles… SH    Urne                    231536   127698
-# ℹ 3 more variables: vote_receiver &lt;chr&gt;, vote_type &lt;chr&gt;, vote_count &lt;int&gt;</code></pre>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>template <span class="ot">&lt;-</span> <span class="st">"Good morning!</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="st">Do you enjoy {food}?</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="st">Have a great day."</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, we’d load our <code>data.frame</code>; for this showcase purpose, we’ll just make it up from scratch. We’ll combine our template and our bit of information into a new column, <code>text</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>info <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>email, <span class="sc">~</span>info,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"anna@example.com"</span>, <span class="st">"apples"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bernardo@example.com"</span>, <span class="st">"bananas"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"charlie@example.com"</span>, <span class="st">"chocolate"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"donald@example.com"</span>, <span class="st">"donuts"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">text =</span> glue<span class="sc">::</span><span class="fu">glue</span>(template, <span class="at">food =</span> info))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>info <span class="sc">|&gt;</span> kableExtra<span class="sc">::</span><span class="fu">kbl</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">email</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">info</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">anna@example.com</td>
+<td style="text-align: left;">apples</td>
+<td style="text-align: left;">Good morning! Do you enjoy apples? Have a great day.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">bernardo@example.com</td>
+<td style="text-align: left;">bananas</td>
+<td style="text-align: left;">Good morning! Do you enjoy bananas? Have a great day.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">charlie@example.com</td>
+<td style="text-align: left;">chocolate</td>
+<td style="text-align: left;">Good morning! Do you enjoy chocolate? Have a great day.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">donald@example.com</td>
+<td style="text-align: left;">donuts</td>
+<td style="text-align: left;">Good morning! Do you enjoy donuts? Have a great day.</td>
+</tr>
+</tbody>
+</table>
+
+
 </div>
 </div>
 </section>
-<section id="an-alternative" class="level1">
-<h1>An alternative</h1>
-<p>I only found out later that there’s actually a whole package dedicated to reading in files with odd formatting, including two-row column names: <a href="https://github.com/luisDVA/unheadr"><code>unheadr</code></a>. It’s a great package that does exactly what we did here – and more.</p>
-<p>If you want to use it specifically for column names with more than one row to them, you can use their function <code>mash_colnames</code>; it does pretty much what we did here, and extends the functionality to column names with more than two rows.</p>
+<section id="mail-function" class="level2">
+<h2 class="anchored" data-anchor-id="mail-function">Mail function</h2>
+<p>Next, let’s set up the function which we will map over to send our mails! Let’s start by understanding what <code>RDCOMClient</code> does for us.</p>
+<section id="open-outlook" class="level3">
+<h3 class="anchored" data-anchor-id="open-outlook">Open Outlook</h3>
+<p>The first thing we want to do – and just once – is to open the Outlook app.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Outlook <span class="ot">&lt;-</span> <span class="fu">COMCreate</span>(<span class="st">"Outlook.Application"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-an-email" class="level3">
+<h3 class="anchored" data-anchor-id="create-an-email">Create an email</h3>
+<p>We need to start off by creating an email – just like when you’re in Outlook, you click on <code>Create</code>. We’re telling <code>RDCOMClient</code> that it’s Outlook we want to use by putting it first, and we put the command we want executed after the <code>$</code> sign.</p>
+<p>Let’s also save this email to an object, so that we can work on it again after.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Email <span class="ot">&lt;-</span> Outlook<span class="sc">$</span><span class="fu">CreateItem</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="set-recipient-subject-and-body" class="level3">
+<h3 class="anchored" data-anchor-id="set-recipient-subject-and-body">Set recipient, subject and body</h3>
+<p>What’s the next thing you’d do when writing an email? You’d type in who you want to send the email to and what it’s about – recipient and subject. Then, you’d enter the text – the body.</p>
+<p>We can do that using attributes of the <code>Email</code> object we’ve created.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>first_info <span class="ot">&lt;-</span> info <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">1</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>Email[[<span class="st">"to"</span>]] <span class="ot">&lt;-</span> first_info<span class="sc">$</span>email</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>Email[[<span class="st">"subject"</span>]] <span class="ot">&lt;-</span> <span class="st">"Hello!"</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>Email[[<span class="st">"body"</span>]] <span class="ot">&lt;-</span> first_info<span class="sc">$</span>text</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="sending-the-email" class="level3">
+<h3 class="anchored" data-anchor-id="sending-the-email">Sending the email</h3>
+<p>Lastly, we need to click on <code>Send</code>. This is, again, an <code>Outlook$</code> function, not an attribute.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Email<span class="sc">$</span><span class="fu">Send</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="piecing-together-the-pieces" class="level3">
+<h3 class="anchored" data-anchor-id="piecing-together-the-pieces">Piecing together the pieces</h3>
+<p>This is our final function, where we have incorporated everything we need. Note that we don’t include opening Outlook – this is something we only need to do once. We can now take this function and map over it.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that in our approach, we’re using the same subject for all emails. You could, however, also map over this part.</p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>send_mail <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">to =</span> <span class="st">""</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">body =</span> <span class="st">""</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">subject =</span> <span class="st">"Hello from R"</span>){</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  Email <span class="ot">=</span> Outlook<span class="sc">$</span><span class="fu">CreateItem</span>(<span class="dv">0</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  Email[[<span class="st">"to"</span>]] <span class="ot">=</span> to</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  Email[[<span class="st">"subject"</span>]] <span class="ot">=</span> subject</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  Email[[<span class="st">"body"</span>]] <span class="ot">=</span> body</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  Email<span class="sc">$</span><span class="fu">Send</span>()</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="mapping-over-the-function" class="level2">
+<h2 class="anchored" data-anchor-id="mapping-over-the-function">Mapping over the function</h2>
+<p>Let’s now take <code>purr</code> to map over this! We’ll need the <code>walk2</code> function, since we have two inputs for every mail that change:</p>
+<ul>
+<li>email</li>
+<li>body/text</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Outlook <span class="ot">&lt;-</span> <span class="fu">COMCreate</span>(<span class="st">"Outlook.Application"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">walk2</span>(<span class="at">.x =</span> info<span class="sc">$</span>email,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">.y =</span> info<span class="sc">$</span>text,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">.f =</span> <span class="sc">~</span> <span class="fu">send_mail</span>(<span class="at">to =</span> .x, <span class="at">body =</span> .y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And there we have it – we can send out an email to Anna, Bernardo, Charlie and Donald all at once! You can check in your Outlook outbox that these emails actually sent.</p>
+</section>
+<section id="approaches-without-outlook" class="level2">
+<h2 class="anchored" data-anchor-id="approaches-without-outlook">Approaches without Outlook</h2>
+<p>Using <code>RDCOMClient</code> to access Outlook is a bit hacky, but was exactly the right thing for me. However, we could use a more direct approach, without using the Outlook user interface.</p>
+<p><a href="https://mailtrap.io/blog/r-send-email/">This</a> blogpost by mailtrap goes into detail about how you can achieve this.</p>
 
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{zeller2024,
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{zeller2025,
   author = {Zeller, Sarah},
-  title = {Reading a `Csv` File with 2-Row Column Names},
-  date = {2024-05-05},
-  url = {https://sarahzeller.github.io/blog/posts/reading-csv-with-2row-colnames/},
+  title = {Sending Automated Emails},
+  date = {2025-02-12},
+  url = {https://sarahzeller.github.io/blog/posts/sending-automated-emails/},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-zeller2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-Zeller, Sarah. 2024. <span>“Reading a `Csv` File with 2-Row Column
-Names.”</span> May 5, 2024. <a href="https://sarahzeller.github.io/blog/posts/reading-csv-with-2row-colnames/">https://sarahzeller.github.io/blog/posts/reading-csv-with-2row-colnames/</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-zeller2025" class="csl-entry quarto-appendix-citeas" role="listitem">
+Zeller, Sarah. 2025. <span>“Sending Automated Emails.”</span> February
+12, 2025. <a href="https://sarahzeller.github.io/blog/posts/sending-automated-emails/">https://sarahzeller.github.io/blog/posts/sending-automated-emails/</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://sarahzeller.github.io/software/index.html</loc>
-    <lastmod>2025-02-02T18:16:38.244Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/reading-csv-with-2row-colnames/index.html</loc>
-    <lastmod>2025-02-02T18:16:38.241Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/opening-nc-files/index.html</loc>
-    <lastmod>2025-02-02T18:16:38.241Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/creating-a-basic-map/index.html</loc>
-    <lastmod>2025-02-02T18:16:38.238Z</lastmod>
-  </url>
-  <url>
     <loc>https://sarahzeller.github.io/blog/index.html</loc>
-    <lastmod>2025-02-02T18:16:38.238Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/opening-kmz-files/index.html</loc>
-    <lastmod>2025-02-02T18:16:38.240Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/locator-map/index.html</loc>
-    <lastmod>2025-02-02T18:16:38.240Z</lastmod>
+    <lastmod>2025-02-13T16:34:41.582Z</lastmod>
   </url>
   <url>
     <loc>https://sarahzeller.github.io/blog/posts/showing-regression-results/index.html</loc>
-    <lastmod>2025-02-02T18:16:38.241Z</lastmod>
+    <lastmod>2025-02-13T16:34:41.586Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/creating-a-basic-map/index.html</loc>
+    <lastmod>2025-02-13T16:34:41.582Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/locator-map/index.html</loc>
+    <lastmod>2025-02-13T16:34:41.584Z</lastmod>
   </url>
   <url>
     <loc>https://sarahzeller.github.io/index.html</loc>
-    <lastmod>2025-02-02T18:16:38.244Z</lastmod>
+    <lastmod>2025-02-13T16:34:41.588Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/software/index.html</loc>
+    <lastmod>2025-02-13T16:34:41.589Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/opening-kmz-files/index.html</loc>
+    <lastmod>2025-02-13T16:34:41.584Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/sending-automated-emails/index.html</loc>
+    <lastmod>2025-02-13T16:34:41.585Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/reading-csv-with-2row-colnames/index.html</loc>
+    <lastmod>2025-02-13T16:34:41.585Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/opening-nc-files/index.html</loc>
+    <lastmod>2025-02-13T16:34:41.584Z</lastmod>
   </url>
 </urlset>
