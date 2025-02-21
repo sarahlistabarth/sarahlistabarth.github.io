@@ -1,10 +1,12 @@
 ---
 title: "Software"
-description: "A list of my software projects"
+description: "My software projects"
 listing:
   - id: r
     contents: r.yml
-    sort: "date desc"
+    template: software-listing.ejs
+  - id: contributions
+    contents: contributions.yml
     template: software-listing.ejs
 page-layout: full
 toc: true
@@ -14,5 +16,12 @@ css:
   - /_extensions/quarto-ext/fontawesome/assets/css/all.css
 ---
 
+## Software
+
 :::{#r}
+:::
+
+## Contributions
+
+:::{#contributions}
 :::

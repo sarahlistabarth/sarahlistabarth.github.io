@@ -9,3 +9,12 @@
     Quarto template in TUD corporate design for presentations and extendes abstracts –
     for both typst and latex output.
   github: https://github.com/sarahzeller/tud/
+- title: "Inconsistent writing"
+  description: |
+    R script to analyze inconsistent writings in a word document, e.g. 'summariZe' vs. 'summariSe'.
+    Outputs a word document that can be used with the FRedit macro (but should be reviewed first).
+  github: https://github.com/sarahzeller/word-inconsistent-writing
+- title: "Word macros"
+  description: |
+    Word macros that editors can use to automate repetitive tasks.
+  documentation: https://sarahzeller.github.io/lektorat-zeller/makros.html

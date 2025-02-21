@@ -1,0 +1,26 @@
+- title: "Base R"
+  description: |
+    Fixed a bug in `tools::toTitleCase()` where a letter following a hyphen and
+    a space would always be capitalized -- even when it should not
+  documentation: https://bugs.r-project.org/show_bug.cgi?id=18674#c1
+  
+- title: "ags package"
+  description: |
+    Fixed a bug – a typo that led a reference into the void
+  github: https://github.com/sumtxt/ags/pull/2
+  
+- title: "modern2-cv template"
+  description: |
+    Added a template for the motivation letter that fits the CV template
+  github: https://github.com/schochastics/modern2-cv/pull/2
+  
+- title: "purrr bookclub"
+  description: |
+    As part of the bookclub on the `purrr` package, added the corresponding chapter.
+  github: https://github.com/jpcompartir/purrr_docs/pull/3
+  
+- title: "Effect bookclub"
+  description: |
+    As part of the bookclub on "The Effect" by Nick Huntington-Klein, added some chapters.
+  github: https://github.com/r4ds/bookclub-effect/pull/9
+  documentation: https://r4ds.github.io/bookclub-effect/regression.html
