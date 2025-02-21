@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="My software projects">
+<meta name="description" content="I’m not that great at drawing by hand, but I enjoy code-based visualizations! In research, they’re supposed to help your audience understand you faster and bring your point across. But it’s also nice to just make visualizations focusing on what looks the nicest.">
 
-<title>Software – Sarah Zeller</title>
+<title>Data Visualizations – Sarah Zeller</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -75,48 +75,20 @@ ul.task-list li input[type="checkbox"] {
 <script>
 
   window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-r .list');
+    const listingTargetEl = window.document.querySelector('#listing-saxony .list');
     if (!listingTargetEl) {
       // No listing discovered, do not attach.
       return; 
     }
 
     const options = {
-      valueNames: ['listing-title','listing-description','listing-github','listing-documentation',{ data: ['index'] },{ data: ['categories'] }],
+      valueNames: ['listing-title','listing-description','listing-image','listing-github',{ data: ['index'] },{ data: ['categories'] }],
       
-      searchColumns: ["listing-title","listing-description","listing-github","listing-documentation"],
+      searchColumns: ["listing-title","listing-description","listing-image","listing-github"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-r'] = new List('listing-r', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-contributions .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-description','listing-documentation','listing-github',{ data: ['index'] },{ data: ['categories'] }],
-      
-      searchColumns: ["listing-title","listing-description","listing-documentation","listing-github"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-contributions'] = new List('listing-contributions', options);
+    window['quarto-listings']['listing-saxony'] = new List('listing-saxony', options);
 
     if (window['quarto-listing-loaded']) {
       window['quarto-listing-loaded']();
@@ -194,11 +166,11 @@ window.Quarto = {
 <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../software/index.html" aria-current="page"> 
+    <a class="nav-link" href="../software/index.html"> 
 <span class="menu-text">Software</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../data-viz/index.html"> 
+    <a class="nav-link active" href="../data-viz/index.html" aria-current="page"> 
 <span class="menu-text">Data Visualization</span></a>
   </li>  
 </ul>
@@ -213,32 +185,25 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Language</h2>
-   
-  <ul>
-  <li><a href="#software" id="toc-software" class="nav-link active" data-scroll-target="#software">Software</a></li>
-  <li><a href="#contributions" id="toc-contributions" class="nav-link" data-scroll-target="#contributions">Contributions</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content column-page" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Software</h1>
+<h1 class="title">Data Visualizations</h1>
 </div>
 
 <div>
   <div class="description">
-    My software projects
+    <p>I’m not that great at drawing by hand, but I enjoy code-based visualizations! In research, they’re supposed to help your audience understand you faster and bring your point across. But it’s also nice to just make visualizations focusing on what looks the nicest.</p>
   </div>
 </div>
 
 
-<div class="quarto-title-meta column-page-left">
+<div class="quarto-title-meta column-page">
 
     
   
@@ -250,210 +215,138 @@ window.Quarto = {
 </header>
 
 
-<section id="software" class="level2">
-<h2 class="anchored" data-anchor-id="software">Software</h2>
-<div id="listing-r" class="quarto-listing quarto-listing-container-custom">
-<div class="softwares">
-    
-    <div>
-        <h3 class="anchored">
-            donutsR 
-        </h3>
-        <p>Provides a set of functions to implement donut analyses in R –
-for when you're unsure which distance to a point of interest still counts as treated.
+<div id="listing-saxony" class="quarto-listing quarto-listing-container-custom">
+  <div class="visuals">
+      
+      <div>
+          <h3 class="anchored">
+              Typewriter Chique: Saxony Switzerland 
+          </h3>
+          <p>Based on a post by Nicola Rennie, who did a typewriter-style map of Italy,
+I made this map of the Saxony Switzerland.
+It's a region close to Dresden where I enjoy going for a hike. 🥾
 </p>
-
-        <ul class="links">
-            
-            <li>
-                <a href="https://github.com/sarahzeller/donutsR">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
-            </li>
-            
-            
-            <li class="software-link">
-                <a href="https://sarahzeller.github.io/donutsR/">
-                    <i class="fas fa-book"></i> Documentation
-                </a>
-            </li>
-            
-        </ul>
-    </div>
-    
-    <div>
-        <h3 class="anchored">
-            tud 
-        </h3>
-        <p>Quarto template in TUD corporate design for presentations and extendes abstracts –
-for both typst and latex output.
+          <img class="w-100" src="https://github.com/sarahzeller/aRt/blob/main/map/national_park.png?raw=true">
+  
+          <ul class="links">
+              
+              <li>
+                  <a href="https://github.com/sarahzeller/aRt">
+                      <i class="fab fa-github"></i> GitHub
+                  </a>
+              </li>
+              
+              
+          </ul>
+      </div>
+      
+      <div>
+          <h3 class="anchored">
+              Guest map 
+          </h3>
+          <p>People are coming from a couple of places for our wedding.
+I wanted to visualize where exactly, and which connections are especially strong.
 </p>
-
-        <ul class="links">
-            
-            <li>
-                <a href="https://github.com/sarahzeller/tud/">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
-            </li>
-            
-            
-        </ul>
-    </div>
-    
-    <div>
-        <h3 class="anchored">
-            Inconsistent writing 
-        </h3>
-        <p>R script to analyze inconsistent writings in a word document, e.g. 'summariZe' vs. 'summariSe'.
-Outputs a word document that can be used with the FRedit macro (but should be reviewed first).
+          <img class="w-100" src="map.svg">
+  
+          <ul class="links">
+              
+              <li>
+                  <a href="https://github.com/sarahzeller/map-wedding/blob/main/map.R">
+                      <i class="fab fa-github"></i> GitHub
+                  </a>
+              </li>
+              
+              
+          </ul>
+      </div>
+      
+      <div>
+          <h3 class="anchored">
+              London marathon 
+          </h3>
+          <p>This map is part of the tidytuesday challenge.
+Nicola Rennie cleaned a dataset on the London marathon, and I visualized 
+where winners are from.
 </p>
-
-        <ul class="links">
-            
-            <li>
-                <a href="https://github.com/sarahzeller/word-inconsistent-writing">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
-            </li>
-            
-            
-        </ul>
-    </div>
-    
-    <div>
-        <h3 class="anchored">
-            Word macros 
-        </h3>
-        <p>Word macros that editors can use to automate repetitive tasks.
+          <img class="w-100" src="https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-04-25/20230425.png?raw=true">
+  
+          <ul class="links">
+              
+              <li>
+                  <a href="https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-04-25">
+                      <i class="fab fa-github"></i> GitHub
+                  </a>
+              </li>
+              
+              
+          </ul>
+      </div>
+      
+      <div>
+          <h3 class="anchored">
+              Witches in the USA 
+          </h3>
+          <p>This map is part of the tidytuesday challenge.
+This dataset was about haunted places in the USA.
 </p>
-
-        <ul class="links">
-            
-            
-            <li class="software-link">
-                <a href="https://sarahzeller.github.io/lektorat-zeller/makros.html">
-                    <i class="fas fa-book"></i> Documentation
-                </a>
-            </li>
-            
-        </ul>
-    </div>
-    
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div>
-</section>
-<section id="contributions" class="level2">
-<h2 class="anchored" data-anchor-id="contributions">Contributions</h2>
-<div id="listing-contributions" class="quarto-listing quarto-listing-container-custom">
-<div class="softwares">
-    
-    <div>
-        <h3 class="anchored">
-            Base R 
-        </h3>
-        <p>Fixed a bug in `tools::toTitleCase()` where a letter following a hyphen and
-a space would always be capitalized -- even when it should not
+          <img class="w-100" src="https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-10-10/20231010.png?raw=true">
+  
+          <ul class="links">
+              
+              <li>
+                  <a href="https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-10-10">
+                      <i class="fab fa-github"></i> GitHub
+                  </a>
+              </li>
+              
+              
+          </ul>
+      </div>
+      
+      <div>
+          <h3 class="anchored">
+              Rodents 
+          </h3>
+          <p>This map is part of the tidytuesday challenge.
+The dataset was on rodents, and I focused on their diets.
 </p>
-
-        <ul class="links">
-            
-            
-            <li class="software-link">
-                <a href="https://bugs.r-project.org/show_bug.cgi?id=18674#c1">
-                    <i class="fas fa-book"></i> Documentation
-                </a>
-            </li>
-            
-        </ul>
-    </div>
-    
-    <div>
-        <h3 class="anchored">
-            ags package 
-        </h3>
-        <p>Fixed a bug – a typo that led a reference into the void
+          <img class="w-100" src="https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-05-02/20230502.png?raw=true">
+  
+          <ul class="links">
+              
+              <li>
+                  <a href="https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-05-02/">
+                      <i class="fab fa-github"></i> GitHub
+                  </a>
+              </li>
+              
+              
+          </ul>
+      </div>
+      
+      <div>
+          <h3 class="anchored">
+              Using DHS data 
+          </h3>
+          <p>I work with DHS data in my research, so I wanted to show which countries are most eligible
+for a panel data approach.
 </p>
-
-        <ul class="links">
-            
-            <li>
-                <a href="https://github.com/sumtxt/ags/pull/2">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
-            </li>
-            
-            
-        </ul>
-    </div>
-    
-    <div>
-        <h3 class="anchored">
-            modern2-cv template 
-        </h3>
-        <p>Added a template for the motivation letter that fits the CV template
-</p>
-
-        <ul class="links">
-            
-            <li>
-                <a href="https://github.com/schochastics/modern2-cv/pull/2">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
-            </li>
-            
-            
-        </ul>
-    </div>
-    
-    <div>
-        <h3 class="anchored">
-            purrr bookclub 
-        </h3>
-        <p>As part of the bookclub on the `purrr` package, added the corresponding chapter.
-</p>
-
-        <ul class="links">
-            
-            <li>
-                <a href="https://github.com/jpcompartir/purrr_docs/pull/3">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
-            </li>
-            
-            
-        </ul>
-    </div>
-    
-    <div>
-        <h3 class="anchored">
-            Effect bookclub 
-        </h3>
-        <p>As part of the bookclub on "The Effect" by Nick Huntington-Klein, added some chapters.
-</p>
-
-        <ul class="links">
-            
-            <li>
-                <a href="https://github.com/r4ds/bookclub-effect/pull/9">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
-            </li>
-            
-            
-            <li class="software-link">
-                <a href="https://r4ds.github.io/bookclub-effect/regression.html">
-                    <i class="fas fa-book"></i> Documentation
-                </a>
-            </li>
-            
-        </ul>
-    </div>
-    
-</div>
+          <img class="w-100" src="https://github.com/sarahzeller/tidytuesday/blob/main/2024/2024-01-02/20240102.png?raw=true">
+  
+          <ul class="links">
+              
+              <li>
+                  <a href="https://github.com/sarahzeller/tidytuesday/blob/main/2024/2024-01-02">
+                      <i class="fab fa-github"></i> GitHub
+                  </a>
+              </li>
+              
+              
+          </ul>
+      </div>
+      
+  </div>
 <div class="listing-no-matching d-none">
 No matching items
 </div>
@@ -461,7 +354,6 @@ No matching items
 
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

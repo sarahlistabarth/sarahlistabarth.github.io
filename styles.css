@@ -1,5 +1,5 @@
 /* css styles */
-.software-links {
+ul.links {
     display: flex;
     gap: 2em;
     list-style-type: none;
