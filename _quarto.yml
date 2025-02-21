@@ -14,6 +14,8 @@ website:
         text: Blog
       - href: software/index.qmd
         text: Software
+      - href: data-viz/index.qmd
+        text: Data Visualization
         
 
 format:

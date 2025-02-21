@@ -1,0 +1,30 @@
+  ```{=html}
+  <div class="visuals">
+      <% for (const visual of items) { %>
+      <div>
+          <h3>
+              <%= visual.title %> 
+          </h3>
+          <p><%= visual.description %></p>
+          <img class="w-100" src="<%= visual.image %>" />
+  
+          <ul class="links">
+              <% if (visual.github) { %>
+              <li>
+                  <a href="<%- visual.github %>">
+                      <i class="fab fa-github"></i> GitHub
+                  </a>
+              </li>
+              <% } %>
+              <% if (visual.documentation) { %>
+              <li class="visual-link">
+                  <a href="<%- visual.documentation %>">
+                      <i class="fas fa-book"></i> Documentation
+                  </a>
+              </li>
+              <% } %>
+          </ul>
+      </div>
+      <% } %>
+  </div>
+  ```

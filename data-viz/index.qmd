@@ -1,0 +1,21 @@
+---
+title: Data Visualizations
+description: |
+  I'm not that great at drawing by hand, but I enjoy code-based visualizations!
+  In research, they're supposed to help your audience understand you faster
+  and bring your point across. But it's also nice to just make visualizations
+  focusing on what looks the nicest.
+listing:
+  - id: saxony
+    contents: saxony.yml
+    template: data-viz-listing.ejs
+page-layout: full
+toc: true
+toc-location: right
+toc-title: Language
+css:
+  - /_extensions/quarto-ext/fontawesome/assets/css/all.css
+---
+
+::: {#saxony}
+:::

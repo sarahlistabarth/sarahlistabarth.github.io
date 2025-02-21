@@ -1,0 +1,43 @@
+- title: "Typewriter Chique: Saxony Switzerland"
+  description: |
+    Based on a post by Nicola Rennie, who did a typewriter-style map of Italy,
+    I made this map of the Saxony Switzerland.
+    It's a region close to Dresden where I enjoy going for a hike. 🥾
+  image: https://github.com/sarahzeller/aRt/blob/main/map/national_park.png?raw=true
+  github: https://github.com/sarahzeller/aRt
+  
+- title: Guest map
+  description: |
+    People are coming from a couple of places for our wedding.
+    I wanted to visualize where exactly, and which connections are especially strong.
+  image: map.svg
+  github: https://github.com/sarahzeller/map-wedding/blob/main/map.R
+  
+- title: London marathon
+  description: |
+    This map is part of the tidytuesday challenge.
+    Nicola Rennie cleaned a dataset on the London marathon, and I visualized 
+    where winners are from.
+  image: https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-04-25/20230425.png?raw=true
+  github: https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-04-25
+
+- title: Witches in the USA
+  description: |
+    This map is part of the tidytuesday challenge.
+    This dataset was about haunted places in the USA.
+  image: https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-10-10/20231010.png?raw=true
+  github: https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-10-10
+  
+- title: Rodents 
+  description: |
+    This map is part of the tidytuesday challenge.
+    The dataset was on rodents, and I focused on their diets.
+  image: https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-05-02/20230502.png?raw=true
+  github: https://github.com/sarahzeller/tidytuesday/blob/main/2023/2023-05-02/
+  
+- title: Using DHS data
+  description: |
+    I work with DHS data in my research, so I wanted to show which countries are most eligible
+    for a panel data approach.
+  image: https://github.com/sarahzeller/tidytuesday/blob/main/2024/2024-01-02/20240102.png?raw=true
+  github: https://github.com/sarahzeller/tidytuesday/blob/main/2024/2024-01-02
