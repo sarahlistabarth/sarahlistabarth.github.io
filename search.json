@@ -4,7 +4,154 @@
     "href": "data-viz/index.html",
     "title": "Data Visualizations",
     "section": "",
-    "text": "Typewriter Chique: Saxony Switzerland \n          \n          Based on a post by Nicola Rennie, who did a typewriter-style map of Italy,\nI made this map of the Saxony Switzerland.\nIt's a region close to Dresden where I enjoy going for a hike. 🥾\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Guest map \n          \n          People are coming from a couple of places for our wedding.\nI wanted to visualize where exactly, and which connections are especially strong.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              London marathon \n          \n          This map is part of the tidytuesday challenge.\nNicola Rennie cleaned a dataset on the London marathon, and I visualized \nwhere winners are from.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Witches in the USA \n          \n          This map is part of the tidytuesday challenge.\nThis dataset was about haunted places in the USA.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Rodents \n          \n          This map is part of the tidytuesday challenge.\nThe dataset was on rodents, and I focused on their diets.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Using DHS data \n          \n          I work with DHS data in my research, so I wanted to show which countries are most eligible\nfor a panel data approach.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n  \n\nNo matching items"
+    "text": "Typewriter Chique: Saxony Switzerland \n          \n          Based on a post by Nicola Rennie, who did a typewriter-style map of Italy,\nI made this map of the Saxony Switzerland.\nIt's a region close to Dresden where I enjoy going for a hike. 🥾\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Guest map \n          \n          People are coming from a couple of places for our wedding.\nI wanted to visualize where exactly, and which connections are especially strong.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              London marathon \n          \n          This map is part of the tidytuesday challenge.\nNicola Rennie cleaned a dataset on the London marathon, and I visualized \nwhere winners are from.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Witches in the USA \n          \n          This map is part of the tidytuesday challenge.\nThis dataset was about haunted places in the USA.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Rodents \n          \n          This map is part of the tidytuesday challenge.\nThe dataset was on rodents, and I focused on their diets.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Using DHS data \n          \n          I work with DHS data in my research, so I wanted to show which countries are most eligible\nfor a panel data approach.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n  \nNo matching items"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Sarah Zeller",
+    "section": "",
+    "text": "I’m a PhD student at the Technical University of Dresden (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in R, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.\nI have a particular interest in the challenge of data wrangling – organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.\nOne of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights."
+  },
+  {
+    "objectID": "blog/posts/scraping-wikipedia/index.html",
+    "href": "blog/posts/scraping-wikipedia/index.html",
+    "title": "Scraping wikipedia",
+    "section": "",
+    "text": "Every now and then, we want to get some data from the wild – e.g., from Wikipedia articles. We’ll see two data types here:\nBefore we start, let’s load the necessary libraries.\n# for scraping\nlibrary(rvest)\nlibrary(dplyr)\nlibrary(purrr)\nlibrary(parzer)\n\n# to parse it to spatial data\nlibrary(sf)\nlibrary(rnaturalearth)\nlibrary(ggplot2)"
+  },
+  {
+    "objectID": "blog/posts/scraping-wikipedia/index.html#parsing-to-sf",
+    "href": "blog/posts/scraping-wikipedia/index.html#parsing-to-sf",
+    "title": "Scraping wikipedia",
+    "section": "Parsing to sf",
+    "text": "Parsing to sf\nLastly, we’ll want to parse this to an sf geometry. We can easily do this with its st_as_sf function.\n\ndistricts_sf &lt;- districts_with_coordinates |&gt; \n  st_as_sf(coords = c(\"lon\", \"lat\"), crs = 4326)"
+  },
+  {
+    "objectID": "blog/posts/scraping-wikipedia/index.html#mapping-as-a-sanity-check",
+    "href": "blog/posts/scraping-wikipedia/index.html#mapping-as-a-sanity-check",
+    "title": "Scraping wikipedia",
+    "section": "Mapping as a sanity check",
+    "text": "Mapping as a sanity check\nJust to check if our two points are indeed within Afghanistan, we’ll draw a map with them. For this, we first need to load the Afghanistan geometry.\n\nafghanistan &lt;- ne_countries(country = \"Afghanistan\", scale = \"small\", returnclass = \"sf\")\n\n\nggplot() + \n  geom_sf(data = afghanistan) + \n  geom_sf(data = districts_sf) +\n  theme_minimal()\n\n\n\n\n\n\n\n\nWe can see that the two points are within Afghanistan, so we seem to have mapped it correctly."
+  },
+  {
+    "objectID": "blog/posts/locator-map/index.html",
+    "href": "blog/posts/locator-map/index.html",
+    "title": "Creating a locator map with ggplot2",
+    "section": "",
+    "text": "Sometimes I visualize data on a country that not everyone is familiar with. In this case, a locator map can be helpful: It shows where in the world my country of interest is. Here, I’ll show you how to create such a locator map for Ghana."
+  },
+  {
+    "objectID": "blog/posts/locator-map/index.html#plotting-the-graticule",
+    "href": "blog/posts/locator-map/index.html#plotting-the-graticule",
+    "title": "Creating a locator map with ggplot2",
+    "section": "Plotting the graticule",
+    "text": "Plotting the graticule\nLet’s start out with just plotting our graticule. That’s the net of lines that make up the latitudes and longitudes, and that we’re used to seeing from a gobe. For that, we’ll need:\n\na graticule\nthe projection\na theme_void()\n\n\n\n\n\n\n\nTip\n\n\n\nTechnically, you can also simply use the ggplot gridlines. However, they’re a bit buggy, so I’d recommend using these explicit gridlines. That’s why we’re also using the theme_void(): so we don’t get those gridlines as well.\n\n\nWe can use the function sf::st_graticule to create this graticule on the fly.\n\nglobe &lt;- ggplot() +\n  # define our graticules\n  geom_sf(data = st_graticule(n_discr = 1),\n          col = \"grey80\", fill = \"white\", linewidth = .25) +\n  # define the CRS and theme\n  coord_sf(crs = locator_crs) +\n  theme_void() \n\nglobe\n\n\n\n\n\n\n\n\nAnd ta-da, that’s our globe!"
+  },
+  {
+    "objectID": "blog/posts/locator-map/index.html#plotting-the-world",
+    "href": "blog/posts/locator-map/index.html#plotting-the-world",
+    "title": "Creating a locator map with ggplot2",
+    "section": "Plotting the world",
+    "text": "Plotting the world\nLet’s continue with plotting the world on top, so we have some context for locating. We’ll plot the world in a grey tone, since we only need it for context, but don’t want the map reader to be overwhelmed.\nWe’ll need:\n\na world sf dataset\nour CRS (again)\n\nSince we’re using the Natural Earth dataset, we’ll give credit to them through the caption.\n\n\n\n\n\n\nTip\n\n\n\nWe need to define the CRS again because we’re calling a geometry (geom_sf()) after we last defined the CRS.\n\n\n\nlocator_map &lt;- globe +\n  geom_sf(data = world,\n          col = \"grey85\") +\n  # define the CRS\n  coord_sf(crs = locator_crs) +\n  # give credit\n  labs(caption = \"Data: Natural Earth\")\n\nlocator_map"
+  },
+  {
+    "objectID": "blog/posts/locator-map/index.html#highlighting-our-country",
+    "href": "blog/posts/locator-map/index.html#highlighting-our-country",
+    "title": "Creating a locator map with ggplot2",
+    "section": "Highlighting our country",
+    "text": "Highlighting our country\nNow let’s get to the interesting part: highlighting!\n\nHighlighting by color\nWith countries that are large enough, simply highlighting by color works well. We give the country any other color than grey, and it’s going to pop.\nSo what do we need?\n\nour country’s geometry\na highlighting color (I’m choosing white)\nour CRS (again)\n\nWe’re starting with our last map, and add just our country on top.\n\nlocator_map +\n  # define our country\n  geom_sf(data = world |&gt; filter(sovereignt == \"Ghana\"),\n          fill = \"#1EB53A\",\n          col = \"grey85\") +\n  # make sure we have the correct CRS\n  coord_sf(crs = locator_crs) \n\n\n\n\n\n\n\n\n\n\nHighlighting with a dot\nSometimes, we don’t want to highlight a whole country, but instead just a smaller spot – maybe\n\na city,\na mountain or\na tree that we find interesting.\n\nIn this case, it makes sense to use a point geometry for highlighting. So we’ll need\n\na point geometry\nour CRS (again)\n\n\n# make Ghana a point geometry\nghana_dot &lt;- world |&gt; \n  filter(sovereignt == \"Ghana\") |&gt; \n  st_centroid()\n\nlocator_map +\n  geom_sf(data = ghana_dot) +\n  # make sure we have the correct CRS\n  coord_sf(crs = locator_crs) \n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nHere, we don’t have to define a color – having one point already pops.\n\n\n\n\nHighlighting with a bounding box\nSometimes, we want to highlight a larger area that wouldn’t show well on a globe: maybe an island group or a small country. In this case, we can also highlight using a bounding box of our original geometry.\nSo let’s start by creating our bounding box for the geometry. Importantly, it needs to be a polygon so we can plot it.\n\n\n\n\n\n\nTip\n\n\n\nMake sure you transform your polygon’s CRS to the one you’ll be using for the locator map. Otherwise, the bounding box won’t be rectangular.\n\n\n\nghana_bbox &lt;- world |&gt; \n  filter(sovereignt == \"Ghana\") |&gt; \n  st_transform(locator_crs) |&gt; \n  st_bbox() |&gt; \n  st_as_sfc()\n\nggplot() +\n  geom_sf(data = ghana_bbox) +\n  coord_sf(crs = locator_crs)\n\n\n\n\n\n\n\n\nIf we plot it, we can see it’s just a rectangle. And it’s got 90° angles when using our locator map CRS. Perfect, so let’s plot it on top of our raw locator map! Let’s make sure that we buffer the bounding box a bit – that way, we can see the borders of our country. Setting fill to NA makes sure that we can see what’s below the bounding box.\n\nlocator_map +\n  geom_sf(data = ghana_bbox |&gt; st_buffer(5e4),\n          fill = NA,\n          lwd = .5) +\n  # make sure we have the correct CRS\n  coord_sf(crs = locator_crs) \n\n\n\n\n\n\n\n\nAnd there we go: three different ways of creating a locator map. If you want to combine it with your more detailed map into a single plot, I’d recommend the package patchwork for this."
+  },
+  {
+    "objectID": "blog/posts/showing-regression-results/index.html",
+    "href": "blog/posts/showing-regression-results/index.html",
+    "title": "Creating a basic regression table with modelsummary",
+    "section": "",
+    "text": "In this post, we have a look at creating a basic regression table with modelsummary and fixest."
+  },
+  {
+    "objectID": "blog/posts/showing-regression-results/index.html#basic-table",
+    "href": "blog/posts/showing-regression-results/index.html#basic-table",
+    "title": "Creating a basic regression table with modelsummary",
+    "section": "Basic table",
+    "text": "Basic table\nCreating a summary table of our equations is very straight-forward with modelsummary: We create a list of the models we want to show, and then input that to modelsummary.\n\nlist(gravity_ols,\n     gravity_pois) |&gt;\n  modelsummary()\n\n\n\nTable 1: Some regressions – basic\n\n\n\n\n\n\n\n (1)\n  (2)\n\n\n\n\nlog_dist_km\n-47643.024\n-0.002\n\n\n\n(10905.572)\n(0.000)\n\n\nNum.Obs.\n38325\n38325\n\n\nR2\n0.286\n0.751\n\n\nR2 Adj.\n0.285\n0.751\n\n\nR2 Within\n0.031\n0.269\n\n\nR2 Within Adj.\n0.031\n0.269\n\n\nAIC\n1533832.6\n1e+12\n\n\nBIC\n1534328.7\n1e+12\n\n\nRMSE\n118498460.83\n88327120.62\n\n\nStd.Errors\nby: Origin\nby: Origin\n\n\nFE: Origin\nX\nX\n\n\nFE: Destination\nX\nX\n\n\nFE: Product\nX\nX\n\n\nFE: Year\nX\nX"
+  },
+  {
+    "objectID": "blog/posts/showing-regression-results/index.html#prettier-table",
+    "href": "blog/posts/showing-regression-results/index.html#prettier-table",
+    "title": "Creating a basic regression table with modelsummary",
+    "section": "Prettier table",
+    "text": "Prettier table\nHowever, the output in Table 1 is not very pretty yet. It’s not entirely clear yet what the independent variable is, we don’t know what (1) and (2) stand for, and we have a mass of goodness-of-fit measures. Let’s customize our table!\nAs a first step, we make create some helper functions. These help with formatting the table.\n\n\nCode\n# format numbers: thousand separator\nf &lt;- function(x, n_digits = 2) {\n  ifelse(is.na(x),\n         \"\",\n         formatC(\n           x,\n           digits = n_digits,\n           big.mark = \",\",\n           format = \"f\"\n         ))\n}\n\nf_0 &lt;- purrr::partial(f, n_digits = 0)\n  \n#  function for GOF measures we don't want to change\nkeep_format &lt;- function(x) list(\"raw\" = x, \"clean\" = x, \"fmt\" = NA)\n\n\nThen, we create a list where we format our goodness-of-fit (GOF) measures. Some of the default names are not so pretty, e.g. Num.Observations without a space between the two words – so we switch them to shorter or nicer names.\n\n\nCode\n# format # observations and R^2, keep the rest\ngof_tidy &lt;- list(\n  list(\n    \"raw\" = \"nobs\",\n    \"clean\" = \"Observations\",\n    \"fmt\" = f_0\n  ),\n  list(\n    \"raw\" = \"r.squared\",\n    \"clean\" = \"R\\u00B2\",\n    \"fmt\" = 3\n  ),\n  keep_format(\"FE: Origin\"),\n  keep_format(\"FE: Destination\"),\n  keep_format(\"FE: Product\"),\n  keep_format(\"FE: Year\")\n)\n\n\nLet’s change the labels for our regression. We do this by adding names to the list’s input (lines 1–2).\nAs a next step, let’s use the label we added earlier on, by setting coef_rename to true. Let’s also format the numbers using the formatting function we set up earlier, f.\nLet’s omit some of the goodnes-of-fit (gof) indicators, since we don’t need all of them here. We do this with the gof_map argument, to which we supply our GOF list from the last step. Alternatively, we could use a regex in the gof_omit argument: anything that matches the expression in line 4 will not be included.\nAlso, I’m used to adding stars where a coefficient is significant. This is not added by default, so let’s simply set the stars argument to true.\nThen, we’re setting the output to gt, which gives us the possibility to further style the table with the package gt. We add a header detailing our dependent variable. Then, we add a spanner to tell readers that OLS and Poisson are regression models.\n\nlist(OLS = gravity_ols,\n     Poisson = gravity_pois) |&gt;\n  modelsummary(\n    coef_rename = TRUE,\n    gof_map = gof_tidy,\n    fmt = f,\n    stars = TRUE,\n    output = \"gt\"\n  ) |&gt;\n  # add header and spanner\n  tab_header(title = \"Dependent variable: Trade flow [€]\") |&gt;\n  tab_spanner(\n    label = \"Regression model\",\n    columns = c(\"OLS\", \"Poisson\")\n    )\n\n\n\nTable 2: Some regressions – prettier\n\n\n\n\n\n\n\n\n\nDependent variable: Trade flow [€]\n\n\n\nRegression model\n\n\nOLS\nPoisson\n\n\n\n\nLog (distance [km])\n-47,643.02***\n-0.00***\n\n\n\n(10,905.57)\n(0.00)\n\n\nObservations\n38,325\n38,325\n\n\nR²\n0.286\n0.751\n\n\nFE: Origin\nX\nX\n\n\nFE: Destination\nX\nX\n\n\nFE: Product\nX\nX\n\n\nFE: Year\nX\nX\n\n\n\n+ p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001"
+  },
+  {
+    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html",
+    "href": "blog/posts/reading-csv-with-2row-colnames/index.html",
+    "title": "Reading a csv file with 2-row column names",
+    "section": "",
+    "text": "I recently wanted to check out election results from the last German Bundestag election, and read them into R. The data was saved in a csv file – so far, so good. But the column names were spread over two rows. 😱\nThis means I’m losing valuable information if I’m only reading the first row of column names. Additionally, the types of the rows get messed up, since the second row of the column names is read as data – specifically, character data.\nSo, I wanted to combine both rows of column names into one. Here’s how I did it in R."
+  },
+  {
+    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-the-first-row",
+    "href": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-the-first-row",
+    "title": "Reading a csv file with 2-row column names",
+    "section": "Reading the first row",
+    "text": "Reading the first row\nThere’s probably many ways to do this, but I decided to go for the following approach:\n\nread in the csv file starting at the first column name row\nclean the column names\nstore the column names in a variable\n\nTo read in the first row of column names, we can use the read.csv2() function. We’ll skip the first three rows (which only contain metadata) and read in only one row, since we don’t need the content for now. Then, we’ll clean the column names with janitor::clean_names() to make sure that they’re formatted like we want them to. Lastly, I’m removing the numbers that are attached at the end since some of the variable names so far are not unique (since they’re still missing the second row).\n\ncolnames_row1 &lt;- read.csv2(temp_file, skip = 4, nrows = 1) |&gt;\njanitor::clean_names() |&gt; \n  colnames() |&gt; \n  gsub(\"_[[:digit:]].*\", \"\", x = _)"
+  },
+  {
+    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-both-column-names",
+    "href": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-both-column-names",
+    "title": "Reading a csv file with 2-row column names",
+    "section": "Reading both column names",
+    "text": "Reading both column names\nWe could repeat this procedure for the second row of column names. However, it’s better to create a function for this case. We simply take the pipeline from before and put it into a function.\n\nread_colnames &lt;- function(path, skip_rows = 4, no_rows = 1) {\n  path |&gt; \n    read.csv2(skip = skip_rows, nrows = no_rows) |&gt; \n    janitor::clean_names() |&gt; \n    colnames() |&gt; \n    gsub(\"_[[:digit:]].*\", \"\", x = _)\n}"
+  },
+  {
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "This blog is for people just starting out with their R journey. I’ll address beginner problems, simplifying some concepts in R programming.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nScraping wikipedia\n\n\n\ncode\n\nsummary\n\n\n\n\n\n\n\n\n\nMay 28, 2025\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nSending automated emails\n\n\n\ncode\n\nvisualization\n\n\n\n\n\n\n\n\n\nFeb 12, 2025\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a locator map with ggplot2\n\n\n\ncode\n\nvisualization\n\n\n\n\n\n\n\n\n\nFeb 2, 2025\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nOpening .kmz files\n\n\n\ncode\n\nspatial formats\n\n\n\n\n\n\n\n\n\nMay 27, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nReading a csv file with 2-row column names\n\n\n\ncode\n\ndata\n\n\n\nSometimes, csv files have 2-row column names. I create a function to deal with this.\n\n\n\n\n\nMay 5, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nOpening .nc files\n\n\n\ncode\n\nspatial formats\n\n\n\n\n\n\n\n\n\nFeb 24, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a map with ggplot2\n\n\n\ncode\n\nvisualization\n\n\n\n\n\n\n\n\n\nJan 4, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a basic regression table with modelsummary\n\n\n\ncode\n\nsummary\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah Zeller\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html",
+    "href": "blog/posts/creating-a-basic-map/index.html",
+    "title": "Creating a map with ggplot2",
+    "section": "",
+    "text": "In this post, I create a basic world map – specifically, a Choropleth map. That means we colour the countries by a specific variable."
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html#basic-map",
+    "href": "blog/posts/creating-a-basic-map/index.html#basic-map",
+    "title": "Creating a map with ggplot2",
+    "section": "Basic map",
+    "text": "Basic map\nWe can simply do this with ggplot, with the function geom_sf. It takes normal aesthetics, so we can just hand it our variable of interest – is_my_country. Since this is a map, it makes the most sense to just fill the polygons according to this variable, so we use the fill aesthetic.\n\nggplot() +\n  # plot an sf object\n  geom_sf(data = world,\n          # fill it according to my variable\n          aes(fill = is_my_country))\n\n\n\n\n\n\n\nFigure 1: Choropleth map of my countries – basic"
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html#intermediate-map",
+    "href": "blog/posts/creating-a-basic-map/index.html#intermediate-map",
+    "title": "Creating a map with ggplot2",
+    "section": "Intermediate map",
+    "text": "Intermediate map\nWe now decrease some of the clutter. We get rid of the legend since it’s just a Boolean – we can indicate this in our title/caption. We also choose different colours, and get rid of the gridlines.\n\nggplot() +\n  # plot an sf object\n  geom_sf(data = world,\n          # fill it according to my variable\n          aes(fill = is_my_country),\n         # don't show the legend: it's just true or false, can be shown in title\n          show.legend = FALSE) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # remove clutter\n  theme_void() \n\n\n\n\n\n\n\nFigure 2: Choropleth map of my countries (in yellow) – intermediate"
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html#prettier-map",
+    "href": "blog/posts/creating-a-basic-map/index.html#prettier-map",
+    "title": "Creating a map with ggplot2",
+    "section": "Prettier map",
+    "text": "Prettier map\nIt doesn’t quite look like we’re used to, though. Check out the comments to see what we’ve changed.\n\nggplot() +\n  # plot an sf object\n  geom_sf(\n    data = world,\n    # fill it according to my variable\n    aes(fill = is_my_country),\n    # make borders lighter\n    col = \"grey80\",\n    # don't show the legend: it's just true or false, can be shown in title\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    # get the data just for the countries we want to show\n    data = world |&gt; filter(is_my_country == TRUE),\n    # get the sovereignt label, and transform it to upper case\n    aes(label = admin |&gt; toupper()),\n    # make it not as dark\n    col = \"grey30\",\n    # decrease size\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void()\n\n\n\n\n\n\n\nFigure 3: Choropleth map of my countries – prettier version"
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html#prettier-map-with-ocean",
+    "href": "blog/posts/creating-a-basic-map/index.html#prettier-map-with-ocean",
+    "title": "Creating a map with ggplot2",
+    "section": "Prettier map with ocean",
+    "text": "Prettier map with ocean\nThere’s just some lines of code you need to add to have a round earth/rounded sea. We need to create a polygon that has just the shape of the earth. We can do this with st_graticule, and then st_cast it to a polygon. Then, we can simply plot this polygon at the beginning of our ggplot.\n\ngrat &lt;- st_graticule() |&gt; st_cast('POLYGON')\n\nggplot() +\n  # this is the new line\n  geom_sf(data = grat, fill = \"#d7ecfa\", col = \"#d7ecfa\") +\n  # now everything is the same as before\n  geom_sf(\n    data = world,\n    aes(fill = is_my_country),\n    col = \"grey80\",\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    data = world |&gt; filter(is_my_country == TRUE),\n    aes(label = admin |&gt; toupper()),\n    col = \"grey30\",\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void()\n\n\n\n\n\n\n\nFigure 4: Choropleth map of my countries – round earth"
+  },
+  {
+    "objectID": "blog/posts/creating-a-basic-map/index.html#advanced-stuff",
+    "href": "blog/posts/creating-a-basic-map/index.html#advanced-stuff",
+    "title": "Creating a map with ggplot2",
+    "section": "Advanced stuff",
+    "text": "Advanced stuff\nIf you’re really interested, you can check out the following on top:\n\ngraticules (latitude/longitude)\nNorth arrow (not recommended for world maps, though)\nscale (not recommended for most world maps, though)"
   },
   {
     "objectID": "blog/posts/opening-nc-files/index.html",
@@ -61,27 +208,6 @@
     "title": "Opening .nc files",
     "section": "Flipping the raster",
     "text": "Flipping the raster\nFor this task, terra has a specific function, flip. We can say which way to flip the raster – in this case, vertically. Let’s go ahead and plot this again.\n\ngot_weather_raster_right_side_up &lt;- got_weather_raster_transposed |&gt; \n  flip(direction = \"vertical\")\n\ngot_weather_raster_right_side_up |&gt; plot()\n\n\n\n\n\n\n\n\nAnd there we have it!"
-  },
-  {
-    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html",
-    "href": "blog/posts/reading-csv-with-2row-colnames/index.html",
-    "title": "Reading a csv file with 2-row column names",
-    "section": "",
-    "text": "I recently wanted to check out election results from the last German Bundestag election, and read them into R. The data was saved in a csv file – so far, so good. But the column names were spread over two rows. 😱\nThis means I’m losing valuable information if I’m only reading the first row of column names. Additionally, the types of the rows get messed up, since the second row of the column names is read as data – specifically, character data.\nSo, I wanted to combine both rows of column names into one. Here’s how I did it in R."
-  },
-  {
-    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-the-first-row",
-    "href": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-the-first-row",
-    "title": "Reading a csv file with 2-row column names",
-    "section": "Reading the first row",
-    "text": "Reading the first row\nThere’s probably many ways to do this, but I decided to go for the following approach:\n\nread in the csv file starting at the first column name row\nclean the column names\nstore the column names in a variable\n\nTo read in the first row of column names, we can use the read.csv2() function. We’ll skip the first three rows (which only contain metadata) and read in only one row, since we don’t need the content for now. Then, we’ll clean the column names with janitor::clean_names() to make sure that they’re formatted like we want them to. Lastly, I’m removing the numbers that are attached at the end since some of the variable names so far are not unique (since they’re still missing the second row).\n\ncolnames_row1 &lt;- read.csv2(temp_file, skip = 4, nrows = 1) |&gt;\njanitor::clean_names() |&gt; \n  colnames() |&gt; \n  gsub(\"_[[:digit:]].*\", \"\", x = _)"
-  },
-  {
-    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-both-column-names",
-    "href": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-both-column-names",
-    "title": "Reading a csv file with 2-row column names",
-    "section": "Reading both column names",
-    "text": "Reading both column names\nWe could repeat this procedure for the second row of column names. However, it’s better to create a function for this case. We simply take the pipeline from before and put it into a function.\n\nread_colnames &lt;- function(path, skip_rows = 4, no_rows = 1) {\n  path |&gt; \n    read.csv2(skip = skip_rows, nrows = no_rows) |&gt; \n    janitor::clean_names() |&gt; \n    colnames() |&gt; \n    gsub(\"_[[:digit:]].*\", \"\", x = _)\n}"
   },
   {
     "objectID": "blog/posts/sending-automated-emails/index.html",
@@ -151,125 +277,20 @@
     "href": "software/index.html",
     "title": "Software",
     "section": "",
-    "text": "Provides a set of functions to implement donut analyses in R –\nfor when you're unsure which distance to a point of interest still counts as treated.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n        Quarto template in TUD corporate design for presentations and extendes abstracts –\nfor both typst and latex output.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        R script to analyze inconsistent writings in a word document, e.g. 'summariZe' vs. 'summariSe'.\nOutputs a word document that can be used with the FRedit macro (but should be reviewed first).\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        Word macros that editors can use to automate repetitive tasks.\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\n\nNo matching items"
+    "text": "Provides a set of functions to implement donut analyses in R –\nfor when you're unsure which distance to a point of interest still counts as treated.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n        Quarto template in TUD corporate design for presentations and extendes abstracts –\nfor both typst and latex output.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        R script to analyze inconsistent writings in a word document, e.g. 'summariZe' vs. 'summariSe'.\nOutputs a word document that can be used with the FRedit macro (but should be reviewed first).\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        Word macros that editors can use to automate repetitive tasks.\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\nNo matching items"
   },
   {
     "objectID": "software/index.html#software",
     "href": "software/index.html#software",
     "title": "Software",
     "section": "",
-    "text": "Provides a set of functions to implement donut analyses in R –\nfor when you're unsure which distance to a point of interest still counts as treated.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n        Quarto template in TUD corporate design for presentations and extendes abstracts –\nfor both typst and latex output.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        R script to analyze inconsistent writings in a word document, e.g. 'summariZe' vs. 'summariSe'.\nOutputs a word document that can be used with the FRedit macro (but should be reviewed first).\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        Word macros that editors can use to automate repetitive tasks.\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\n\nNo matching items"
+    "text": "Provides a set of functions to implement donut analyses in R –\nfor when you're unsure which distance to a point of interest still counts as treated.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n        Quarto template in TUD corporate design for presentations and extendes abstracts –\nfor both typst and latex output.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        R script to analyze inconsistent writings in a word document, e.g. 'summariZe' vs. 'summariSe'.\nOutputs a word document that can be used with the FRedit macro (but should be reviewed first).\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        Word macros that editors can use to automate repetitive tasks.\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\nNo matching items"
   },
   {
     "objectID": "software/index.html#contributions",
     "href": "software/index.html#contributions",
     "title": "Software",
     "section": "Contributions",
-    "text": "Contributions\n\n\n    \n    \n        \n            Base R \n        \n        Fixed a bug in `tools::toTitleCase()` where a letter following a hyphen and\na space would always be capitalized -- even when it should not\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n            ags package \n        \n        Fixed a bug – a typo that led a reference into the void\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            modern2-cv template \n        \n        Added a template for the motivation letter that fits the CV template\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            purrr bookclub \n        \n        As part of the bookclub on the `purrr` package, added the corresponding chapter.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            Effect bookclub \n        \n        As part of the bookclub on \"The Effect\" by Nick Huntington-Klein, added some chapters.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\n\nNo matching items"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Sarah Zeller",
-    "section": "",
-    "text": "I’m a PhD student at the Technical University of Dresden (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in R, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.\nI have a particular interest in the challenge of data wrangling – organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.\nOne of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights."
-  },
-  {
-    "objectID": "blog/posts/locator-map/index.html",
-    "href": "blog/posts/locator-map/index.html",
-    "title": "Creating a locator map with ggplot2",
-    "section": "",
-    "text": "Sometimes I visualize data on a country that not everyone is familiar with. In this case, a locator map can be helpful: It shows where in the world my country of interest is. Here, I’ll show you how to create such a locator map for Ghana."
-  },
-  {
-    "objectID": "blog/posts/locator-map/index.html#plotting-the-graticule",
-    "href": "blog/posts/locator-map/index.html#plotting-the-graticule",
-    "title": "Creating a locator map with ggplot2",
-    "section": "Plotting the graticule",
-    "text": "Plotting the graticule\nLet’s start out with just plotting our graticule. That’s the net of lines that make up the latitudes and longitudes, and that we’re used to seeing from a gobe. For that, we’ll need:\n\na graticule\nthe projection\na theme_void()\n\n\n\n\n\n\n\nTip\n\n\n\nTechnically, you can also simply use the ggplot gridlines. However, they’re a bit buggy, so I’d recommend using these explicit gridlines. That’s why we’re also using the theme_void(): so we don’t get those gridlines as well.\n\n\nWe can use the function sf::st_graticule to create this graticule on the fly.\n\nglobe &lt;- ggplot() +\n  # define our graticules\n  geom_sf(data = st_graticule(n_discr = 1),\n          col = \"grey80\", fill = \"white\", linewidth = .25) +\n  # define the CRS and theme\n  coord_sf(crs = locator_crs) +\n  theme_void() \n\nglobe\n\n\n\n\n\n\n\n\nAnd ta-da, that’s our globe!"
-  },
-  {
-    "objectID": "blog/posts/locator-map/index.html#plotting-the-world",
-    "href": "blog/posts/locator-map/index.html#plotting-the-world",
-    "title": "Creating a locator map with ggplot2",
-    "section": "Plotting the world",
-    "text": "Plotting the world\nLet’s continue with plotting the world on top, so we have some context for locating. We’ll plot the world in a grey tone, since we only need it for context, but don’t want the map reader to be overwhelmed.\nWe’ll need:\n\na world sf dataset\nour CRS (again)\n\nSince we’re using the Natural Earth dataset, we’ll give credit to them through the caption.\n\n\n\n\n\n\nTip\n\n\n\nWe need to define the CRS again because we’re calling a geometry (geom_sf()) after we last defined the CRS.\n\n\n\nlocator_map &lt;- globe +\n  geom_sf(data = world,\n          col = \"grey85\") +\n  # define the CRS\n  coord_sf(crs = locator_crs) +\n  # give credit\n  labs(caption = \"Data: Natural Earth\")\n\nlocator_map"
-  },
-  {
-    "objectID": "blog/posts/locator-map/index.html#highlighting-our-country",
-    "href": "blog/posts/locator-map/index.html#highlighting-our-country",
-    "title": "Creating a locator map with ggplot2",
-    "section": "Highlighting our country",
-    "text": "Highlighting our country\nNow let’s get to the interesting part: highlighting!\n\nHighlighting by color\nWith countries that are large enough, simply highlighting by color works well. We give the country any other color than grey, and it’s going to pop.\nSo what do we need?\n\nour country’s geometry\na highlighting color (I’m choosing white)\nour CRS (again)\n\nWe’re starting with our last map, and add just our country on top.\n\nlocator_map +\n  # define our country\n  geom_sf(data = world |&gt; filter(sovereignt == \"Ghana\"),\n          fill = \"#1EB53A\",\n          col = \"grey85\") +\n  # make sure we have the correct CRS\n  coord_sf(crs = locator_crs) \n\n\n\n\n\n\n\n\n\n\nHighlighting with a dot\nSometimes, we don’t want to highlight a whole country, but instead just a smaller spot – maybe\n\na city,\na mountain or\na tree that we find interesting.\n\nIn this case, it makes sense to use a point geometry for highlighting. So we’ll need\n\na point geometry\nour CRS (again)\n\n\n# make Ghana a point geometry\nghana_dot &lt;- world |&gt; \n  filter(sovereignt == \"Ghana\") |&gt; \n  st_centroid()\n\nlocator_map +\n  geom_sf(data = ghana_dot) +\n  # make sure we have the correct CRS\n  coord_sf(crs = locator_crs) \n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nHere, we don’t have to define a color – having one point already pops.\n\n\n\n\nHighlighting with a bounding box\nSometimes, we want to highlight a larger area that wouldn’t show well on a globe: maybe an island group or a small country. In this case, we can also highlight using a bounding box of our original geometry.\nSo let’s start by creating our bounding box for the geometry. Importantly, it needs to be a polygon so we can plot it.\n\n\n\n\n\n\nTip\n\n\n\nMake sure you transform your polygon’s CRS to the one you’ll be using for the locator map. Otherwise, the bounding box won’t be rectangular.\n\n\n\nghana_bbox &lt;- world |&gt; \n  filter(sovereignt == \"Ghana\") |&gt; \n  st_transform(locator_crs) |&gt; \n  st_bbox() |&gt; \n  st_as_sfc()\n\nggplot() +\n  geom_sf(data = ghana_bbox) +\n  coord_sf(crs = locator_crs)\n\n\n\n\n\n\n\n\nIf we plot it, we can see it’s just a rectangle. And it’s got 90° angles when using our locator map CRS. Perfect, so let’s plot it on top of our raw locator map! Let’s make sure that we buffer the bounding box a bit – that way, we can see the borders of our country. Setting fill to NA makes sure that we can see what’s below the bounding box.\n\nlocator_map +\n  geom_sf(data = ghana_bbox |&gt; st_buffer(5e4),\n          fill = NA,\n          lwd = .5) +\n  # make sure we have the correct CRS\n  coord_sf(crs = locator_crs) \n\n\n\n\n\n\n\n\nAnd there we go: three different ways of creating a locator map. If you want to combine it with your more detailed map into a single plot, I’d recommend the package patchwork for this."
-  },
-  {
-    "objectID": "blog/posts/creating-a-basic-map/index.html",
-    "href": "blog/posts/creating-a-basic-map/index.html",
-    "title": "Creating a map with ggplot2",
-    "section": "",
-    "text": "In this post, I create a basic world map – specifically, a Choropleth map. That means we colour the countries by a specific variable."
-  },
-  {
-    "objectID": "blog/posts/creating-a-basic-map/index.html#basic-map",
-    "href": "blog/posts/creating-a-basic-map/index.html#basic-map",
-    "title": "Creating a map with ggplot2",
-    "section": "Basic map",
-    "text": "Basic map\nWe can simply do this with ggplot, with the function geom_sf. It takes normal aesthetics, so we can just hand it our variable of interest – is_my_country. Since this is a map, it makes the most sense to just fill the polygons according to this variable, so we use the fill aesthetic.\n\nggplot() +\n  # plot an sf object\n  geom_sf(data = world,\n          # fill it according to my variable\n          aes(fill = is_my_country))\n\n\n\n\n\n\n\nFigure 1: Choropleth map of my countries – basic"
-  },
-  {
-    "objectID": "blog/posts/creating-a-basic-map/index.html#intermediate-map",
-    "href": "blog/posts/creating-a-basic-map/index.html#intermediate-map",
-    "title": "Creating a map with ggplot2",
-    "section": "Intermediate map",
-    "text": "Intermediate map\nWe now decrease some of the clutter. We get rid of the legend since it’s just a Boolean – we can indicate this in our title/caption. We also choose different colours, and get rid of the gridlines.\n\nggplot() +\n  # plot an sf object\n  geom_sf(data = world,\n          # fill it according to my variable\n          aes(fill = is_my_country),\n         # don't show the legend: it's just true or false, can be shown in title\n          show.legend = FALSE) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # remove clutter\n  theme_void() \n\n\n\n\n\n\n\nFigure 2: Choropleth map of my countries (in yellow) – intermediate"
-  },
-  {
-    "objectID": "blog/posts/creating-a-basic-map/index.html#prettier-map",
-    "href": "blog/posts/creating-a-basic-map/index.html#prettier-map",
-    "title": "Creating a map with ggplot2",
-    "section": "Prettier map",
-    "text": "Prettier map\nIt doesn’t quite look like we’re used to, though. Check out the comments to see what we’ve changed.\n\nggplot() +\n  # plot an sf object\n  geom_sf(\n    data = world,\n    # fill it according to my variable\n    aes(fill = is_my_country),\n    # make borders lighter\n    col = \"grey80\",\n    # don't show the legend: it's just true or false, can be shown in title\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    # get the data just for the countries we want to show\n    data = world |&gt; filter(is_my_country == TRUE),\n    # get the sovereignt label, and transform it to upper case\n    aes(label = admin |&gt; toupper()),\n    # make it not as dark\n    col = \"grey30\",\n    # decrease size\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void()\n\n\n\n\n\n\n\nFigure 3: Choropleth map of my countries – prettier version"
-  },
-  {
-    "objectID": "blog/posts/creating-a-basic-map/index.html#prettier-map-with-ocean",
-    "href": "blog/posts/creating-a-basic-map/index.html#prettier-map-with-ocean",
-    "title": "Creating a map with ggplot2",
-    "section": "Prettier map with ocean",
-    "text": "Prettier map with ocean\nThere’s just some lines of code you need to add to have a round earth/rounded sea. We need to create a polygon that has just the shape of the earth. We can do this with st_graticule, and then st_cast it to a polygon. Then, we can simply plot this polygon at the beginning of our ggplot.\n\ngrat &lt;- st_graticule() |&gt; st_cast('POLYGON')\n\nggplot() +\n  # this is the new line\n  geom_sf(data = grat, fill = \"#d7ecfa\", col = \"#d7ecfa\") +\n  # now everything is the same as before\n  geom_sf(\n    data = world,\n    aes(fill = is_my_country),\n    col = \"grey80\",\n    show.legend = FALSE\n  ) +\n  # add country labels\n  geom_sf_text(\n    data = world |&gt; filter(is_my_country == TRUE),\n    aes(label = admin |&gt; toupper()),\n    col = \"grey30\",\n    size = 2.5\n  ) +\n  # make colours prettier\n  scale_fill_manual(values = c(\"white\", \"wheat\")) +\n  # change to a nicer projection: equal area (more accurate)\n  coord_sf(crs = \"ESRI:54009\") +\n  # remove clutter\n  theme_void()\n\n\n\n\n\n\n\nFigure 4: Choropleth map of my countries – round earth"
-  },
-  {
-    "objectID": "blog/posts/creating-a-basic-map/index.html#advanced-stuff",
-    "href": "blog/posts/creating-a-basic-map/index.html#advanced-stuff",
-    "title": "Creating a map with ggplot2",
-    "section": "Advanced stuff",
-    "text": "Advanced stuff\nIf you’re really interested, you can check out the following on top:\n\ngraticules (latitude/longitude)\nNorth arrow (not recommended for world maps, though)\nscale (not recommended for most world maps, though)"
-  },
-  {
-    "objectID": "blog/posts/showing-regression-results/index.html",
-    "href": "blog/posts/showing-regression-results/index.html",
-    "title": "Creating a basic regression table with modelsummary",
-    "section": "",
-    "text": "In this post, we have a look at creating a basic regression table with modelsummary and fixest."
-  },
-  {
-    "objectID": "blog/posts/showing-regression-results/index.html#basic-table",
-    "href": "blog/posts/showing-regression-results/index.html#basic-table",
-    "title": "Creating a basic regression table with modelsummary",
-    "section": "Basic table",
-    "text": "Basic table\nCreating a summary table of our equations is very straight-forward with modelsummary: We create a list of the models we want to show, and then input that to modelsummary.\n\nlist(gravity_ols,\n     gravity_pois) |&gt;\n  modelsummary()\n\n\n\nTable 1: Some regressions – basic\n\n\n\n\n\n\n\n (1)\n  (2)\n\n\n\n\nlog_dist_km\n-47643.024\n-0.002\n\n\n\n(10905.572)\n(0.000)\n\n\nNum.Obs.\n38325\n38325\n\n\nR2\n0.286\n0.751\n\n\nR2 Adj.\n0.285\n0.751\n\n\nR2 Within\n0.031\n0.269\n\n\nR2 Within Adj.\n0.031\n0.269\n\n\nAIC\n1533832.6\n1e+12\n\n\nBIC\n1534328.7\n1e+12\n\n\nRMSE\n118498460.83\n88327120.62\n\n\nStd.Errors\nby: Origin\nby: Origin\n\n\nFE: Origin\nX\nX\n\n\nFE: Destination\nX\nX\n\n\nFE: Product\nX\nX\n\n\nFE: Year\nX\nX"
-  },
-  {
-    "objectID": "blog/posts/showing-regression-results/index.html#prettier-table",
-    "href": "blog/posts/showing-regression-results/index.html#prettier-table",
-    "title": "Creating a basic regression table with modelsummary",
-    "section": "Prettier table",
-    "text": "Prettier table\nHowever, the output in Table 1 is not very pretty yet. It’s not entirely clear yet what the independent variable is, we don’t know what (1) and (2) stand for, and we have a mass of goodness-of-fit measures. Let’s customize our table!\nAs a first step, we make create some helper functions. These help with formatting the table.\n\n\nCode\n# format numbers: thousand separator\nf &lt;- function(x, n_digits = 2) {\n  ifelse(is.na(x),\n         \"\",\n         formatC(\n           x,\n           digits = n_digits,\n           big.mark = \",\",\n           format = \"f\"\n         ))\n}\n\nf_0 &lt;- purrr::partial(f, n_digits = 0)\n  \n#  function for GOF measures we don't want to change\nkeep_format &lt;- function(x) list(\"raw\" = x, \"clean\" = x, \"fmt\" = NA)\n\n\nThen, we create a list where we format our goodness-of-fit (GOF) measures. Some of the default names are not so pretty, e.g. Num.Observations without a space between the two words – so we switch them to shorter or nicer names.\n\n\nCode\n# format # observations and R^2, keep the rest\ngof_tidy &lt;- list(\n  list(\n    \"raw\" = \"nobs\",\n    \"clean\" = \"Observations\",\n    \"fmt\" = f_0\n  ),\n  list(\n    \"raw\" = \"r.squared\",\n    \"clean\" = \"R\\u00B2\",\n    \"fmt\" = 3\n  ),\n  keep_format(\"FE: Origin\"),\n  keep_format(\"FE: Destination\"),\n  keep_format(\"FE: Product\"),\n  keep_format(\"FE: Year\")\n)\n\n\nLet’s change the labels for our regression. We do this by adding names to the list’s input (lines 1–2).\nAs a next step, let’s use the label we added earlier on, by setting coef_rename to true. Let’s also format the numbers using the formatting function we set up earlier, f.\nLet’s omit some of the goodnes-of-fit (gof) indicators, since we don’t need all of them here. We do this with the gof_map argument, to which we supply our GOF list from the last step. Alternatively, we could use a regex in the gof_omit argument: anything that matches the expression in line 4 will not be included.\nAlso, I’m used to adding stars where a coefficient is significant. This is not added by default, so let’s simply set the stars argument to true.\nThen, we’re setting the output to gt, which gives us the possibility to further style the table with the package gt. We add a header detailing our dependent variable. Then, we add a spanner to tell readers that OLS and Poisson are regression models.\n\nlist(OLS = gravity_ols,\n     Poisson = gravity_pois) |&gt;\n  modelsummary(\n    coef_rename = TRUE,\n    gof_map = gof_tidy,\n    fmt = f,\n    stars = TRUE,\n    output = \"gt\"\n  ) |&gt;\n  # add header and spanner\n  tab_header(title = \"Dependent variable: Trade flow [€]\") |&gt;\n  tab_spanner(\n    label = \"Regression model\",\n    columns = c(\"OLS\", \"Poisson\")\n    )\n\n\n\nTable 2: Some regressions – prettier\n\n\n\n\n\n\n\n\n\nDependent variable: Trade flow [€]\n\n\n\nRegression model\n\n\nOLS\nPoisson\n\n\n\n\nLog (distance [km])\n-47,643.02***\n-0.00***\n\n\n\n(10,905.57)\n(0.00)\n\n\nObservations\n38,325\n38,325\n\n\nR²\n0.286\n0.751\n\n\nFE: Origin\nX\nX\n\n\nFE: Destination\nX\nX\n\n\nFE: Product\nX\nX\n\n\nFE: Year\nX\nX\n\n\n\n+ p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001"
-  },
-  {
-    "objectID": "blog/index.html",
-    "href": "blog/index.html",
-    "title": "Blog",
-    "section": "",
-    "text": "This blog is for people just starting out with their R journey. I’ll address beginner problems, simplifying some concepts in R programming.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSending automated emails\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\n\n\n\n\n\n\n\nFeb 12, 2025\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a locator map with ggplot2\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\n\n\n\n\n\n\n\nFeb 2, 2025\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nOpening .kmz files\n\n\n\n\n\n\ncode\n\n\nspatial formats\n\n\n\n\n\n\n\n\n\nMay 27, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nReading a csv file with 2-row column names\n\n\n\n\n\n\ncode\n\n\ndata\n\n\n\nSometimes, csv files have 2-row column names. I create a function to deal with this.\n\n\n\n\n\nMay 5, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nOpening .nc files\n\n\n\n\n\n\ncode\n\n\nspatial formats\n\n\n\n\n\n\n\n\n\nFeb 24, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a map with ggplot2\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\n\n\n\n\n\n\n\nJan 4, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a basic regression table with modelsummary\n\n\n\n\n\n\ncode\n\n\nsummary\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah Zeller\n\n\n\n\n\n\nNo matching items"
+    "text": "Contributions\n\n\n    \n    \n        \n            Base R \n        \n        Fixed a bug in `tools::toTitleCase()` where a letter following a hyphen and\na space would always be capitalized -- even when it should not\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n            ags package \n        \n        Fixed a bug – a typo that led a reference into the void\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            modern2-cv template \n        \n        Added a template for the motivation letter that fits the CV template\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            purrr bookclub \n        \n        As part of the bookclub on the `purrr` package, added the corresponding chapter.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            Effect bookclub \n        \n        As part of the bookclub on \"The Effect\" by Nick Huntington-Klein, added some chapters.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\nNo matching items"
   }
 ]

@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Sarah Zeller">
-<meta name="dcterms.date" content="2025-02-12">
+<meta name="dcterms.date" content="2025-05-28">
 
-<title>Sending automated emails – Sarah Zeller</title>
+<title>Scraping wikipedia – Sarah Zeller</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -109,8 +109,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="../../../site_libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="../../../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="../../../styles.css">
@@ -327,10 +325,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Sending automated emails</h1>
+      <h1 class="title">Scraping wikipedia</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">code</div>
-                <div class="quarto-category">visualization</div>
+                <div class="quarto-category">summary</div>
               </div>
                   </div>
   </div>
@@ -348,7 +346,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">February 12, 2025</p>
+        <p class="date">May 28, 2025</p>
       </div>
     </div>
     
@@ -364,17 +362,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#preparation" id="toc-preparation" class="nav-link active" data-scroll-target="#preparation">Preparation</a></li>
-  <li><a href="#mail-function" id="toc-mail-function" class="nav-link" data-scroll-target="#mail-function">Mail function</a>
+  <li><a href="#scraping-multiple-tables" id="toc-scraping-multiple-tables" class="nav-link active" data-scroll-target="#scraping-multiple-tables">Scraping multiple tables</a></li>
+  <li><a href="#scraping-coordinates" id="toc-scraping-coordinates" class="nav-link" data-scroll-target="#scraping-coordinates">Scraping coordinates</a>
   <ul class="collapse">
-  <li><a href="#open-outlook" id="toc-open-outlook" class="nav-link" data-scroll-target="#open-outlook">Open Outlook</a></li>
-  <li><a href="#create-an-email" id="toc-create-an-email" class="nav-link" data-scroll-target="#create-an-email">Create an email</a></li>
-  <li><a href="#set-recipient-subject-and-body" id="toc-set-recipient-subject-and-body" class="nav-link" data-scroll-target="#set-recipient-subject-and-body">Set recipient, subject and body</a></li>
-  <li><a href="#sending-the-email" id="toc-sending-the-email" class="nav-link" data-scroll-target="#sending-the-email">Sending the email</a></li>
-  <li><a href="#piecing-together-the-pieces" id="toc-piecing-together-the-pieces" class="nav-link" data-scroll-target="#piecing-together-the-pieces">Piecing together the pieces</a></li>
+  <li><a href="#parsing-to-sf" id="toc-parsing-to-sf" class="nav-link" data-scroll-target="#parsing-to-sf">Parsing to sf</a></li>
+  <li><a href="#mapping-as-a-sanity-check" id="toc-mapping-as-a-sanity-check" class="nav-link" data-scroll-target="#mapping-as-a-sanity-check">Mapping as a sanity check</a></li>
   </ul></li>
-  <li><a href="#mapping-over-the-function" id="toc-mapping-over-the-function" class="nav-link" data-scroll-target="#mapping-over-the-function">Mapping over the function</a></li>
-  <li><a href="#approaches-without-outlook" id="toc-approaches-without-outlook" class="nav-link" data-scroll-target="#approaches-without-outlook">Approaches without Outlook</a></li>
   </ul>
 </nav>
     </div>
@@ -386,189 +379,199 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>I recently needed to send out an email to many recipients, with only slight changes in the text. And I figured – this must be something we can do with <code>R</code>, right?</p>
-<p>Luckily enough, there’s the <code>RDCOMClient</code> library which lets <code>R</code> access some programs, including Outlook. So if you have Outlook set up on your computer, this approach will work like a charm. Actually, it was kind of scary for me: this really works, and real emails get sent. 😱</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This approach only works on Windows computers.</p>
-</div>
-</div>
-<section id="preparation" class="level2">
-<h2 class="anchored" data-anchor-id="preparation">Preparation</h2>
-<p>What do we need?</p>
+<p>Every now and then, we want to get some data from the wild – e.g., from Wikipedia articles. We’ll see two data types here:</p>
 <ul>
-<li>the <code>RDCOMClient</code> library</li>
-<li>a <code>data.frame</code> including the email addresses and the bit we want changed</li>
-<li>a template text</li>
+<li>tables</li>
+<li>specific data from a specific class.</li>
 </ul>
-<p>So let’s start by loading the needed libraries. We already talked about <code>RDCOMClient</code>. <code>dplyr</code> and <code>glue</code> make pasting our template and our information together easier, and <code>purrr</code> will allow us to loop over our info <code>data.frame</code>.</p>
+<p>Before we start, let’s load the necessary libraries.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RDCOMClient)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for scraping</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parzer)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># to parse it to spatial data</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rnaturalearth)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Let’s start with our template! We’ll make it nice and short.</p>
+<section id="scraping-multiple-tables" class="level1">
+<h1>Scraping multiple tables</h1>
+<p>Let’s start with a simple table to scrape. Here, you see the URL that we’re working with. If you check it out, you can see that we’ve got multiple tables in here. Our aim is to collect them all into a single table.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>template <span class="ot">&lt;-</span> <span class="st">"Good morning!</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="st">Do you enjoy {food}?</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="st">Have a great day."</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://en.wikipedia.org/wiki/List_of_NATO_installations_in_Afghanistan"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Next, we’d load our <code>data.frame</code>; for this showcase purpose, we’ll just make it up from scratch. We’ll combine our template and our bit of information into a new column, <code>text</code>.</p>
+<p>So, let’s start by reading in the table. We’ll discard everything that isn’t a table (i.e.&nbsp;just one column). In this specific format, we’ll also get the name of each table, since that seems to contain information.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>info <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>email, <span class="sc">~</span>info,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"anna@example.com"</span>, <span class="st">"apples"</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bernardo@example.com"</span>, <span class="st">"bananas"</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"charlie@example.com"</span>, <span class="st">"chocolate"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"donald@example.com"</span>, <span class="st">"donuts"</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">text =</span> glue<span class="sc">::</span><span class="fu">glue</span>(template, <span class="at">food =</span> info))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tables <span class="ot">&lt;-</span> url <span class="sc">%&gt;%</span>   </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_html</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_table</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">keep</span>(<span class="sc">~</span><span class="fu">ncol</span>(.x) <span class="sc">&gt;</span> <span class="dv">1</span>) </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>table_names <span class="ot">&lt;-</span> tables <span class="sc">|&gt;</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span><span class="fu">names</span>(.x) <span class="sc">|&gt;</span> <span class="fu">unique</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">discard</span>(<span class="sc">~</span>.x <span class="sc">==</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The problem with our data so far is that the actual variable names are in the first row of our <code>data.frame</code>s. So let’s write a function to get the variable names from the first row.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>make_first_row_to_col_names <span class="ot">&lt;-</span> <span class="cf">function</span>(data){</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  col_names <span class="ot">&lt;-</span> data[<span class="dv">1</span>,] <span class="sc">|&gt;</span> <span class="fu">as.character</span>()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  data[<span class="sc">-</span><span class="dv">1</span>, ] <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setNames</span>(col_names)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that we’ve written this function, we can bring everything together:</p>
+<ul>
+<li>the tables</li>
+<li>with their correct variable names and</li>
+<li>their table origin</li>
+</ul>
+<p>We’ll use the <code>map2</code> function here, since we’re basically looping over two lists:</p>
+<ul>
+<li>tables</li>
+<li>table origin</li>
+</ul>
+<p>The <code>~</code> indicates that we’re creating a function on the fly here, where we’re taking each table, correcting their variable names and adding the table origin. We’ll them bring them all into one table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>tables_merged <span class="ot">&lt;-</span> <span class="fu">map2</span>(tables,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                      table_names,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                      <span class="sc">~</span> .x <span class="sc">|&gt;</span> <span class="fu">make_first_row_to_col_names</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">origin =</span> .y)) <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  plyr<span class="sc">::</span><span class="fu">rbind.fill</span>()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>tables_merged <span class="sc">|&gt;</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Type                                  Name       District Opened   Closed
+1 Camp HKIA/KAIA(Hamid Karzai Int'l Airport) Kabul District   2005         
+2 Camp                                 Alamo Kabul District                
+3 Camp                           Bala Hissar Kabul District                
+4 Camp                           Black Horse Kabul District   2008         
+5 Camp                                 Dogan Kabul District   2002 Feb 2015
+6 Camp                                  Dubs Kabul District                
+                                                                                                                                         Forces
+1 ISAF Headquarters ISAF Joint Command Turkish Army US Army USMC US Air Force Australian Army British Army Canadian Army Mongolian Armed Forces
+2                                                                                                                       US Army Australian Army
+3                                                                                                                                       US Army
+4                                                                                                                         US Army Canadian Army
+5                                                                                                                                  Turkish Army
+6                                                                                                                                              
+                                                                                         Notes
+1 ISAF HeadquartersISAF Joint Command HeadquartersHeadquarters for RC-Capital[citation needed]
+2                                             NATO Training Mission. Soldiers and Contractors.
+3                                                                                          [6]
+4                                                                                          [7]
+5                                                                                          [8]
+6                                                                                          [9]
+                        origin NA
+1 Kabul Province Installations NA
+2 Kabul Province Installations NA
+3 Kabul Province Installations NA
+4 Kabul Province Installations NA
+5 Kabul Province Installations NA
+6 Kabul Province Installations NA</code></pre>
+</div>
+</div>
+</section>
+<section id="scraping-coordinates" class="level1">
+<h1>Scraping coordinates</h1>
+<p>Sometimes, we want to get very specific data from a web page. In this case, we want to get coordinates from Wikipedia district websites. Let’s check out the two districts and their Wikipedia sites.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>district_urls <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(<span class="sc">~</span> district, <span class="sc">~</span> url,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">"Guzargahi-Nur"</span>, <span class="st">"https://en.wikipedia.org/wiki/Guzargahi_Nur_District"</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">"Puli-Khumri"</span>, <span class="st">"https://en.wikipedia.org/wiki/Puli_Khumri"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>district_urls</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  district      url                                                 
+  &lt;chr&gt;         &lt;chr&gt;                                               
+1 Guzargahi-Nur https://en.wikipedia.org/wiki/Guzargahi_Nur_District
+2 Puli-Khumri   https://en.wikipedia.org/wiki/Puli_Khumri           </code></pre>
+</div>
+</div>
+<p>By checking these websites out, we’ve already found out that we’re searching for the <code>class</code> <code>geo-dms</code>. This is something we can search for with <code>html_element</code>. Let’s make a function that will scrape the coordinates from these URLs using this class.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>get_coordinates_from_url <span class="ot">&lt;-</span> <span class="cf">function</span>(wikipedia_url) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  wikipedia_url <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_html</span>() <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">html_element</span>(<span class="st">".geo-dms"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">html_text</span>() </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, we can use this function on our <code>district_urls</code> <code>data.set</code> to create a new <code>character</code> variable: <code>coordinates</code>. Importantly, we have to do this once per row, so we need to use the function <code>rowwise</code> and later on <code>ungroup</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>districts <span class="ot">&lt;-</span> district_urls <span class="sc">|&gt;</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">coordinates =</span> <span class="fu">get_coordinates_from_url</span>(url)) <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>districts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  district      url                                                  coordinates
+  &lt;chr&gt;         &lt;chr&gt;                                                &lt;chr&gt;      
+1 Guzargahi-Nur https://en.wikipedia.org/wiki/Guzargahi_Nur_District 36°13′48″N…
+2 Puli-Khumri   https://en.wikipedia.org/wiki/Puli_Khumri            35°57′N 68…</code></pre>
+</div>
+</div>
+<p>Now we’ve got the coordinates, but they’re not yet in a format we can use. To change this, we’ll use the <code>parzer</code> library.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>districts_with_coordinates <span class="ot">&lt;-</span> districts<span class="sc">$</span>coordinates <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  parzer<span class="sc">::</span><span class="fu">parse_llstr</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(districts) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(district, lat, lon)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>districts_with_coordinates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       district   lat   lon
+1 Guzargahi-Nur 36.23 69.57
+2   Puli-Khumri 35.95 68.70</code></pre>
+</div>
+</div>
+<section id="parsing-to-sf" class="level2">
+<h2 class="anchored" data-anchor-id="parsing-to-sf">Parsing to sf</h2>
+<p>Lastly, we’ll want to parse this to an <code>sf</code> geometry. We can easily do this with its <code>st_as_sf</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>districts_sf <span class="ot">&lt;-</span> districts_with_coordinates <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"lon"</span>, <span class="st">"lat"</span>), <span class="at">crs =</span> <span class="dv">4326</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="mapping-as-a-sanity-check" class="level2">
+<h2 class="anchored" data-anchor-id="mapping-as-a-sanity-check">Mapping as a sanity check</h2>
+<p>Just to check if our two points are indeed within Afghanistan, we’ll draw a map with them. For this, we first need to load the Afghanistan geometry.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>afghanistan <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">country =</span> <span class="st">"Afghanistan"</span>, <span class="at">scale =</span> <span class="st">"small"</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>info <span class="sc">|&gt;</span> kableExtra<span class="sc">::</span><span class="fu">kbl</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> afghanistan) <span class="sc">+</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> districts_sf) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">email</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">info</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">text</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">anna@example.com</td>
-<td style="text-align: left;">apples</td>
-<td style="text-align: left;">Good morning! Do you enjoy apples? Have a great day.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">bernardo@example.com</td>
-<td style="text-align: left;">bananas</td>
-<td style="text-align: left;">Good morning! Do you enjoy bananas? Have a great day.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">charlie@example.com</td>
-<td style="text-align: left;">chocolate</td>
-<td style="text-align: left;">Good morning! Do you enjoy chocolate? Have a great day.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">donald@example.com</td>
-<td style="text-align: left;">donuts</td>
-<td style="text-align: left;">Good morning! Do you enjoy donuts? Have a great day.</td>
-</tr>
-</tbody>
-</table>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/plot-afghanistan-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-</section>
-<section id="mail-function" class="level2">
-<h2 class="anchored" data-anchor-id="mail-function">Mail function</h2>
-<p>Next, let’s set up the function which we will map over to send our mails! Let’s start by understanding what <code>RDCOMClient</code> does for us.</p>
-<section id="open-outlook" class="level3">
-<h3 class="anchored" data-anchor-id="open-outlook">Open Outlook</h3>
-<p>The first thing we want to do – and just once – is to open the Outlook app.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Outlook <span class="ot">&lt;-</span> <span class="fu">COMCreate</span>(<span class="st">"Outlook.Application"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="create-an-email" class="level3">
-<h3 class="anchored" data-anchor-id="create-an-email">Create an email</h3>
-<p>We need to start off by creating an email – just like when you’re in Outlook, you click on <code>Create</code>. We’re telling <code>RDCOMClient</code> that it’s Outlook we want to use by putting it first, and we put the command we want executed after the <code>$</code> sign.</p>
-<p>Let’s also save this email to an object, so that we can work on it again after.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Email <span class="ot">&lt;-</span> Outlook<span class="sc">$</span><span class="fu">CreateItem</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="set-recipient-subject-and-body" class="level3">
-<h3 class="anchored" data-anchor-id="set-recipient-subject-and-body">Set recipient, subject and body</h3>
-<p>What’s the next thing you’d do when writing an email? You’d type in who you want to send the email to and what it’s about – recipient and subject. Then, you’d enter the text – the body.</p>
-<p>We can do that using attributes of the <code>Email</code> object we’ve created.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>first_info <span class="ot">&lt;-</span> info <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">1</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>Email[[<span class="st">"to"</span>]] <span class="ot">&lt;-</span> first_info<span class="sc">$</span>email</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>Email[[<span class="st">"subject"</span>]] <span class="ot">&lt;-</span> <span class="st">"Hello!"</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>Email[[<span class="st">"body"</span>]] <span class="ot">&lt;-</span> first_info<span class="sc">$</span>text</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="sending-the-email" class="level3">
-<h3 class="anchored" data-anchor-id="sending-the-email">Sending the email</h3>
-<p>Lastly, we need to click on <code>Send</code>. This is, again, an <code>Outlook$</code> function, not an attribute.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Email<span class="sc">$</span><span class="fu">Send</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="piecing-together-the-pieces" class="level3">
-<h3 class="anchored" data-anchor-id="piecing-together-the-pieces">Piecing together the pieces</h3>
-<p>This is our final function, where we have incorporated everything we need. Note that we don’t include opening Outlook – this is something we only need to do once. We can now take this function and map over it.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Note that in our approach, we’re using the same subject for all emails. You could, however, also map over this part.</p>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>send_mail <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">to =</span> <span class="st">""</span>,</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">body =</span> <span class="st">""</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">subject =</span> <span class="st">"Hello from R"</span>){</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  Email <span class="ot">=</span> Outlook<span class="sc">$</span><span class="fu">CreateItem</span>(<span class="dv">0</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  Email[[<span class="st">"to"</span>]] <span class="ot">=</span> to</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  Email[[<span class="st">"subject"</span>]] <span class="ot">=</span> subject</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  Email[[<span class="st">"body"</span>]] <span class="ot">=</span> body</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  Email<span class="sc">$</span><span class="fu">Send</span>()</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-</section>
-<section id="mapping-over-the-function" class="level2">
-<h2 class="anchored" data-anchor-id="mapping-over-the-function">Mapping over the function</h2>
-<p>Let’s now take <code>purr</code> to map over this! We’ll need the <code>walk2</code> function, since we have two inputs for every mail that change:</p>
-<ul>
-<li>email</li>
-<li>body/text</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Outlook <span class="ot">&lt;-</span> <span class="fu">COMCreate</span>(<span class="st">"Outlook.Application"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">walk2</span>(<span class="at">.x =</span> info<span class="sc">$</span>email,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">.y =</span> info<span class="sc">$</span>text,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">.f =</span> <span class="sc">~</span> <span class="fu">send_mail</span>(<span class="at">to =</span> .x, <span class="at">body =</span> .y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>And there we have it – we can send out an email to Anna, Bernardo, Charlie and Donald all at once! You can check in your Outlook outbox that these emails actually sent.</p>
-</section>
-<section id="approaches-without-outlook" class="level2">
-<h2 class="anchored" data-anchor-id="approaches-without-outlook">Approaches without Outlook</h2>
-<p>Using <code>RDCOMClient</code> to access Outlook is a bit hacky, but was exactly the right thing for me. However, we could use a more direct approach, without using the Outlook user interface.</p>
-<p><a href="https://mailtrap.io/blog/r-send-email/">This</a> blogpost by mailtrap goes into detail about how you can achieve this.</p>
+<p>We can see that the two points are within Afghanistan, so we seem to have mapped it correctly.</p>
 
 
+</section>
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{zeller2025,
   author = {Zeller, Sarah},
-  title = {Sending Automated Emails},
-  date = {2025-02-12},
-  url = {https://sarahzeller.github.io/blog/posts/sending-automated-emails/},
+  title = {Scraping Wikipedia},
+  date = {2025-05-28},
+  url = {https://sarahzeller.github.io/blog/posts/scraping-wikipedia/},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-zeller2025" class="csl-entry quarto-appendix-citeas" role="listitem">
-Zeller, Sarah. 2025. <span>“Sending Automated Emails.”</span> February
-12, 2025. <a href="https://sarahzeller.github.io/blog/posts/sending-automated-emails/">https://sarahzeller.github.io/blog/posts/sending-automated-emails/</a>.
+Zeller, Sarah. 2025. <span>“Scraping Wikipedia.”</span> May 28, 2025. <a href="https://sarahzeller.github.io/blog/posts/scraping-wikipedia/">https://sarahzeller.github.io/blog/posts/scraping-wikipedia/</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

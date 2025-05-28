@@ -4,12 +4,9 @@
     "items": []
   },
   {
-    "listing": "/software/index.html",
-    "items": []
-  },
-  {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/posts/scraping-wikipedia/index.html",
       "/blog/posts/sending-automated-emails/index.html",
       "/blog/posts/locator-map/index.html",
       "/blog/posts/opening-kmz-files/index.html",
@@ -18,5 +15,9 @@
       "/blog/posts/creating-a-basic-map/index.html",
       "/blog/posts/showing-regression-results/index.html"
     ]
+  },
+  {
+    "listing": "/software/index.html",
+    "items": []
   }
 ]
