@@ -1,0 +1,191 @@
+---
+author: Sarah Zeller
+title: Scraping wikipedia
+date: "2025-05-28"
+categories: [code, summary]
+citation:
+  url: https://sarahzeller.github.io/blog/posts/scraping-wikipedia/
+
+format:
+  html:
+    toc: true
+
+execute:
+  warning: false
+---
+
+Every now and then, we want to get some data from the wild -- e.g., from Wikipedia articles.
+We'll see two data types here:
+
+- tables
+- specific data from a specific class.
+
+Before we start, let's load the necessary libraries.
+
+
+```{r}
+#| label: setup
+# for scraping
+library(rvest)
+library(dplyr)
+library(purrr)
+library(parzer)
+
+# to parse it to spatial data
+library(sf)
+library(rnaturalearth)
+library(ggplot2)
+```
+
+# Scraping multiple tables
+
+Let's start with a simple table to scrape.
+Here, you see the URL that we're working with.
+If you check it out, you can see that we've got multiple tables in here.
+Our aim is to collect them all into a single table.
+
+
+```{r}
+#| label: table-url
+
+url <- "https://en.wikipedia.org/wiki/List_of_NATO_installations_in_Afghanistan"
+```
+
+
+So, let's start by reading in the table.
+We'll discard everything that isn't a table (i.e. just one column).
+In this specific format, we'll also get the name of each table, since that seems to contain information.
+
+```{r}
+tables <- url %>%   
+  read_html() |>
+  html_table() |> 
+  keep(~ncol(.x) > 1) 
+
+table_names <- tables |> 
+  map(~names(.x) |> unique()) |> 
+  unlist() |> 
+  discard(~.x == "")
+```
+
+The problem with our data so far is that the actual variable names are in the first row of our `data.frame`s.
+So let's write a function to get the variable names from the first row.
+
+```{r}
+#| label: cleaning-function
+make_first_row_to_col_names <- function(data){
+  col_names <- data[1,] |> as.character()
+  data[-1, ] |> 
+    setNames(col_names)
+}
+```
+
+Now that we've written this function, we can bring everything together:
+
+- the tables
+- with their correct variable names and
+- their table origin
+
+We'll use the `map2` function here, since we're basically looping over two lists:
+
+- tables
+- table origin
+
+The `~` indicates that we're creating a function on the fly here, where we're taking each table, correcting their variable names and adding the table origin.
+We'll them bring them all into one table.
+
+
+```{r}
+#| label: merge-tables
+tables_merged <- map2(tables,
+                      table_names,
+                      ~ .x |> make_first_row_to_col_names() |> mutate(origin = .y)) |> 
+  plyr::rbind.fill()
+
+tables_merged |> 
+  head()
+
+```
+
+
+# Scraping coordinates
+
+Sometimes, we want to get very specific data from a web page.
+In this case, we want to get coordinates from Wikipedia district websites.
+Let's check out the two districts and their Wikipedia sites.
+
+```{r}
+district_urls <- tibble::tribble(~ district, ~ url,
+                                 "Guzargahi-Nur", "https://en.wikipedia.org/wiki/Guzargahi_Nur_District",
+                                 "Puli-Khumri", "https://en.wikipedia.org/wiki/Puli_Khumri")
+district_urls
+```
+
+By checking these websites out, we've already found out that we're searching for the `class` `geo-dms`.
+This is something we can search for with `html_element`.
+Let's make a function that will scrape the coordinates from these URLs using this class.
+
+```{r}
+get_coordinates_from_url <- function(wikipedia_url) {
+  wikipedia_url |>
+    read_html() |>
+    html_element(".geo-dms") |>
+    html_text() 
+}
+```
+
+Then, we can use this function on our `district_urls` `data.set` to create a new `character` variable: `coordinates`.
+Importantly, we have to do this once per row, so we need to use the function `rowwise` and later on `ungroup`.
+
+```{r}
+districts <- district_urls |> 
+  rowwise() |> 
+  mutate(coordinates = get_coordinates_from_url(url)) |> 
+  ungroup()
+
+districts
+```
+
+Now we've got the coordinates, but they're not yet in a format we can use.
+To change this, we'll use the `parzer` library.
+
+```{r}
+districts_with_coordinates <- districts$coordinates |> 
+  parzer::parse_llstr() |> 
+  cbind(districts) |> 
+  select(district, lat, lon)
+
+districts_with_coordinates
+```
+
+## Parsing to sf
+
+Lastly, we'll want to parse this to an `sf` geometry.
+We can easily do this with its `st_as_sf` function.
+
+```{r}
+districts_sf <- districts_with_coordinates |> 
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+```
+
+## Mapping as a sanity check
+
+Just to check if our two points are indeed within Afghanistan, we'll draw a map with them.
+For this, we first need to load the Afghanistan geometry.
+
+```{r}
+#| label: load-afghanistan
+afghanistan <- ne_countries(country = "Afghanistan", scale = "small", returnclass = "sf")
+```
+
+```{r}
+#| label: plot-afghanistan
+
+ggplot() + 
+  geom_sf(data = afghanistan) + 
+  geom_sf(data = districts_sf) +
+  theme_minimal()
+```
+
+We can see that the two points are within Afghanistan, so we seem to have mapped it correctly. 
+
