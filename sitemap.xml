@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://sarahzeller.github.io/data-viz/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.089Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.094Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/scraping-wikipedia/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.086Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/locator-map/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.085Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/showing-regression-results/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.087Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/reading-csv-with-2row-colnames/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.085Z</lastmod>
+    <loc>https://sarahzeller.github.io/software/index.html</loc>
+    <lastmod>2025-06-30T13:30:06.419Z</lastmod>
   </url>
   <url>
     <loc>https://sarahzeller.github.io/blog/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.083Z</lastmod>
+    <lastmod>2025-06-30T13:30:06.409Z</lastmod>
   </url>
   <url>
-    <loc>https://sarahzeller.github.io/blog/posts/creating-a-basic-map/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.083Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sarahzeller.github.io/blog/posts/opening-nc-files/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.085Z</lastmod>
+    <loc>https://sarahzeller.github.io/blog/posts/reading-csv-with-2row-colnames/index.html</loc>
+    <lastmod>2025-06-30T13:30:06.412Z</lastmod>
   </url>
   <url>
     <loc>https://sarahzeller.github.io/blog/posts/sending-automated-emails/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.086Z</lastmod>
+    <lastmod>2025-06-30T13:30:06.412Z</lastmod>
   </url>
   <url>
     <loc>https://sarahzeller.github.io/blog/posts/opening-kmz-files/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.085Z</lastmod>
+    <lastmod>2025-06-30T13:30:06.411Z</lastmod>
   </url>
   <url>
-    <loc>https://sarahzeller.github.io/software/index.html</loc>
-    <lastmod>2025-05-28T11:46:05.095Z</lastmod>
+    <loc>https://sarahzeller.github.io/blog/posts/opening-nc-files/index.html</loc>
+    <lastmod>2025-06-30T13:30:06.411Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/data-viz/index.html</loc>
+    <lastmod>2025-06-30T13:30:06.413Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/scraping-wikipedia/index.html</loc>
+    <lastmod>2025-06-30T13:30:06.412Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/locator-map/index.html</loc>
+    <lastmod>2025-06-30T13:30:06.411Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/showing-regression-results/index.html</loc>
+    <lastmod>2025-06-30T13:30:06.413Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/blog/posts/creating-a-basic-map/index.html</loc>
+    <lastmod>2025-06-30T13:30:06.409Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sarahzeller.github.io/index.html</loc>
+    <lastmod>2025-06-30T13:30:06.418Z</lastmod>
   </url>
 </urlset>

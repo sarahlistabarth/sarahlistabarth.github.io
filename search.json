@@ -1,17 +1,178 @@
 [
   {
+    "objectID": "software/index.html",
+    "href": "software/index.html",
+    "title": "Software",
+    "section": "",
+    "text": "Provides a set of functions to implement donut analyses in R –\nfor when you're unsure which distance to a point of interest still counts as treated.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n        Quarto template in TUD corporate design for presentations and extendes abstracts –\nfor both typst and latex output.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        R script to analyze inconsistent writings in a word document, e.g. 'summariZe' vs. 'summariSe'.\nOutputs a word document that can be used with the FRedit macro (but should be reviewed first).\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        Word macros that editors can use to automate repetitive tasks.\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\nNo matching items"
+  },
+  {
+    "objectID": "software/index.html#software",
+    "href": "software/index.html#software",
+    "title": "Software",
+    "section": "",
+    "text": "Provides a set of functions to implement donut analyses in R –\nfor when you're unsure which distance to a point of interest still counts as treated.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n        Quarto template in TUD corporate design for presentations and extendes abstracts –\nfor both typst and latex output.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        R script to analyze inconsistent writings in a word document, e.g. 'summariZe' vs. 'summariSe'.\nOutputs a word document that can be used with the FRedit macro (but should be reviewed first).\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        Word macros that editors can use to automate repetitive tasks.\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\nNo matching items"
+  },
+  {
+    "objectID": "software/index.html#contributions",
+    "href": "software/index.html#contributions",
+    "title": "Software",
+    "section": "Contributions",
+    "text": "Contributions\n\n\n    \n    \n        \n            Base R \n        \n        Fixed a bug in `tools::toTitleCase()` where a letter following a hyphen and\na space would always be capitalized -- even when it should not\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n            ags package \n        \n        Fixed a bug – a typo that led a reference into the void\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            modern2-cv template \n        \n        Added a template for the motivation letter that fits the CV template\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            purrr bookclub \n        \n        As part of the bookclub on the `purrr` package, added the corresponding chapter.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            Effect bookclub \n        \n        As part of the bookclub on \"The Effect\" by Nick Huntington-Klein, added some chapters.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\nNo matching items"
+  },
+  {
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "This blog is for people just starting out with their R journey. I’ll address beginner problems, simplifying some concepts in R programming.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nScraping wikipedia\n\n\n\ncode\n\nsummary\n\n\n\n\n\n\n\n\n\nMay 28, 2025\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nSending automated emails\n\n\n\ncode\n\nvisualization\n\n\n\n\n\n\n\n\n\nFeb 12, 2025\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a locator map with ggplot2\n\n\n\ncode\n\nvisualization\n\n\n\n\n\n\n\n\n\nFeb 2, 2025\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nOpening .kmz files\n\n\n\ncode\n\nspatial formats\n\n\n\n\n\n\n\n\n\nMay 27, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nReading a csv file with 2-row column names\n\n\n\ncode\n\ndata\n\n\n\nSometimes, csv files have 2-row column names. I create a function to deal with this.\n\n\n\n\n\nMay 5, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nOpening .nc files\n\n\n\ncode\n\nspatial formats\n\n\n\n\n\n\n\n\n\nFeb 24, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a map with ggplot2\n\n\n\ncode\n\nvisualization\n\n\n\n\n\n\n\n\n\nJan 4, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a basic regression table with modelsummary\n\n\n\ncode\n\nsummary\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah Zeller\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html",
+    "href": "blog/posts/reading-csv-with-2row-colnames/index.html",
+    "title": "Reading a csv file with 2-row column names",
+    "section": "",
+    "text": "I recently wanted to check out election results from the last German Bundestag election, and read them into R. The data was saved in a csv file – so far, so good. But the column names were spread over two rows. 😱\nThis means I’m losing valuable information if I’m only reading the first row of column names. Additionally, the types of the rows get messed up, since the second row of the column names is read as data – specifically, character data.\nSo, I wanted to combine both rows of column names into one. Here’s how I did it in R."
+  },
+  {
+    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-the-first-row",
+    "href": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-the-first-row",
+    "title": "Reading a csv file with 2-row column names",
+    "section": "Reading the first row",
+    "text": "Reading the first row\nThere’s probably many ways to do this, but I decided to go for the following approach:\n\nread in the csv file starting at the first column name row\nclean the column names\nstore the column names in a variable\n\nTo read in the first row of column names, we can use the read.csv2() function. We’ll skip the first three rows (which only contain metadata) and read in only one row, since we don’t need the content for now. Then, we’ll clean the column names with janitor::clean_names() to make sure that they’re formatted like we want them to. Lastly, I’m removing the numbers that are attached at the end since some of the variable names so far are not unique (since they’re still missing the second row).\n\ncolnames_row1 &lt;- read.csv2(temp_file, skip = 4, nrows = 1) |&gt;\njanitor::clean_names() |&gt; \n  colnames() |&gt; \n  gsub(\"_[[:digit:]].*\", \"\", x = _)"
+  },
+  {
+    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-both-column-names",
+    "href": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-both-column-names",
+    "title": "Reading a csv file with 2-row column names",
+    "section": "Reading both column names",
+    "text": "Reading both column names\nWe could repeat this procedure for the second row of column names. However, it’s better to create a function for this case. We simply take the pipeline from before and put it into a function.\n\nread_colnames &lt;- function(path, skip_rows = 4, no_rows = 1) {\n  path |&gt; \n    read.csv2(skip = skip_rows, nrows = no_rows) |&gt; \n    janitor::clean_names() |&gt; \n    colnames() |&gt; \n    gsub(\"_[[:digit:]].*\", \"\", x = _)\n}"
+  },
+  {
+    "objectID": "blog/posts/sending-automated-emails/index.html",
+    "href": "blog/posts/sending-automated-emails/index.html",
+    "title": "Sending automated emails",
+    "section": "",
+    "text": "I recently needed to send out an email to many recipients, with only slight changes in the text. And I figured – this must be something we can do with R, right?\nLuckily enough, there’s the RDCOMClient library which lets R access some programs, including Outlook. So if you have Outlook set up on your computer, this approach will work like a charm. Actually, it was kind of scary for me: this really works, and real emails get sent. 😱"
+  },
+  {
+    "objectID": "blog/posts/sending-automated-emails/index.html#preparation",
+    "href": "blog/posts/sending-automated-emails/index.html#preparation",
+    "title": "Sending automated emails",
+    "section": "Preparation",
+    "text": "Preparation\nWhat do we need?\n\nthe RDCOMClient library\na data.frame including the email addresses and the bit we want changed\na template text\n\nSo let’s start by loading the needed libraries. We already talked about RDCOMClient. dplyr and glue make pasting our template and our information together easier, and purrr will allow us to loop over our info data.frame.\n\nlibrary(glue)\nlibrary(dplyr)\nlibrary(RDCOMClient)\nlibrary(purrr)\n\nLet’s start with our template! We’ll make it nice and short.\n\ntemplate &lt;- \"Good morning!\nDo you enjoy {food}?\nHave a great day.\"\n\nNext, we’d load our data.frame; for this showcase purpose, we’ll just make it up from scratch. We’ll combine our template and our bit of information into a new column, text.\n\ninfo &lt;- tibble::tribble(\n  ~email, ~info,\n  \"anna@example.com\", \"apples\",\n  \"bernardo@example.com\", \"bananas\",\n  \"charlie@example.com\", \"chocolate\",\n  \"donald@example.com\", \"donuts\"\n) |&gt; \n  dplyr::mutate(text = glue::glue(template, food = info))\n\n\ninfo |&gt; kableExtra::kbl()\n\n\n\n\nemail\ninfo\ntext\n\n\n\n\nanna@example.com\napples\nGood morning! Do you enjoy apples? Have a great day.\n\n\nbernardo@example.com\nbananas\nGood morning! Do you enjoy bananas? Have a great day.\n\n\ncharlie@example.com\nchocolate\nGood morning! Do you enjoy chocolate? Have a great day.\n\n\ndonald@example.com\ndonuts\nGood morning! Do you enjoy donuts? Have a great day."
+  },
+  {
+    "objectID": "blog/posts/sending-automated-emails/index.html#mail-function",
+    "href": "blog/posts/sending-automated-emails/index.html#mail-function",
+    "title": "Sending automated emails",
+    "section": "Mail function",
+    "text": "Mail function\nNext, let’s set up the function which we will map over to send our mails! Let’s start by understanding what RDCOMClient does for us.\n\nOpen Outlook\nThe first thing we want to do – and just once – is to open the Outlook app.\n\nOutlook &lt;- COMCreate(\"Outlook.Application\")\n\n\n\nCreate an email\nWe need to start off by creating an email – just like when you’re in Outlook, you click on Create. We’re telling RDCOMClient that it’s Outlook we want to use by putting it first, and we put the command we want executed after the $ sign.\nLet’s also save this email to an object, so that we can work on it again after.\n\nEmail &lt;- Outlook$CreateItem(0)\n\n\n\nSet recipient, subject and body\nWhat’s the next thing you’d do when writing an email? You’d type in who you want to send the email to and what it’s about – recipient and subject. Then, you’d enter the text – the body.\nWe can do that using attributes of the Email object we’ve created.\n\nfirst_info &lt;- info |&gt; head(1)\n\nEmail[[\"to\"]] &lt;- first_info$email\nEmail[[\"subject\"]] &lt;- \"Hello!\"\nEmail[[\"body\"]] &lt;- first_info$text\n\n\n\nSending the email\nLastly, we need to click on Send. This is, again, an Outlook$ function, not an attribute.\n\nEmail$Send()\n\n\n\nPiecing together the pieces\nThis is our final function, where we have incorporated everything we need. Note that we don’t include opening Outlook – this is something we only need to do once. We can now take this function and map over it.\n\n\n\n\n\n\nTip\n\n\n\nNote that in our approach, we’re using the same subject for all emails. You could, however, also map over this part.\n\n\n\nsend_mail &lt;- function(to = \"\",\n                      body = \"\",\n                      subject = \"Hello from R\"){\n  Email = Outlook$CreateItem(0)\n  Email[[\"to\"]] = to\n  Email[[\"subject\"]] = subject\n  Email[[\"body\"]] = body\n  Email$Send()\n}"
+  },
+  {
+    "objectID": "blog/posts/sending-automated-emails/index.html#mapping-over-the-function",
+    "href": "blog/posts/sending-automated-emails/index.html#mapping-over-the-function",
+    "title": "Sending automated emails",
+    "section": "Mapping over the function",
+    "text": "Mapping over the function\nLet’s now take purr to map over this! We’ll need the walk2 function, since we have two inputs for every mail that change:\n\nemail\nbody/text\n\n\nOutlook &lt;- COMCreate(\"Outlook.Application\")\nwalk2(.x = info$email,\n      .y = info$text,\n      .f = ~ send_mail(to = .x, body = .y))\n\nAnd there we have it – we can send out an email to Anna, Bernardo, Charlie and Donald all at once! You can check in your Outlook outbox that these emails actually sent."
+  },
+  {
+    "objectID": "blog/posts/sending-automated-emails/index.html#approaches-without-outlook",
+    "href": "blog/posts/sending-automated-emails/index.html#approaches-without-outlook",
+    "title": "Sending automated emails",
+    "section": "Approaches without Outlook",
+    "text": "Approaches without Outlook\nUsing RDCOMClient to access Outlook is a bit hacky, but was exactly the right thing for me. However, we could use a more direct approach, without using the Outlook user interface.\nThis blogpost by mailtrap goes into detail about how you can achieve this."
+  },
+  {
+    "objectID": "blog/posts/opening-kmz-files/index.html",
+    "href": "blog/posts/opening-kmz-files/index.html",
+    "title": "Opening .kmz files",
+    "section": "",
+    "text": "When working with spatial data, one thing I’ve noticed is: there’s a lot of obscure data formats. And with every one of them, it takes me a while to figure out how to handle them in R. So I decided to make a series of blog posts on how to handle some of the spatial formats I’ve come across.\nThis post is on .kmz files. If you’re working with Google Earth Pro, this is the format your vector files will be exported in. Recently, I’ve worked quite a bit with Google Earth Pro to collect data on landfills by hand. You’ll find an example .kmz file here."
+  },
+  {
+    "objectID": "blog/posts/opening-kmz-files/index.html#extracting-information-from-the-name",
+    "href": "blog/posts/opening-kmz-files/index.html#extracting-information-from-the-name",
+    "title": "Opening .kmz files",
+    "section": "Extracting information from the Name",
+    "text": "Extracting information from the Name\nWhen we check out our agbogbloshie_polygon data frame, we can see that there’s information contained in the Name column, specifically: the year for which the polygon shape is valid. So let’s extract that numeric information from the character column! Because the description is quite long and has much information included – and it’s always formatted the same way –, we’ll use the unglue package to extract the information. Also, the landfill is misspelt in some cases, so we need to account for that.\n\nagbogbloshie_polygon &lt;- agbogbloshie_polygon |&gt; \n  unglue_unnest(Name, \n                patterns = c(\"{landfill_name}_{month}_{year}_{polygon_no}\",\n                             \"{landfill_name}_{month}_{year}\",\n                             \"{landfill_name} {month}_{year}\"),\n                remove = FALSE) |&gt; \n  mutate(landfill_name = case_match(landfill_name,\n                                    \"Agblogbloshie\" ~ \"Agbogbloshie\",\n                                    \"Agbogbgloshie\" ~ \"Agbogbloshie\",\n                                    .default = \"Agbogbloshie\"))\n\nagbogbloshie_polygon\n\nSimple feature collection with 8 features and 6 fields\nGeometry type: MULTIPOLYGON\nDimension:     XYZ\nBounding box:  xmin: -0.2311228 ymin: 5.54208 xmax: -0.2246721 ymax: 5.556922\nz_range:       zmin: 0 zmax: 0\nGeodetic CRS:  WGS 84\n# A tibble: 8 × 7\n  Name                     Description landfill_name month year  polygon_no\n* &lt;chr&gt;                    &lt;chr&gt;       &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     \n1 Agbogbloshie_02_2020     \"\"          Agbogbloshie  02    2020  &lt;NA&gt;      \n2 Agbogbloshie_10_2018     \"\"          Agbogbloshie  10    2018  &lt;NA&gt;      \n3 Agblogbloshie 10_2016    \"\"          Agbogbloshie  10    2016  &lt;NA&gt;      \n4 Agbogbloshie_10_2018_02  \"\"          Agbogbloshie  10    2018  02        \n5 Agbogbloshie_10_2018_03  \"\"          Agbogbloshie  10    2018  03        \n6 Agbogbgloshie_02_2020_02 \"\"          Agbogbloshie  02    2020  02        \n7 Agbogbloshie_02_2020_03  \"\"          Agbogbloshie  02    2020  03        \n8 Agbogbloshie_10_2016_02  \"\"          Agbogbloshie  10    2016  02        \n# ℹ 1 more variable: geometry &lt;MULTIPOLYGON [°]&gt;\n\n\nLet’s use this information to plot the landfill in the two different years! Seems like the landfill grew quite a bit in between.\n\nggplot() +\n  geom_sf(data = agbogbloshie_polygon) +\n  facet_wrap(~year) +\n  geom_sf(data = agbogbloshie_point) +\n  theme_void() +\n  ggspatial::annotation_scale()\n\n\n\n\n\n\n\nFigure 1: Agbogbloshie landfill over time\n\n\n\n\n\nThis looks good! However, we can see that the landfills consist of multiple polygons. Let’s get them together."
+  },
+  {
+    "objectID": "blog/posts/opening-kmz-files/index.html#summarizing-into-one-polygon",
+    "href": "blog/posts/opening-kmz-files/index.html#summarizing-into-one-polygon",
+    "title": "Opening .kmz files",
+    "section": "Summarizing into one polygon",
+    "text": "Summarizing into one polygon\nIn every year, we have more than one polygon. We want to collapse these into a single multipolygon. For that, we need to summarize them by year and landfill.\n\nagbogbloshie_polygon &lt;- agbogbloshie_polygon |&gt; \n  st_zm() |&gt; \n  st_transform(crs = \"ESRI:54009\") |&gt; \n  st_make_valid() |&gt; \n  # summarize geometry into multipolygons\n  group_by(landfill_name, year, month) |&gt; \n  summarize() |&gt; \n  ungroup()"
+  },
+  {
+    "objectID": "blog/posts/opening-kmz-files/index.html#calculating-area",
+    "href": "blog/posts/opening-kmz-files/index.html#calculating-area",
+    "title": "Opening .kmz files",
+    "section": "Calculating area",
+    "text": "Calculating area\nAs a next step, let’s calculate the area of these polygons. After all, it’s interesting to see if this landfill shrinks or grows!\nFor now, our data are unprojected, though. We can check this by getting the coordinate reference system (CRS) of our data. The output is very long and includes a lot of information, but we only need to focus on the first line, the User input. The next lines show the corresponding well-known text (wkt), which details exactly how the CRS works. We can see here that the CRS is still WGS 84, which means – unprojected.\n\nst_crs(agbogbloshie)\n\nCoordinate Reference System:\n  User input: WGS 84 \n  wkt:\nGEOGCRS[\"WGS 84\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"geodetic latitude (Lat)\",north,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"geodetic longitude (Lon)\",east,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    ID[\"EPSG\",4326]]\n\n\nHowever, we know that the world is shaped like a potato, and that these unprojected data are biased. To correct for this, we first need to project the data into a CRS that’s accurate for that world region when it comes to area – we also call this area-preserving projection. The official CRS for Ghana, where this landfill is located, has the EPSG code 2136. Once we’ve projected the polygons, we can easily calculate the area with the sf package.\n\nagbogbloshie_polygon &lt;- agbogbloshie_polygon |&gt; \n  st_transform(crs = \"epsg:2136\") |&gt; \n  mutate(area = st_area(geometry)) \n\nagbogbloshie_polygon\n\nSimple feature collection with 3 features and 4 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 1179342 ymin: 316685.8 xmax: 1181692 ymax: 322068\nProjected CRS: Accra / Ghana National Grid\n# A tibble: 3 × 5\n  landfill_name year  month                                      geometry   area\n* &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;                                &lt;MULTIPOLYGON&gt;  [m^2]\n1 Agbogbloshie  2016  10    (((1180085 320017.8, 1180468 319802.8, 11805… 2.41e5\n2 Agbogbloshie  2018  10    (((1180357 319898.9, 1180372 319891.8, 11803… 2.94e5\n3 Agbogbloshie  2020  02    (((1179921 320055.5, 1179936 320041.3, 11799… 2.56e5\n\n\nYou’ll notice that the area column has a specific format: it’s a unit. This package makes it easy to convert values from one unit into another. Let’s see how we can convert the area into hectares. Afterwards, let’s drop the unit because we have the data in the final shape we want them.\n\nagbogbloshie_polygon &lt;- agbogbloshie_polygon |&gt; \n  mutate(area_ha = set_units(area, \"ha\") |&gt; drop_units())\n\nAnd there we have it, a data frame with the attributes that we need! Let’s check out the area in comparison. We see that there’s not that much difference!\n\nggplot(data = agbogbloshie_polygon) +\n  geom_col(aes(x = year |&gt; as.character(), y = area_ha)) +\n  coord_flip() +\n  labs(y = \"Area (ha)\",\n       x = \"\") +\n  theme_minimal()\n\n\n\n\n\n\n\nFigure 2: Agbogbloshie landfill area over time"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html",
+    "href": "blog/posts/opening-nc-files/index.html",
+    "title": "Opening .nc files",
+    "section": "",
+    "text": "When working with raster data, one thing I’ve noticed is: there’s a lot of obscure data formats. And with every one of them, it takes me a while to figure out how to handle them in R. So I decided to make a series of blog posts on how to handle some of the raster formats I’ve come across.\nThe first one are .nc files, also known as netCDF. From what I’ve learned, they usually have three layers:\nHowever, the order of these three layers varies, which means you’ll have to get acquainted with your data first. So:"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#open-nc-file",
+    "href": "blog/posts/opening-nc-files/index.html#open-nc-file",
+    "title": "Opening .nc files",
+    "section": "Open nc file",
+    "text": "Open nc file\nThe first thing we do is have a look at the variable names (they’re saved under var in the weather list). Let’s also check out their names, which is saved under longname in this ncd4 format. Additionally, let’s find out their respective dimensions, saved under size.\n\nraster &lt;- raster_path |&gt; nc_open()\n\nraster |&gt; \n  pluck(\"var\") |&gt; \n  map_df(~ .x[c(\"longname\", \"size\")] |&gt; as.character()) |&gt; \n  # you could stop here, but I wanted a nice display\n  t() |&gt; \n  data.frame() |&gt; \n  tibble::rownames_to_column() |&gt; \n  setNames(c(\"variable\", \"name\", \"dimension\")) |&gt; \n  kableExtra::kbl()\n\n\n\n\nvariable\nname\ndimension\n\n\n\n\ntime_bnds\ntime_bnds\nc(2, 365)\n\n\nlon\nLongitude Of Cell Center\nc(240, 220)\n\n\nlat\nLatitude Of Cell Center\nc(240, 220)\n\n\nx_bnds\nx_bnds\nc(2, 240)\n\n\ny_bnds\ny_bnds\nc(2, 220)\n\n\ncrs_HYRAS\nDWD HYRAS ETRS89 LCC grid with 240 columns and 220 rows\n1\n\n\ntas\nDaily Mean Air Temperature\nc(240, 220, 365)\n\n\nnumber_of_stations\nNumber Of Stations Available For Interpolation Per Day All Over The HYRAS Area\n365"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#sec-vars",
+    "href": "blog/posts/opening-nc-files/index.html#sec-vars",
+    "title": "Opening .nc files",
+    "section": "Time and spatial layers",
+    "text": "Time and spatial layers\nWe’re definitely going to need something along the lines of latitude and longitude. From the descriptions, we can see that lat and lon describe the cell center, and their dimension is 240 \\(\\times\\) 220. That is not what we need. Instead, we want something with dimensions of 1–2 \\(\\times\\) 240 or 220, which describes the latitude and longitude in general, not for every cell center. In this case, that applies for x_bnds and y_bnds.\nWe also need something specifying the time. In this case, that is time_bnds.\nLet’s also get the crs for good measure, crs_HYRAS. This only has dimension 1, so we need to extract is as an attribute.\nAll of these layers can be named differently in different files, so it pays off to check out the specific name. Let’s save them into variables so we can’t forget them!\n\ntime &lt;- ncvar_get(raster, \"time_bnds\")\nlon &lt;- ncvar_get(raster, \"x_bnds\")\nlat &lt;- ncvar_get(raster, \"y_bnds\")\ncrs &lt;- ncatt_get(raster, \"crs_HYRAS\")$epsg_code"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#variable-layer",
+    "href": "blog/posts/opening-nc-files/index.html#variable-layer",
+    "title": "Opening .nc files",
+    "section": "Variable layer",
+    "text": "Variable layer\nNow, we also need the actual variable we’re looking for. In this case, it’s tas (for mean daily temperature). We can see that the dimensions are the largest and match our geospatial and time dimensions: 240 (x_bnds) \\(\\times\\) 220 (y_bnds) \\(\\times\\) 365 (time_bnds).\nLet’s get this variable’s array out. Additionally, let’s find out how the NAs are coded, and use that information to code them as NAs that R recognizes.\n\nvariable_array &lt;- ncvar_get(raster, \"tas\")\nfillvalue &lt;- ncatt_get(raster, \"tas\", \"_FillValue\")\n\n# set NA value\nvariable_array[variable_array == fillvalue$value] &lt;- NA"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#close-nc-file",
+    "href": "blog/posts/opening-nc-files/index.html#close-nc-file",
+    "title": "Opening .nc files",
+    "section": "Close nc file",
+    "text": "Close nc file\nNow we have all the information we need, yay! Let’s not forget to close the .nc file again.\n\nnc_close(raster)"
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#making-a-raster",
+    "href": "blog/posts/opening-nc-files/index.html#making-a-raster",
+    "title": "Opening .nc files",
+    "section": "Making a raster",
+    "text": "Making a raster\nNext, we make a raster of this with the terra package. We already know the structure of the array, where time is the last layer. This does vary over different files though!\nWe declare the extent and the crs that we extracted in Section 2.2. Then, let’s go ahead and plot it!\n\ngot_weather_array &lt;- variable_array[,, day_of_year]\ngot_weather_raster &lt;- got_weather_array |&gt; \n  terra::rast(extent = ext(min(lon),\n                             max(lon),\n                             min(lat),\n                             max(lat)),\n                crs = crs)\nplot(got_weather_raster)\n\n\n\n\n\n\n\n\nWell, this somewhat looks like Germany … but not quite yet. We need to mirror it and turn it by 90°."
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#transposing-the-raster",
+    "href": "blog/posts/opening-nc-files/index.html#transposing-the-raster",
+    "title": "Opening .nc files",
+    "section": "Transposing the raster",
+    "text": "Transposing the raster\nFor this, we need to go back to the last step, and transpose the 2-dimensional array for our specific day. Then, we make it a raster again.\n\ngot_weather_raster_transposed &lt;- got_weather_array |&gt;\n  t() |&gt;\n  terra::rast(extent = ext(min(lon),\n                           max(lon),\n                           min(lat),\n                           max(lat)),\n              crs = crs)\n\ngot_weather_raster_transposed |&gt; \n  plot()\n\n\n\n\n\n\n\n\nWell, this is almost right – we just need to turn it upside down now."
+  },
+  {
+    "objectID": "blog/posts/opening-nc-files/index.html#flipping-the-raster",
+    "href": "blog/posts/opening-nc-files/index.html#flipping-the-raster",
+    "title": "Opening .nc files",
+    "section": "Flipping the raster",
+    "text": "Flipping the raster\nFor this task, terra has a specific function, flip. We can say which way to flip the raster – in this case, vertically. Let’s go ahead and plot this again.\n\ngot_weather_raster_right_side_up &lt;- got_weather_raster_transposed |&gt; \n  flip(direction = \"vertical\")\n\ngot_weather_raster_right_side_up |&gt; plot()\n\n\n\n\n\n\n\n\nAnd there we have it!"
+  },
+  {
     "objectID": "data-viz/index.html",
     "href": "data-viz/index.html",
     "title": "Data Visualizations",
     "section": "",
     "text": "Typewriter Chique: Saxony Switzerland \n          \n          Based on a post by Nicola Rennie, who did a typewriter-style map of Italy,\nI made this map of the Saxony Switzerland.\nIt's a region close to Dresden where I enjoy going for a hike. 🥾\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Guest map \n          \n          People are coming from a couple of places for our wedding.\nI wanted to visualize where exactly, and which connections are especially strong.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              London marathon \n          \n          This map is part of the tidytuesday challenge.\nNicola Rennie cleaned a dataset on the London marathon, and I visualized \nwhere winners are from.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Witches in the USA \n          \n          This map is part of the tidytuesday challenge.\nThis dataset was about haunted places in the USA.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Rodents \n          \n          This map is part of the tidytuesday challenge.\nThe dataset was on rodents, and I focused on their diets.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n      \n          \n              Using DHS data \n          \n          I work with DHS data in my research, so I wanted to show which countries are most eligible\nfor a panel data approach.\n\n          \n  \n          \n              \n              \n                  \n                       GitHub\n                  \n              \n              \n              \n          \n      \n      \n  \nNo matching items"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Sarah Zeller",
-    "section": "",
-    "text": "I’m a PhD student at the Technical University of Dresden (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in R, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.\nI have a particular interest in the challenge of data wrangling – organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.\nOne of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights."
   },
   {
     "objectID": "blog/posts/scraping-wikipedia/index.html",
@@ -84,34 +245,6 @@
     "text": "Prettier table\nHowever, the output in Table 1 is not very pretty yet. It’s not entirely clear yet what the independent variable is, we don’t know what (1) and (2) stand for, and we have a mass of goodness-of-fit measures. Let’s customize our table!\nAs a first step, we make create some helper functions. These help with formatting the table.\n\n\nCode\n# format numbers: thousand separator\nf &lt;- function(x, n_digits = 2) {\n  ifelse(is.na(x),\n         \"\",\n         formatC(\n           x,\n           digits = n_digits,\n           big.mark = \",\",\n           format = \"f\"\n         ))\n}\n\nf_0 &lt;- purrr::partial(f, n_digits = 0)\n  \n#  function for GOF measures we don't want to change\nkeep_format &lt;- function(x) list(\"raw\" = x, \"clean\" = x, \"fmt\" = NA)\n\n\nThen, we create a list where we format our goodness-of-fit (GOF) measures. Some of the default names are not so pretty, e.g. Num.Observations without a space between the two words – so we switch them to shorter or nicer names.\n\n\nCode\n# format # observations and R^2, keep the rest\ngof_tidy &lt;- list(\n  list(\n    \"raw\" = \"nobs\",\n    \"clean\" = \"Observations\",\n    \"fmt\" = f_0\n  ),\n  list(\n    \"raw\" = \"r.squared\",\n    \"clean\" = \"R\\u00B2\",\n    \"fmt\" = 3\n  ),\n  keep_format(\"FE: Origin\"),\n  keep_format(\"FE: Destination\"),\n  keep_format(\"FE: Product\"),\n  keep_format(\"FE: Year\")\n)\n\n\nLet’s change the labels for our regression. We do this by adding names to the list’s input (lines 1–2).\nAs a next step, let’s use the label we added earlier on, by setting coef_rename to true. Let’s also format the numbers using the formatting function we set up earlier, f.\nLet’s omit some of the goodnes-of-fit (gof) indicators, since we don’t need all of them here. We do this with the gof_map argument, to which we supply our GOF list from the last step. Alternatively, we could use a regex in the gof_omit argument: anything that matches the expression in line 4 will not be included.\nAlso, I’m used to adding stars where a coefficient is significant. This is not added by default, so let’s simply set the stars argument to true.\nThen, we’re setting the output to gt, which gives us the possibility to further style the table with the package gt. We add a header detailing our dependent variable. Then, we add a spanner to tell readers that OLS and Poisson are regression models.\n\nlist(OLS = gravity_ols,\n     Poisson = gravity_pois) |&gt;\n  modelsummary(\n    coef_rename = TRUE,\n    gof_map = gof_tidy,\n    fmt = f,\n    stars = TRUE,\n    output = \"gt\"\n  ) |&gt;\n  # add header and spanner\n  tab_header(title = \"Dependent variable: Trade flow [€]\") |&gt;\n  tab_spanner(\n    label = \"Regression model\",\n    columns = c(\"OLS\", \"Poisson\")\n    )\n\n\n\nTable 2: Some regressions – prettier\n\n\n\n\n\n\n\n\n\nDependent variable: Trade flow [€]\n\n\n\nRegression model\n\n\nOLS\nPoisson\n\n\n\n\nLog (distance [km])\n-47,643.02***\n-0.00***\n\n\n\n(10,905.57)\n(0.00)\n\n\nObservations\n38,325\n38,325\n\n\nR²\n0.286\n0.751\n\n\nFE: Origin\nX\nX\n\n\nFE: Destination\nX\nX\n\n\nFE: Product\nX\nX\n\n\nFE: Year\nX\nX\n\n\n\n+ p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001"
   },
   {
-    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html",
-    "href": "blog/posts/reading-csv-with-2row-colnames/index.html",
-    "title": "Reading a csv file with 2-row column names",
-    "section": "",
-    "text": "I recently wanted to check out election results from the last German Bundestag election, and read them into R. The data was saved in a csv file – so far, so good. But the column names were spread over two rows. 😱\nThis means I’m losing valuable information if I’m only reading the first row of column names. Additionally, the types of the rows get messed up, since the second row of the column names is read as data – specifically, character data.\nSo, I wanted to combine both rows of column names into one. Here’s how I did it in R."
-  },
-  {
-    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-the-first-row",
-    "href": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-the-first-row",
-    "title": "Reading a csv file with 2-row column names",
-    "section": "Reading the first row",
-    "text": "Reading the first row\nThere’s probably many ways to do this, but I decided to go for the following approach:\n\nread in the csv file starting at the first column name row\nclean the column names\nstore the column names in a variable\n\nTo read in the first row of column names, we can use the read.csv2() function. We’ll skip the first three rows (which only contain metadata) and read in only one row, since we don’t need the content for now. Then, we’ll clean the column names with janitor::clean_names() to make sure that they’re formatted like we want them to. Lastly, I’m removing the numbers that are attached at the end since some of the variable names so far are not unique (since they’re still missing the second row).\n\ncolnames_row1 &lt;- read.csv2(temp_file, skip = 4, nrows = 1) |&gt;\njanitor::clean_names() |&gt; \n  colnames() |&gt; \n  gsub(\"_[[:digit:]].*\", \"\", x = _)"
-  },
-  {
-    "objectID": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-both-column-names",
-    "href": "blog/posts/reading-csv-with-2row-colnames/index.html#reading-both-column-names",
-    "title": "Reading a csv file with 2-row column names",
-    "section": "Reading both column names",
-    "text": "Reading both column names\nWe could repeat this procedure for the second row of column names. However, it’s better to create a function for this case. We simply take the pipeline from before and put it into a function.\n\nread_colnames &lt;- function(path, skip_rows = 4, no_rows = 1) {\n  path |&gt; \n    read.csv2(skip = skip_rows, nrows = no_rows) |&gt; \n    janitor::clean_names() |&gt; \n    colnames() |&gt; \n    gsub(\"_[[:digit:]].*\", \"\", x = _)\n}"
-  },
-  {
-    "objectID": "blog/index.html",
-    "href": "blog/index.html",
-    "title": "Blog",
-    "section": "",
-    "text": "This blog is for people just starting out with their R journey. I’ll address beginner problems, simplifying some concepts in R programming.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nScraping wikipedia\n\n\n\ncode\n\nsummary\n\n\n\n\n\n\n\n\n\nMay 28, 2025\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nSending automated emails\n\n\n\ncode\n\nvisualization\n\n\n\n\n\n\n\n\n\nFeb 12, 2025\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a locator map with ggplot2\n\n\n\ncode\n\nvisualization\n\n\n\n\n\n\n\n\n\nFeb 2, 2025\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nOpening .kmz files\n\n\n\ncode\n\nspatial formats\n\n\n\n\n\n\n\n\n\nMay 27, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nReading a csv file with 2-row column names\n\n\n\ncode\n\ndata\n\n\n\nSometimes, csv files have 2-row column names. I create a function to deal with this.\n\n\n\n\n\nMay 5, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nOpening .nc files\n\n\n\ncode\n\nspatial formats\n\n\n\n\n\n\n\n\n\nFeb 24, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a map with ggplot2\n\n\n\ncode\n\nvisualization\n\n\n\n\n\n\n\n\n\nJan 4, 2024\n\n\nSarah Zeller\n\n\n\n\n\n\n\n\n\n\n\n\nCreating a basic regression table with modelsummary\n\n\n\ncode\n\nsummary\n\n\n\n\n\n\n\n\n\nNov 28, 2023\n\n\nSarah Zeller\n\n\n\n\n\nNo matching items"
-  },
-  {
     "objectID": "blog/posts/creating-a-basic-map/index.html",
     "href": "blog/posts/creating-a-basic-map/index.html",
     "title": "Creating a map with ggplot2",
@@ -154,143 +287,10 @@
     "text": "Advanced stuff\nIf you’re really interested, you can check out the following on top:\n\ngraticules (latitude/longitude)\nNorth arrow (not recommended for world maps, though)\nscale (not recommended for most world maps, though)"
   },
   {
-    "objectID": "blog/posts/opening-nc-files/index.html",
-    "href": "blog/posts/opening-nc-files/index.html",
-    "title": "Opening .nc files",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Sarah Zeller",
     "section": "",
-    "text": "When working with raster data, one thing I’ve noticed is: there’s a lot of obscure data formats. And with every one of them, it takes me a while to figure out how to handle them in R. So I decided to make a series of blog posts on how to handle some of the raster formats I’ve come across.\nThe first one are .nc files, also known as netCDF. From what I’ve learned, they usually have three layers:\nHowever, the order of these three layers varies, which means you’ll have to get acquainted with your data first. So:"
-  },
-  {
-    "objectID": "blog/posts/opening-nc-files/index.html#open-nc-file",
-    "href": "blog/posts/opening-nc-files/index.html#open-nc-file",
-    "title": "Opening .nc files",
-    "section": "Open nc file",
-    "text": "Open nc file\nThe first thing we do is have a look at the variable names (they’re saved under var in the weather list). Let’s also check out their names, which is saved under longname in this ncd4 format. Additionally, let’s find out their respective dimensions, saved under size.\n\nraster &lt;- raster_path |&gt; nc_open()\n\nraster |&gt; \n  pluck(\"var\") |&gt; \n  map_df(~ .x[c(\"longname\", \"size\")] |&gt; as.character()) |&gt; \n  # you could stop here, but I wanted a nice display\n  t() |&gt; \n  data.frame() |&gt; \n  tibble::rownames_to_column() |&gt; \n  setNames(c(\"variable\", \"name\", \"dimension\")) |&gt; \n  kableExtra::kbl()\n\n\n\n\nvariable\nname\ndimension\n\n\n\n\ntime_bnds\ntime_bnds\nc(2, 365)\n\n\nlon\nLongitude Of Cell Center\nc(240, 220)\n\n\nlat\nLatitude Of Cell Center\nc(240, 220)\n\n\nx_bnds\nx_bnds\nc(2, 240)\n\n\ny_bnds\ny_bnds\nc(2, 220)\n\n\ncrs_HYRAS\nDWD HYRAS ETRS89 LCC grid with 240 columns and 220 rows\n1\n\n\ntas\nDaily Mean Air Temperature\nc(240, 220, 365)\n\n\nnumber_of_stations\nNumber Of Stations Available For Interpolation Per Day All Over The HYRAS Area\n365"
-  },
-  {
-    "objectID": "blog/posts/opening-nc-files/index.html#sec-vars",
-    "href": "blog/posts/opening-nc-files/index.html#sec-vars",
-    "title": "Opening .nc files",
-    "section": "Time and spatial layers",
-    "text": "Time and spatial layers\nWe’re definitely going to need something along the lines of latitude and longitude. From the descriptions, we can see that lat and lon describe the cell center, and their dimension is 240 \\(\\times\\) 220. That is not what we need. Instead, we want something with dimensions of 1–2 \\(\\times\\) 240 or 220, which describes the latitude and longitude in general, not for every cell center. In this case, that applies for x_bnds and y_bnds.\nWe also need something specifying the time. In this case, that is time_bnds.\nLet’s also get the crs for good measure, crs_HYRAS. This only has dimension 1, so we need to extract is as an attribute.\nAll of these layers can be named differently in different files, so it pays off to check out the specific name. Let’s save them into variables so we can’t forget them!\n\ntime &lt;- ncvar_get(raster, \"time_bnds\")\nlon &lt;- ncvar_get(raster, \"x_bnds\")\nlat &lt;- ncvar_get(raster, \"y_bnds\")\ncrs &lt;- ncatt_get(raster, \"crs_HYRAS\")$epsg_code"
-  },
-  {
-    "objectID": "blog/posts/opening-nc-files/index.html#variable-layer",
-    "href": "blog/posts/opening-nc-files/index.html#variable-layer",
-    "title": "Opening .nc files",
-    "section": "Variable layer",
-    "text": "Variable layer\nNow, we also need the actual variable we’re looking for. In this case, it’s tas (for mean daily temperature). We can see that the dimensions are the largest and match our geospatial and time dimensions: 240 (x_bnds) \\(\\times\\) 220 (y_bnds) \\(\\times\\) 365 (time_bnds).\nLet’s get this variable’s array out. Additionally, let’s find out how the NAs are coded, and use that information to code them as NAs that R recognizes.\n\nvariable_array &lt;- ncvar_get(raster, \"tas\")\nfillvalue &lt;- ncatt_get(raster, \"tas\", \"_FillValue\")\n\n# set NA value\nvariable_array[variable_array == fillvalue$value] &lt;- NA"
-  },
-  {
-    "objectID": "blog/posts/opening-nc-files/index.html#close-nc-file",
-    "href": "blog/posts/opening-nc-files/index.html#close-nc-file",
-    "title": "Opening .nc files",
-    "section": "Close nc file",
-    "text": "Close nc file\nNow we have all the information we need, yay! Let’s not forget to close the .nc file again.\n\nnc_close(raster)"
-  },
-  {
-    "objectID": "blog/posts/opening-nc-files/index.html#making-a-raster",
-    "href": "blog/posts/opening-nc-files/index.html#making-a-raster",
-    "title": "Opening .nc files",
-    "section": "Making a raster",
-    "text": "Making a raster\nNext, we make a raster of this with the terra package. We already know the structure of the array, where time is the last layer. This does vary over different files though!\nWe declare the extent and the crs that we extracted in Section 2.2. Then, let’s go ahead and plot it!\n\ngot_weather_array &lt;- variable_array[,, day_of_year]\ngot_weather_raster &lt;- got_weather_array |&gt; \n  terra::rast(extent = ext(min(lon),\n                             max(lon),\n                             min(lat),\n                             max(lat)),\n                crs = crs)\nplot(got_weather_raster)\n\n\n\n\n\n\n\n\nWell, this somewhat looks like Germany … but not quite yet. We need to mirror it and turn it by 90°."
-  },
-  {
-    "objectID": "blog/posts/opening-nc-files/index.html#transposing-the-raster",
-    "href": "blog/posts/opening-nc-files/index.html#transposing-the-raster",
-    "title": "Opening .nc files",
-    "section": "Transposing the raster",
-    "text": "Transposing the raster\nFor this, we need to go back to the last step, and transpose the 2-dimensional array for our specific day. Then, we make it a raster again.\n\ngot_weather_raster_transposed &lt;- got_weather_array |&gt;\n  t() |&gt;\n  terra::rast(extent = ext(min(lon),\n                           max(lon),\n                           min(lat),\n                           max(lat)),\n              crs = crs)\n\ngot_weather_raster_transposed |&gt; \n  plot()\n\n\n\n\n\n\n\n\nWell, this is almost right – we just need to turn it upside down now."
-  },
-  {
-    "objectID": "blog/posts/opening-nc-files/index.html#flipping-the-raster",
-    "href": "blog/posts/opening-nc-files/index.html#flipping-the-raster",
-    "title": "Opening .nc files",
-    "section": "Flipping the raster",
-    "text": "Flipping the raster\nFor this task, terra has a specific function, flip. We can say which way to flip the raster – in this case, vertically. Let’s go ahead and plot this again.\n\ngot_weather_raster_right_side_up &lt;- got_weather_raster_transposed |&gt; \n  flip(direction = \"vertical\")\n\ngot_weather_raster_right_side_up |&gt; plot()\n\n\n\n\n\n\n\n\nAnd there we have it!"
-  },
-  {
-    "objectID": "blog/posts/sending-automated-emails/index.html",
-    "href": "blog/posts/sending-automated-emails/index.html",
-    "title": "Sending automated emails",
-    "section": "",
-    "text": "I recently needed to send out an email to many recipients, with only slight changes in the text. And I figured – this must be something we can do with R, right?\nLuckily enough, there’s the RDCOMClient library which lets R access some programs, including Outlook. So if you have Outlook set up on your computer, this approach will work like a charm. Actually, it was kind of scary for me: this really works, and real emails get sent. 😱"
-  },
-  {
-    "objectID": "blog/posts/sending-automated-emails/index.html#preparation",
-    "href": "blog/posts/sending-automated-emails/index.html#preparation",
-    "title": "Sending automated emails",
-    "section": "Preparation",
-    "text": "Preparation\nWhat do we need?\n\nthe RDCOMClient library\na data.frame including the email addresses and the bit we want changed\na template text\n\nSo let’s start by loading the needed libraries. We already talked about RDCOMClient. dplyr and glue make pasting our template and our information together easier, and purrr will allow us to loop over our info data.frame.\n\nlibrary(glue)\nlibrary(dplyr)\nlibrary(RDCOMClient)\nlibrary(purrr)\n\nLet’s start with our template! We’ll make it nice and short.\n\ntemplate &lt;- \"Good morning!\nDo you enjoy {food}?\nHave a great day.\"\n\nNext, we’d load our data.frame; for this showcase purpose, we’ll just make it up from scratch. We’ll combine our template and our bit of information into a new column, text.\n\ninfo &lt;- tibble::tribble(\n  ~email, ~info,\n  \"anna@example.com\", \"apples\",\n  \"bernardo@example.com\", \"bananas\",\n  \"charlie@example.com\", \"chocolate\",\n  \"donald@example.com\", \"donuts\"\n) |&gt; \n  dplyr::mutate(text = glue::glue(template, food = info))\n\n\ninfo |&gt; kableExtra::kbl()\n\n\n\n\nemail\ninfo\ntext\n\n\n\n\nanna@example.com\napples\nGood morning! Do you enjoy apples? Have a great day.\n\n\nbernardo@example.com\nbananas\nGood morning! Do you enjoy bananas? Have a great day.\n\n\ncharlie@example.com\nchocolate\nGood morning! Do you enjoy chocolate? Have a great day.\n\n\ndonald@example.com\ndonuts\nGood morning! Do you enjoy donuts? Have a great day."
-  },
-  {
-    "objectID": "blog/posts/sending-automated-emails/index.html#mail-function",
-    "href": "blog/posts/sending-automated-emails/index.html#mail-function",
-    "title": "Sending automated emails",
-    "section": "Mail function",
-    "text": "Mail function\nNext, let’s set up the function which we will map over to send our mails! Let’s start by understanding what RDCOMClient does for us.\n\nOpen Outlook\nThe first thing we want to do – and just once – is to open the Outlook app.\n\nOutlook &lt;- COMCreate(\"Outlook.Application\")\n\n\n\nCreate an email\nWe need to start off by creating an email – just like when you’re in Outlook, you click on Create. We’re telling RDCOMClient that it’s Outlook we want to use by putting it first, and we put the command we want executed after the $ sign.\nLet’s also save this email to an object, so that we can work on it again after.\n\nEmail &lt;- Outlook$CreateItem(0)\n\n\n\nSet recipient, subject and body\nWhat’s the next thing you’d do when writing an email? You’d type in who you want to send the email to and what it’s about – recipient and subject. Then, you’d enter the text – the body.\nWe can do that using attributes of the Email object we’ve created.\n\nfirst_info &lt;- info |&gt; head(1)\n\nEmail[[\"to\"]] &lt;- first_info$email\nEmail[[\"subject\"]] &lt;- \"Hello!\"\nEmail[[\"body\"]] &lt;- first_info$text\n\n\n\nSending the email\nLastly, we need to click on Send. This is, again, an Outlook$ function, not an attribute.\n\nEmail$Send()\n\n\n\nPiecing together the pieces\nThis is our final function, where we have incorporated everything we need. Note that we don’t include opening Outlook – this is something we only need to do once. We can now take this function and map over it.\n\n\n\n\n\n\nTip\n\n\n\nNote that in our approach, we’re using the same subject for all emails. You could, however, also map over this part.\n\n\n\nsend_mail &lt;- function(to = \"\",\n                      body = \"\",\n                      subject = \"Hello from R\"){\n  Email = Outlook$CreateItem(0)\n  Email[[\"to\"]] = to\n  Email[[\"subject\"]] = subject\n  Email[[\"body\"]] = body\n  Email$Send()\n}"
-  },
-  {
-    "objectID": "blog/posts/sending-automated-emails/index.html#mapping-over-the-function",
-    "href": "blog/posts/sending-automated-emails/index.html#mapping-over-the-function",
-    "title": "Sending automated emails",
-    "section": "Mapping over the function",
-    "text": "Mapping over the function\nLet’s now take purr to map over this! We’ll need the walk2 function, since we have two inputs for every mail that change:\n\nemail\nbody/text\n\n\nOutlook &lt;- COMCreate(\"Outlook.Application\")\nwalk2(.x = info$email,\n      .y = info$text,\n      .f = ~ send_mail(to = .x, body = .y))\n\nAnd there we have it – we can send out an email to Anna, Bernardo, Charlie and Donald all at once! You can check in your Outlook outbox that these emails actually sent."
-  },
-  {
-    "objectID": "blog/posts/sending-automated-emails/index.html#approaches-without-outlook",
-    "href": "blog/posts/sending-automated-emails/index.html#approaches-without-outlook",
-    "title": "Sending automated emails",
-    "section": "Approaches without Outlook",
-    "text": "Approaches without Outlook\nUsing RDCOMClient to access Outlook is a bit hacky, but was exactly the right thing for me. However, we could use a more direct approach, without using the Outlook user interface.\nThis blogpost by mailtrap goes into detail about how you can achieve this."
-  },
-  {
-    "objectID": "blog/posts/opening-kmz-files/index.html",
-    "href": "blog/posts/opening-kmz-files/index.html",
-    "title": "Opening .kmz files",
-    "section": "",
-    "text": "When working with spatial data, one thing I’ve noticed is: there’s a lot of obscure data formats. And with every one of them, it takes me a while to figure out how to handle them in R. So I decided to make a series of blog posts on how to handle some of the spatial formats I’ve come across.\nThis post is on .kmz files. If you’re working with Google Earth Pro, this is the format your vector files will be exported in. Recently, I’ve worked quite a bit with Google Earth Pro to collect data on landfills by hand. You’ll find an example .kmz file here."
-  },
-  {
-    "objectID": "blog/posts/opening-kmz-files/index.html#extracting-information-from-the-name",
-    "href": "blog/posts/opening-kmz-files/index.html#extracting-information-from-the-name",
-    "title": "Opening .kmz files",
-    "section": "Extracting information from the Name",
-    "text": "Extracting information from the Name\nWhen we check out our agbogbloshie_polygon data frame, we can see that there’s information contained in the Name column, specifically: the year for which the polygon shape is valid. So let’s extract that numeric information from the character column! Because the description is quite long and has much information included – and it’s always formatted the same way –, we’ll use the unglue package to extract the information. Also, the landfill is misspelt in some cases, so we need to account for that.\n\nagbogbloshie_polygon &lt;- agbogbloshie_polygon |&gt; \n  unglue_unnest(Name, \n                patterns = c(\"{landfill_name}_{month}_{year}_{polygon_no}\",\n                             \"{landfill_name}_{month}_{year}\",\n                             \"{landfill_name} {month}_{year}\"),\n                remove = FALSE) |&gt; \n  mutate(landfill_name = case_match(landfill_name,\n                                    \"Agblogbloshie\" ~ \"Agbogbloshie\",\n                                    \"Agbogbgloshie\" ~ \"Agbogbloshie\",\n                                    .default = \"Agbogbloshie\"))\n\nagbogbloshie_polygon\n\nSimple feature collection with 8 features and 6 fields\nGeometry type: MULTIPOLYGON\nDimension:     XYZ\nBounding box:  xmin: -0.2311228 ymin: 5.54208 xmax: -0.2246721 ymax: 5.556922\nz_range:       zmin: 0 zmax: 0\nGeodetic CRS:  WGS 84\n# A tibble: 8 × 7\n  Name                     Description landfill_name month year  polygon_no\n* &lt;chr&gt;                    &lt;chr&gt;       &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     \n1 Agbogbloshie_02_2020     \"\"          Agbogbloshie  02    2020  &lt;NA&gt;      \n2 Agbogbloshie_10_2018     \"\"          Agbogbloshie  10    2018  &lt;NA&gt;      \n3 Agblogbloshie 10_2016    \"\"          Agbogbloshie  10    2016  &lt;NA&gt;      \n4 Agbogbloshie_10_2018_02  \"\"          Agbogbloshie  10    2018  02        \n5 Agbogbloshie_10_2018_03  \"\"          Agbogbloshie  10    2018  03        \n6 Agbogbgloshie_02_2020_02 \"\"          Agbogbloshie  02    2020  02        \n7 Agbogbloshie_02_2020_03  \"\"          Agbogbloshie  02    2020  03        \n8 Agbogbloshie_10_2016_02  \"\"          Agbogbloshie  10    2016  02        \n# ℹ 1 more variable: geometry &lt;MULTIPOLYGON [°]&gt;\n\n\nLet’s use this information to plot the landfill in the two different years! Seems like the landfill grew quite a bit in between.\n\nggplot() +\n  geom_sf(data = agbogbloshie_polygon) +\n  facet_wrap(~year) +\n  geom_sf(data = agbogbloshie_point) +\n  theme_void() +\n  ggspatial::annotation_scale()\n\n\n\n\n\n\n\nFigure 1: Agbogbloshie landfill over time\n\n\n\n\n\nThis looks good! However, we can see that the landfills consist of multiple polygons. Let’s get them together."
-  },
-  {
-    "objectID": "blog/posts/opening-kmz-files/index.html#summarizing-into-one-polygon",
-    "href": "blog/posts/opening-kmz-files/index.html#summarizing-into-one-polygon",
-    "title": "Opening .kmz files",
-    "section": "Summarizing into one polygon",
-    "text": "Summarizing into one polygon\nIn every year, we have more than one polygon. We want to collapse these into a single multipolygon. For that, we need to summarize them by year and landfill.\n\nagbogbloshie_polygon &lt;- agbogbloshie_polygon |&gt; \n  st_zm() |&gt; \n  st_transform(crs = \"ESRI:54009\") |&gt; \n  st_make_valid() |&gt; \n  # summarize geometry into multipolygons\n  group_by(landfill_name, year, month) |&gt; \n  summarize() |&gt; \n  ungroup()"
-  },
-  {
-    "objectID": "blog/posts/opening-kmz-files/index.html#calculating-area",
-    "href": "blog/posts/opening-kmz-files/index.html#calculating-area",
-    "title": "Opening .kmz files",
-    "section": "Calculating area",
-    "text": "Calculating area\nAs a next step, let’s calculate the area of these polygons. After all, it’s interesting to see if this landfill shrinks or grows!\nFor now, our data are unprojected, though. We can check this by getting the coordinate reference system (CRS) of our data. The output is very long and includes a lot of information, but we only need to focus on the first line, the User input. The next lines show the corresponding well-known text (wkt), which details exactly how the CRS works. We can see here that the CRS is still WGS 84, which means – unprojected.\n\nst_crs(agbogbloshie)\n\nCoordinate Reference System:\n  User input: WGS 84 \n  wkt:\nGEOGCRS[\"WGS 84\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"geodetic latitude (Lat)\",north,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"geodetic longitude (Lon)\",east,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    ID[\"EPSG\",4326]]\n\n\nHowever, we know that the world is shaped like a potato, and that these unprojected data are biased. To correct for this, we first need to project the data into a CRS that’s accurate for that world region when it comes to area – we also call this area-preserving projection. The official CRS for Ghana, where this landfill is located, has the EPSG code 2136. Once we’ve projected the polygons, we can easily calculate the area with the sf package.\n\nagbogbloshie_polygon &lt;- agbogbloshie_polygon |&gt; \n  st_transform(crs = \"epsg:2136\") |&gt; \n  mutate(area = st_area(geometry)) \n\nagbogbloshie_polygon\n\nSimple feature collection with 3 features and 4 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 1179342 ymin: 316685.8 xmax: 1181692 ymax: 322068\nProjected CRS: Accra / Ghana National Grid\n# A tibble: 3 × 5\n  landfill_name year  month                                      geometry   area\n* &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;                                &lt;MULTIPOLYGON&gt;  [m^2]\n1 Agbogbloshie  2016  10    (((1180085 320017.8, 1180468 319802.8, 11805… 2.41e5\n2 Agbogbloshie  2018  10    (((1180357 319898.9, 1180372 319891.8, 11803… 2.94e5\n3 Agbogbloshie  2020  02    (((1179921 320055.5, 1179936 320041.3, 11799… 2.56e5\n\n\nYou’ll notice that the area column has a specific format: it’s a unit. This package makes it easy to convert values from one unit into another. Let’s see how we can convert the area into hectares. Afterwards, let’s drop the unit because we have the data in the final shape we want them.\n\nagbogbloshie_polygon &lt;- agbogbloshie_polygon |&gt; \n  mutate(area_ha = set_units(area, \"ha\") |&gt; drop_units())\n\nAnd there we have it, a data frame with the attributes that we need! Let’s check out the area in comparison. We see that there’s not that much difference!\n\nggplot(data = agbogbloshie_polygon) +\n  geom_col(aes(x = year |&gt; as.character(), y = area_ha)) +\n  coord_flip() +\n  labs(y = \"Area (ha)\",\n       x = \"\") +\n  theme_minimal()\n\n\n\n\n\n\n\nFigure 2: Agbogbloshie landfill area over time"
-  },
-  {
-    "objectID": "software/index.html",
-    "href": "software/index.html",
-    "title": "Software",
-    "section": "",
-    "text": "Provides a set of functions to implement donut analyses in R –\nfor when you're unsure which distance to a point of interest still counts as treated.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n        Quarto template in TUD corporate design for presentations and extendes abstracts –\nfor both typst and latex output.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        R script to analyze inconsistent writings in a word document, e.g. 'summariZe' vs. 'summariSe'.\nOutputs a word document that can be used with the FRedit macro (but should be reviewed first).\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        Word macros that editors can use to automate repetitive tasks.\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\nNo matching items"
-  },
-  {
-    "objectID": "software/index.html#software",
-    "href": "software/index.html#software",
-    "title": "Software",
-    "section": "",
-    "text": "Provides a set of functions to implement donut analyses in R –\nfor when you're unsure which distance to a point of interest still counts as treated.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n        Quarto template in TUD corporate design for presentations and extendes abstracts –\nfor both typst and latex output.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        R script to analyze inconsistent writings in a word document, e.g. 'summariZe' vs. 'summariSe'.\nOutputs a word document that can be used with the FRedit macro (but should be reviewed first).\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n        Word macros that editors can use to automate repetitive tasks.\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\nNo matching items"
-  },
-  {
-    "objectID": "software/index.html#contributions",
-    "href": "software/index.html#contributions",
-    "title": "Software",
-    "section": "Contributions",
-    "text": "Contributions\n\n\n    \n    \n        \n            Base R \n        \n        Fixed a bug in `tools::toTitleCase()` where a letter following a hyphen and\na space would always be capitalized -- even when it should not\n\n\n        \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n    \n        \n            ags package \n        \n        Fixed a bug – a typo that led a reference into the void\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            modern2-cv template \n        \n        Added a template for the motivation letter that fits the CV template\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            purrr bookclub \n        \n        As part of the bookclub on the `purrr` package, added the corresponding chapter.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n        \n    \n    \n    \n        \n            Effect bookclub \n        \n        As part of the bookclub on \"The Effect\" by Nick Huntington-Klein, added some chapters.\n\n\n        \n            \n            \n                \n                     GitHub\n                \n            \n            \n            \n            \n                \n                     Documentation\n                \n            \n            \n        \n    \n    \n\nNo matching items"
+    "text": "I’m a PhD student at the Technical University of Dresden (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in R, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.\nI have a particular interest in the challenge of data wrangling – organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.\nOne of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights."
   }
 ]

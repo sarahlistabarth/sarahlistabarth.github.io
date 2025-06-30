@@ -1,6 +1,6 @@
 [
   {
-    "listing": "/data-viz/index.html",
+    "listing": "/software/index.html",
     "items": []
   },
   {
@@ -17,7 +17,7 @@
     ]
   },
   {
-    "listing": "/software/index.html",
+    "listing": "/data-viz/index.html",
     "items": []
   }
 ]
