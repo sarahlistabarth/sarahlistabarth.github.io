@@ -1,0 +1,272 @@
+---
+authors:
+  - Jakob Listabarth
+  - Sarah Zeller
+title: "Working with OSM history files in `R`"
+date: "2025-07-03"
+categories: [code]
+image: "duck.png"
+citation: 
+  url: https://sarahzeller.github.io/blog/posts/working-with-osm-history-files/
+
+format:
+  html:
+    toc: true
+
+execute:
+  warning: false
+  eval: false
+---
+
+We're trying to find POIs throughout the history of OSM.
+Luckily, OSM does track when they are added.
+Only drawback?
+We're working with huuuuuuge files.
+Let's see how we can do that.
+
+::: {.callout-note}
+This blogpost is based on a Windows workflow.
+Osmium is easier to set up on Linux.
+:::
+
+So, what do we want to do?
+Extract
+
+-   POIs
+-   at different points of time
+-   in a specific bounding box
+
+from our OSM history file.
+
+# Downloading data from OSM
+
+We're downloading the OSM history dump from [here](https://wiki.openstreetmap.org/wiki/Planet.osm/full).
+OSM's wiki also includes more information on this file.
+
+# Installing `osmium`
+
+There's a software to work with these huge files: osmium.
+It's a bit tricky to install on Windows, but this [blogpost](https://mathias-groebe.de/openstreetmap-daten-verarbeiten-impsom-und-osmium-unter-windows-nutzen/) details it really well.
+You can download it [here](https://trac.osgeo.org/osgeo4w/).
+
+You should note where you've installed osmium.
+For me, it's `"C:/OSGeo4W/bin/osmium.exe"`.
+
+# Working with `osmium` through `R`
+
+::: {.callout-note}
+
+There's also an `R` package called `rosmium`.
+We're not working with it directly because it does not support features we need for history files.
+:::
+
+
+## Setting things up
+
+Let's load the necessary libraries in R first.
+
+```{r}
+#| label: setup
+library(duckdb)
+library(ggplot2)
+library(glue)
+library(purrr)
+library(terra)
+library(tidyterra)
+```
+
+
+The file is huuuuge (around 140 GB), so we put it on an external drive.
+I'm guessing you'll do something similar.
+This is why we're declaring the data folder separately.
+
+To work with osmium in this specific workflow, we need to note where osmium lives on our computer.
+So let's go ahead and define that as well.
+
+So we'll have a set-up definition:
+
+-   where our data live (`data_root`)
+-   where our osmium lives (`osmium`)
+
+```{r}
+data_root <- "E:"
+
+osmium <- "C:/OSGeo4W/bin/osmium.exe"
+```
+
+Next, let's define the area in which we are searching for POIs.
+In our example, we're filtering for Togo.
+
+```{r}
+bbox_togo <- c(
+  min_lon = -0.5,
+  min_lat = 5.5,
+  max_lon = 2,
+  max_lat = 11
+)
+```
+
+## Extracting the area
+
+Osmium allows to extract OSM data by a given bounding box with the function `extract`.
+Osmium is a command line tool, so we need a special function within `R` to invoke commands: `system2()`.
+
+The following command 
+
+-   extracts (line 4)
+-   from an OSM file (line 5) with history (line 6)
+-   within a bounding box (line 7)
+-   to an output file (line 8).
+
+```{r}
+#| code-line-numbers: true
+system2(
+  osmium,
+  args = c(
+    "extract",
+    file.path(data_root, "history-250623.osm.pbf"),
+    "--with-history",
+    "-b", paste(bbox_togo, collapse = ","),
+    "-o", file.path(data_root, paste0("-history-250623", paste(bbox_togo, collapse = "_"), ".osm.pbf"))
+  )
+)
+```
+
+## Let's get temporal!
+
+We're switching to the next `osmium` tool: `time-filter`.
+This allows us to interact with the history part of the OSM history file: We can extract data for a specific point in time, or a time range (not covered here).
+
+We're focusing on the years 2012--2025.
+`time-filter` needs the date time in a specific format.
+We're building a helper function for this.
+Also, we're building a helper function to create descriptive names for the resulting files.
+
+```{r}
+years <- 2012:2025
+
+# time format for osmium
+get_timestamp <- function(year) {
+  paste0(year, "-01-01T00:00:00Z")
+}
+
+# build file name based on year
+get_filename <- function(year) {
+  file.path(data_root, paste0("togo-", year, ".osm.pbf"))
+}
+```
+
+Next, we'll map over these years!
+We're 
+
+-   using `time-filter` (line 7)
+-   to access the cropped history file (line 8)
+-   for the given date time (line 9)
+-   and writing the corresponding file (lines 10--11)
+-   and getting the error messages in the `R` console (line 12).
+
+Now we've got our data, cropped for the area of interest, sliced into years.
+
+::: {.callout-note}
+The way we used `time-filter`, it gives us the OSM file in its state on 1 January in each year.
+:::
+
+```{r}
+#| code-line-numbers: true
+# Use walk2 to iterate over years and filter history file by date
+walk(years, ~{
+  print(paste("extracting data for", .x))
+  system2(
+    osmium,
+    args = c(
+      "time-filter",
+      file.path(data_root, "history-250623-togo.osm.pbf"),
+      get_timestamp(.x),                # date
+      "-o", get_filename(.x),           # output file name
+      "--overwrite" # output file overwrites existing file
+    ),
+    stderr = TRUE
+  )
+})
+```
+
+## Filtering the POIs with `duckDB`
+
+Let's find our POIs!
+For this, we're using `duckDB`, a light-weight data base.
+Again, we can call it from within `R`.
+It ships with the `duckdb` package.
+`duckDB` comes with extensions, including a spatial one.
+With this, we can handle spatial data and spatial formats, such as the `.osm.pbf` format.
+
+::: {.callout-note}
+`duckDB` cannot handly OSM history files -- it just drops the time information.
+This is why we need to take a longer route: chopping up the history file first, then putting it back together with the year information.
+:::
+
+To set it up, we first connect to the database.
+We'll need to make sure we have the spatial extension installed and enabled.
+
+```{r}
+# setup duckdb instance
+con <- dbConnect(duckdb())
+dbExecute(con, "INSTALL spatial;")
+dbExecute(con, "LOAD spatial;")
+```
+
+To make subsequent queries easier, we create a so-called common table expression [(`CTE`)](https://duckdb.org/docs/stable/sql/query_syntax/with.html).
+You can imagine it like a `data.frame` in `R`.
+We add the information where the file comes from (here: the year) in one column.
+The process is a bit like applying `bind_rows` on a list of `data.frame`s.
+
+This is implemented with some SQL magic.
+
+```{r}
+queries <- map_chr(years, ~{
+  glue("SELECT *, '{.x}' AS year FROM '{get_filename(.x)}'")
+})
+cte <- paste(queries, collapse = "\nUNION ALL\n")
+```
+
+Now, finally, we can query our historic data for our POIs!
+For that, we're selecting a couple of columns: 
+
+-   id
+-   tag (for POI)
+-   lat, lon (geometry)
+-   year
+
+and then filtering for
+
+-   point geometries (*node* in OSM speech)
+-   restaurants (*amenity*: *restaurant* in OSM speech).
+
+Lastly, we parse it to a `terra::vect` object.
+
+```{r}
+# Use CTE and get all restaurants with the respective year
+res <- dbGetQuery(
+  con,
+  glue(
+    "WITH all_years AS ({cte})
+    SELECT 
+      id,
+      tags,
+      lat,
+      lon,
+      year,
+    FROM all_years
+    WHERE
+      kind = 'node'
+      AND tags.amenity = 'restaurant';
+  ")
+) |> vect(geom = c("lon", "lat"), crs = "EPSG:4326")
+```
+
+# Next steps
+
+This approach can be optimized in many ways, e.g. by using the `osmium` filter tags somewhere in the pipeline to reduce the data we're working with.
+
+Now, we've got a `terra` object in `R`.
+That means we're ready to wrangle and plot!
+
