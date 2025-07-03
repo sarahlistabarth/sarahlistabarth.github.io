@@ -6,6 +6,7 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/posts/osm-history-files/index.html",
       "/blog/posts/scraping-wikipedia/index.html",
       "/blog/posts/sending-automated-emails/index.html",
       "/blog/posts/locator-map/index.html",
