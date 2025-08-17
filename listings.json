@@ -1,9 +1,5 @@
 [
   {
-    "listing": "/software/index.html",
-    "items": []
-  },
-  {
     "listing": "/blog/index.html",
     "items": [
       "/blog/posts/osm-history-files/index.html",
@@ -16,6 +12,10 @@
       "/blog/posts/creating-a-basic-map/index.html",
       "/blog/posts/showing-regression-results/index.html"
     ]
+  },
+  {
+    "listing": "/software/index.html",
+    "items": []
   },
   {
     "listing": "/data-viz/index.html",
