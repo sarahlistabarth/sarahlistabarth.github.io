@@ -1,12 +1,12 @@
 ---
-author: Sarah Zeller
+author: Sarah Listabarth
 title: "Reading a `csv` file with 2-row column names"
 description: "Sometimes, `csv` files have 2-row column names. I create a function to deal with this."
 date: "2024-05-05"
 categories: [code, data]
 image: "two_row_colnames.PNG"
 citation: 
-  url: https://sarahzeller.github.io/blog/posts/reading-csv-with-2row-colnames/
+  url: https://sarahlistabarth.github.io/blog/posts/reading-csv-with-2row-colnames/
 
 format:
   html:

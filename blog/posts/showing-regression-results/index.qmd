@@ -1,11 +1,11 @@
 ---
-author: Sarah Zeller
+author: Sarah Listabarth
 title: Creating a basic regression table with `modelsummary`
 date: "2023-11-28"
 categories: [code, summary]
 image: "table.png"
 citation:
-  url: https://sarahzeller.github.io/blog/posts/showing-regression-results/
+  url: https://sarahlistbarth.github.io/blog/posts/showing-regression-results/
 
 format:
   html:

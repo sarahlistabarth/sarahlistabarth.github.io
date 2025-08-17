@@ -1,11 +1,11 @@
 ---
-author: Sarah Zeller
+author: Sarah Listabarth
 title: Opening `.nc` files
 date: "2024-02-24"
 image: "raster.png"
 categories: [code, spatial formats]
 citation:
-  url: https://sarahzeller.github.io/blog/posts/opening-nc-files/
+  url: https://sarahlistabarth/blog/posts/opening-nc-files/
 
 format:
   html:

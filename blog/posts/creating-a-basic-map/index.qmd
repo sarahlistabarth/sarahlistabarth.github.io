@@ -1,11 +1,11 @@
 ---
-author: Sarah Zeller
+author: Sarah Listabarth
 title: "Creating a map with `ggplot2`"
 date: "2024-01-04"
 categories: [code, visualization]
 image: "map.png"
 citation: 
-  url: https://sarahzeller.github.io/blog/posts/creating-a-basic-map/
+  url: https://sarahlistabarth.github.io/blog/posts/creating-a-basic-map/
 
 format:
   html:

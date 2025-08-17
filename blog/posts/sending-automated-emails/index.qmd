@@ -1,11 +1,11 @@
 ---
-author: Sarah Zeller
+author: Sarah Listabarth
 title: "Sending automated emails"
 date: "2025-02-12"
 categories: [code, visualization]
 image: "mail.webp"
 citation: 
-  url: https://sarahzeller.github.io/blog/posts/sending-automated-emails/
+  url: https://sarahlistabarth.github.io/blog/posts/sending-automated-emails/
 
 format:
   html:

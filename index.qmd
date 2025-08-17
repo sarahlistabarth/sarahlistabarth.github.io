@@ -1,5 +1,5 @@
 ---
-title: "Sarah Zeller"
+title: "Sarah Listabarth"
 image: assets/portrait.jpg
 
 about:
@@ -8,9 +8,7 @@ about:
     - icon: envelope
       href: mailto:sarah.zeller@tu-dresden.de
     - icon: github
-      href: https://github.com/sarahzeller
-    - icon: twitter
-      href: https://twitter.com/sarah_y_zeller
+      href: https://github.com/sarahlistabarth
 ---
 
 ::: text-start

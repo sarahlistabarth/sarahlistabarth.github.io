@@ -1,13 +1,13 @@
 ---
 authors:
   - Jakob Listabarth
-  - Sarah Zeller
+  - Sarah Listabarth
 title: "Working with OSM history files in `R`"
 date: "2025-07-03"
 categories: [code]
 image: "duck.png"
 citation: 
-  url: https://sarahzeller.github.io/blog/posts/working-with-osm-history-files/
+  url: https://sarahlistabarth.github.io/blog/posts/working-with-osm-history-files/
 
 format:
   html:

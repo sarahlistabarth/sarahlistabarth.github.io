@@ -2,19 +2,19 @@
   description: |
     Provides a set of functions to implement donut analyses in R –
     for when you're unsure which distance to a point of interest still counts as treated.
-  github: https://github.com/sarahzeller/donutsR
-  documentation: https://sarahzeller.github.io/donutsR/
+  github: https://github.com/sarahlistabarth/donutsR
+  documentation: https://sarahlistabarth.github.io/donutsR/
 - title: "tud"
   description: |
     Quarto template in TUD corporate design for presentations and extendes abstracts –
     for both typst and latex output.
-  github: https://github.com/sarahzeller/tud/
+  github: https://github.com/sarahlistabarth/tud/
 - title: "Inconsistent writing"
   description: |
     R script to analyze inconsistent writings in a word document, e.g. 'summariZe' vs. 'summariSe'.
     Outputs a word document that can be used with the FRedit macro (but should be reviewed first).
-  github: https://github.com/sarahzeller/word-inconsistent-writing
+  github: https://github.com/sarahlistabarth/word-inconsistent-writing
 - title: "Word macros"
   description: |
     Word macros that editors can use to automate repetitive tasks.
-  documentation: https://sarahzeller.github.io/lektorat-zeller/makros.html
+  documentation: https://sarahlistabarth.github.io/lektorat-listabarth/makros.html

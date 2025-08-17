@@ -1,10 +1,10 @@
 ---
-author: Sarah Zeller
+author: Sarah Listabarth
 title: Scraping wikipedia
 date: "2025-05-28"
 categories: [code, summary]
 citation:
-  url: https://sarahzeller.github.io/blog/posts/scraping-wikipedia/
+  url: https://sarahlistabarth.github.io/blog/posts/scraping-wikipedia/
 
 format:
   html:

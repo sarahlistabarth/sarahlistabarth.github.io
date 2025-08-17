@@ -1,11 +1,11 @@
 ---
-author: Sarah Zeller
+author: Sarah Listabarth
 title: Opening `.kmz` files
 date: "2024-05-27"
 image: "landfills.PNG"
 categories: [code, spatial formats]
 citation:
-  url: https://sarahzeller.github.io/blog/posts/opening-kmz-files/
+  url: https://sarahlistabarth/blog/posts/opening-kmz-files/
 
 format:
   html:
@@ -26,7 +26,7 @@ So I decided to make a series of blog posts on how to handle some of the spatial
 This post is on `.kmz` files.
 If you're working with Google Earth Pro, this is the format your vector files will be exported in.
 Recently, I've worked quite a bit with Google Earth Pro to collect data on landfills by hand.
-You'll find an example `.kmz` file [here](https://sarahzeller.github.io/assets/Agbogbloshie.kmz).
+You'll find an example `.kmz` file [here](https://sarahlistabarth.github.io/assets/Agbogbloshie.kmz).
 
 # TL;DR
 
@@ -66,7 +66,7 @@ Watch out, though: it's a binary file, so we need to add the corresponding argum
 #| label: load-data
 #| eval: false
 
-kmz_url <- "https://github.com/sarahzeller/sarahzeller.github.io/blob/main/assets/Agbogbloshie.kmz"
+kmz_url <- "https://github.com/sarahlistabarth/sarahlistabarth.github.io/blob/main/assets/Agbogbloshie.kmz"
 
 kmz_path <- tempfile(fileext = ".kmz")
 download.file(

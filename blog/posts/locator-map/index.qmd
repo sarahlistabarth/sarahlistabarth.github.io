@@ -1,11 +1,11 @@
 ---
-author: Sarah Zeller
+author: Sarah Listabarth
 title: "Creating a locator map with `ggplot2`"
 date: "2025-02-02"
 categories: [code, visualization]
 image: "locator-map.png"
 citation: 
-  url: https://sarahzeller.github.io/blog/posts/locator-map/
+  url: https://sarahlistabarth/blog/posts/locator-map/
 
 format:
   html:
