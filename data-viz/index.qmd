@@ -9,7 +9,6 @@ listing:
   - id: saxony
     contents: saxony.yml
     template: data-viz-listing.ejs
-page-layout: full
 toc: true
 toc-location: right
 toc-title: Language
