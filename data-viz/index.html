@@ -2,11 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="I’m not that great at drawing by hand, but I enjoy code-based visualizations! In research, they’re supposed to help your audience understand you faster and bring your point across. But it’s also nice to just make visualizations focusing on what looks the nicest.">
+<meta name="author" content="Sarah Listabarth">
+<meta name="description" content="A collection of data visualizations created with R.">
 
 <title>Data Visualizations – Sarah Listabarth</title>
 <style>
@@ -36,18 +37,19 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c1f1e6c05e4d9aa3145bdaa62cecd366.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-3f9a1c916a924db677bb40662d79ac4d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-c1f1e6c05e4d9aa3145bdaa62cecd366.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-960d9d362f81d399278ec3e29b622b37.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-e7f4145358ce1d0cd37d8d374dbb44f9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-960d9d362f81d399278ec3e29b622b37.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -78,7 +80,7 @@ ul.task-list li input[type="checkbox"] {
 <script>
 
   window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-saxony .list');
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
     if (!listingTargetEl) {
       // No listing discovered, do not attach.
       return; 
@@ -91,7 +93,7 @@ ul.task-list li input[type="checkbox"] {
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-saxony'] = new List('listing-saxony', options);
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
 
     if (window['quarto-listing-loaded']) {
       window['quarto-listing-loaded']();
@@ -104,6 +106,7 @@ ul.task-list li input[type="checkbox"] {
     }
   })
   </script>
+<meta name="google-site-verification" content="fmXXMObT8-C0B98LBR31pY28kNntX3HcjxyeLxa2J7M">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -119,7 +122,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -308,6 +311,8 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Sarah Listabarth</span>
     </a>
@@ -347,14 +352,14 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
         
     </div>
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -364,12 +369,12 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    <p>I’m not that great at drawing by hand, but I enjoy code-based visualizations! In research, they’re supposed to help your audience understand you faster and bring your point across. But it’s also nice to just make visualizations focusing on what looks the nicest.</p>
+    <p>I enjoy code-based visualizations! In research, they’re supposed to help your audience understand you faster and bring your point across. But it’s also nice to just make visualizations focusing on what looks the nicest.</p>
   </div>
 </div>
 
 
-<div class="quarto-title-meta column-page">
+<div class="quarto-title-meta">
 
     
   
@@ -381,10 +386,14 @@ window.Quarto = {
 </header>
 
 
-<div id="listing-saxony" class="quarto-listing quarto-listing-container-custom">
+
+
+
+
+<div class="quarto-listing quarto-listing-container-custom" id="listing-listing">
   <div class="visuals">
       
-      <div>
+      <div class="mt-5">
           <h3 class="anchored">
               Typewriter Chique: Saxony Switzerland 
           </h3>
@@ -392,9 +401,9 @@ window.Quarto = {
 I made this map of the Saxony Switzerland.
 It's a region close to Dresden where I enjoy going for a hike. 🥾
 </p>
-          <img class="w-100" src="https://github.com/sarahlistabarth/aRt/blob/main/map/national_park.png?raw=true">
+              <img style="max-width: 100%; max-height: 500px; width: auto; height: auto; display: block; margin: 0 auto;" src="https://github.com/sarahlistabarth/aRt/blob/main/map/national_park.png?raw=true">
   
-          <ul class="links">
+          <ul class="links mx-auto mt-3">
               
               <li>
                   <a href="https://github.com/sarahlistabarth/aRt">
@@ -406,16 +415,16 @@ It's a region close to Dresden where I enjoy going for a hike. 🥾
           </ul>
       </div>
       
-      <div>
+      <div class="mt-5">
           <h3 class="anchored">
               Guest map 
           </h3>
           <p>People are coming from a couple of places for our wedding.
 I wanted to visualize where exactly, and which connections are especially strong.
 </p>
-          <img class="w-100" src="map.svg">
+              <img style="max-width: 100%; max-height: 500px; width: auto; height: auto; display: block; margin: 0 auto;" src="map.svg">
   
-          <ul class="links">
+          <ul class="links mx-auto mt-3">
               
               <li>
                   <a href="https://github.com/sarahlistabarth/map-wedding/blob/main/map.R">
@@ -427,7 +436,7 @@ I wanted to visualize where exactly, and which connections are especially strong
           </ul>
       </div>
       
-      <div>
+      <div class="mt-5">
           <h3 class="anchored">
               London marathon 
           </h3>
@@ -435,9 +444,9 @@ I wanted to visualize where exactly, and which connections are especially strong
 Nicola Rennie cleaned a dataset on the London marathon, and I visualized 
 where winners are from.
 </p>
-          <img class="w-100" src="https://github.com/sarahlistabarth/tidytuesday/blob/main/2023/2023-04-25/20230425.png?raw=true">
+              <img style="max-width: 100%; max-height: 500px; width: auto; height: auto; display: block; margin: 0 auto;" src="https://github.com/sarahlistabarth/tidytuesday/blob/main/2023/2023-04-25/20230425.png?raw=true">
   
-          <ul class="links">
+          <ul class="links mx-auto mt-3">
               
               <li>
                   <a href="https://github.com/sarahlistabarth/tidytuesday/blob/main/2023/2023-04-25">
@@ -449,16 +458,16 @@ where winners are from.
           </ul>
       </div>
       
-      <div>
+      <div class="mt-5">
           <h3 class="anchored">
               Witches in the USA 
           </h3>
           <p>This map is part of the tidytuesday challenge.
 This dataset was about haunted places in the USA.
 </p>
-          <img class="w-100" src="https://github.com/sarahlistabarth/tidytuesday/blob/main/2023/2023-10-10/20231010.png?raw=true">
+              <img style="max-width: 100%; max-height: 500px; width: auto; height: auto; display: block; margin: 0 auto;" src="https://github.com/sarahlistabarth/tidytuesday/blob/main/2023/2023-10-10/20231010.png?raw=true">
   
-          <ul class="links">
+          <ul class="links mx-auto mt-3">
               
               <li>
                   <a href="https://github.com/sarahlistabarth/tidytuesday/blob/main/2023/2023-10-10">
@@ -470,16 +479,16 @@ This dataset was about haunted places in the USA.
           </ul>
       </div>
       
-      <div>
+      <div class="mt-5">
           <h3 class="anchored">
               Rodents 
           </h3>
           <p>This map is part of the tidytuesday challenge.
 The dataset was on rodents, and I focused on their diets.
 </p>
-          <img class="w-100" src="https://github.com/sarahlistabarth/tidytuesday/blob/main/2023/2023-05-02/20230502.png?raw=true">
+              <img style="max-width: 100%; max-height: 500px; width: auto; height: auto; display: block; margin: 0 auto;" src="https://github.com/sarahlistabarth/tidytuesday/blob/main/2023/2023-05-02/20230502.png?raw=true">
   
-          <ul class="links">
+          <ul class="links mx-auto mt-3">
               
               <li>
                   <a href="https://github.com/sarahlistabarth/tidytuesday/blob/main/2023/2023-05-02/">
@@ -491,16 +500,16 @@ The dataset was on rodents, and I focused on their diets.
           </ul>
       </div>
       
-      <div>
+      <div class="mt-5">
           <h3 class="anchored">
               Using DHS data 
           </h3>
           <p>I work with DHS data in my research, so I wanted to show which countries are most eligible
 for a panel data approach.
 </p>
-          <img class="w-100" src="https://github.com/sarahlistabarth/tidytuesday/blob/main/2024/2024-01-02/20240102.png?raw=true">
+              <img style="max-width: 100%; max-height: 500px; width: auto; height: auto; display: block; margin: 0 auto;" src="https://github.com/sarahlistabarth/tidytuesday/blob/main/2024/2024-01-02/20240102.png?raw=true">
   
-          <ul class="links">
+          <ul class="links mx-auto mt-3">
               
               <li>
                   <a href="https://github.com/sarahlistabarth/tidytuesday/blob/main/2024/2024-01-02">
@@ -514,12 +523,7 @@ for a panel data approach.
       
   </div>
 <div class="listing-no-matching d-none">No matching items</div>
-</div>
-
-
-
-
-</main> <!-- /main -->
+</div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -584,13 +588,14 @@ for a panel data approach.
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
