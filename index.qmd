@@ -1,7 +1,9 @@
 ---
-title: "Sarah Listabarth"
+title: "About me"
 image: assets/portrait.jpg
-
+image-alt: "Portrait of Sarah Listabarth"
+description-meta: I'm a PhD student at the Technical University of Dresden (TUD) in Germany,
+  specializing in data science with a focus on data visualization.
 about:
   template: jolla
   links: 

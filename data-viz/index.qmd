@@ -1,7 +1,8 @@
 ---
 title: Data Visualizations
+description-meta: A collection of data visualizations created with R.
 description: |
-  I'm not that great at drawing by hand, but I enjoy code-based visualizations!
+  I enjoy code-based visualizations!
   In research, they're supposed to help your audience understand you faster
   and bring your point across. But it's also nice to just make visualizations
   focusing on what looks the nicest.

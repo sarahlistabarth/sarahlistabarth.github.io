@@ -20,10 +20,15 @@ website:
 
 format:
   html:
+    author-meta: "Sarah Listabarth"
+    title-prefix: "Sarah Listabarth"
     theme: 
       light: flatly
       dark: darkly
     css: styles.css
     toc: true
+    include-in-header:
+      - text: |
+          <meta name="google-site-verification" content="fmXXMObT8-C0B98LBR31pY28kNntX3HcjxyeLxa2J7M" />
 
 editor: visual
