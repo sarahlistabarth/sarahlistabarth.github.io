@@ -6,8 +6,7 @@ description: |
   and bring your point across. But it's also nice to just make visualizations
   focusing on what looks the nicest.
 listing:
-  - id: saxony
-    contents: saxony.yml
+    contents: data-viz.yml
     template: data-viz-listing.ejs
 toc: true
 toc-location: right
@@ -15,6 +14,3 @@ toc-title: Language
 css:
   - /_extensions/quarto-ext/fontawesome/assets/css/all.css
 ---
-
-::: {#saxony}
-:::
