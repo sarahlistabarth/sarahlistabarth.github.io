@@ -12,9 +12,7 @@ about:
 ---
 
 ::: text-start
-I'm a PhD student at the *Technical University of Dresden* (TUD) in Germany, specializing in data science with a focus on data visualization. My academic work revolves around exploring and interpreting complex datasets to uncover new insights. I primarily code in `R`, a language and environment that I find well-suited for statistical analysis and graphical techniques in my research.
+I am a PhD student in economics at the *Technical University of Dresden* (TUD) and am interested in regional and spatial economics. My research focuses on understanding processes across places and regions, using empirical methods to study how local conditions, institutions, and policies shape economic outcomes.
 
-I have a particular interest in the challenge of data wrangling -- organizing, cleaning, and transforming raw data into a usable format for analysis. This crucial step in the research process allows me to delve deep into the data, uncovering patterns and trends that might otherwise remain hidden.
-
-One of my key strengths is in creating clear, compelling visuals to present my findings. I believe that good visualizations are essential for effectively communicating complex data insights.
+From a data perspective, I work extensively with complex and large datasets, emphasizing data wrangling, analysis, and visualization. I primarily use `R` for statistical analyses and reproducible research workflows. A core part of my work is transforming raw data into analysis-ready formats and developing clear visualizations to communicate empirical results.
 :::
