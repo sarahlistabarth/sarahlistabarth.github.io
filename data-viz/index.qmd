@@ -1,0 +1,4 @@
+---
+title: Data Visualizations
+description: Seome data visualizations I enjoy making
+---

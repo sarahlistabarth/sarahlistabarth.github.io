@@ -8,7 +8,7 @@
 
 <meta name="author" content="Sarah Listabarth">
 
-<title>Blog – Sarah Listabarth</title>
+<title>Research – Sarah Listabarth</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,7 +21,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -32,8 +52,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../assets/favicon-data.svg" rel="icon" type="image/svg+xml">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -72,66 +90,8 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-posts .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-posts'] = new List('listing-posts', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <meta name="google-site-verification" content="fmXXMObT8-C0B98LBR31pY28kNntX3HcjxyeLxa2J7M">
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -139,7 +99,7 @@ window.Quarto = {
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -158,7 +118,7 @@ window.Quarto = {
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../research/research.html"> 
+    <a class="nav-link active" href="../research/research.html" aria-current="page"> 
 <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
@@ -166,7 +126,7 @@ window.Quarto = {
 <span class="menu-text">CV</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../blog/index.html" aria-current="page"> 
+    <a class="nav-link" href="../blog/index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
@@ -186,367 +146,101 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Blog</h1>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta column-page-left">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(9)</span></div><div class="category" data-category="code">code <span class="quarto-category-count">(9)</span></div><div class="category" data-category="data">data <span class="quarto-category-count">(1)</span></div><div class="category" data-category="spatial formats">spatial formats <span class="quarto-category-count">(2)</span></div><div class="category" data-category="summary">summary <span class="quarto-category-count">(2)</span></div><div class="category" data-category="visualization">visualization <span class="quarto-category-count">(3)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#working-papers" id="toc-working-papers" class="nav-link active" data-scroll-target="#working-papers">Working papers</a>
+  <ul class="collapse">
+  <li><a href="#cloudy-with-a-chance-of-laziness" id="toc-cloudy-with-a-chance-of-laziness" class="nav-link" data-scroll-target="#cloudy-with-a-chance-of-laziness">Cloudy with a Chance of Laziness</a></li>
+  </ul></li>
+  <li><a href="#work-in-progress" id="toc-work-in-progress" class="nav-link" data-scroll-target="#work-in-progress">Work in progress</a>
+  <ul class="collapse">
+  <li><a href="#ethnic-dimensions-of-trade" id="toc-ethnic-dimensions-of-trade" class="nav-link" data-scroll-target="#ethnic-dimensions-of-trade">Ethnic Dimensions of Trade</a></li>
+  <li><a href="#when-waste-becomes-wealth" id="toc-when-waste-becomes-wealth" class="nav-link" data-scroll-target="#when-waste-becomes-wealth">When Waste Becomes Wealth</a></li>
+  </ul></li>
+  <li><a href="#publications" id="toc-publications" class="nav-link" data-scroll-target="#publications">Publications</a>
+  <ul class="collapse">
+  <li><a href="#a-comment-on-information-and-spillovers-from-targeting-policy-in-perus-anchoveta-fishery" id="toc-a-comment-on-information-and-spillovers-from-targeting-policy-in-perus-anchoveta-fishery" class="nav-link" data-scroll-target="#a-comment-on-information-and-spillovers-from-targeting-policy-in-perus-anchoveta-fishery">A Comment on “Information and Spillovers from Targeting Policy in Peru’s Anchoveta Fishery”</a></li>
+  <li><a href="#economic-advantages-of-community-currencies" id="toc-economic-advantages-of-community-currencies" class="nav-link" data-scroll-target="#economic-advantages-of-community-currencies">Economic Advantages of Community Currencies</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Research</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
-<blockquote class="blockquote">
-<p>This blog is for people just starting out with their <code>R</code> journey. I’ll address beginner problems, simplifying some concepts in <code>R</code> programming.</p>
-</blockquote>
+</header>
+
+
+<section id="working-papers" class="level1">
+<h1>Working papers</h1>
+<section id="cloudy-with-a-chance-of-laziness" class="level2">
+<h2 class="anchored" data-anchor-id="cloudy-with-a-chance-of-laziness">Cloudy with a Chance of Laziness</h2>
+<p><strong>Long-Lasting Effects on Voting from the First Federal Election in Eastern Germany</strong> with Valentin Lindlacher</p>
+<p><img src="cdu_spd.png" class="img-fluid"></p>
+<p>We investigate the long-run effects of early democratic participation on subsequent voting behavior, focusing on Eastern Germany’s first federal election after reunification in 1990. With a weather IV, we find that first-time electoral choices affect party support in the long term. A higher municipal vote share for the quasi-incumbent party CDU in the initial election in 1990, caused by weather conditions, leads to systematically higher CDU vote shares in subsequent elections. Unlike studies of established democracies, our setting rules out path dependence, since this was the first Bundestag election for the entire East German electorate. This suggests that early election choices can set individuals on a path of sustained party support, consistent with theories of habit formation and the accumulation of expressive benefits from voting. The findings underscore the formative power of early democratic experiences: Context-specific shocks can leave lasting imprints on political behavior, particularly in societies undergoing institutional transformation.</p>
+</section>
+</section>
+<section id="work-in-progress" class="level1">
+<h1>Work in progress</h1>
+<section id="ethnic-dimensions-of-trade" class="level2">
+<h2 class="anchored" data-anchor-id="ethnic-dimensions-of-trade">Ethnic Dimensions of Trade</h2>
+<p><strong>The Impact of Oil Prices on Sub-Saharan African Development</strong> with Ronja Huhn, Christian Leßmann, and Kyra Riederer</p>
+<p><img src="oil.png" class="img-fluid"></p>
+<p>This paper investigates the economic effects of Oil Prices on development in Sub-Saharan Africa (SSA), focusing on the ethnic dimension of these effects. Despite extensive research on the relationship between trade, transport costs, and economic growth, there is limited understanding of how ethnic boundaries influence the distribution of trade benefits. Our key research question is: Do ethnic boundaries create economic discontinuities that hinder the diffusion of economic benefits? We contribute to the literature by extending the work of <span class="citation" data-cites="farther">Storeygard (<a href="#ref-farther" role="doc-biblioref">2016</a>)</span>, who demonstrated that transport costs significantly shape urban economic growth, particularly in proximity to ports. While Storeygard focused on spatial variation in transport costs driven by oil price fluctuations, our study incorporates ethnic boundaries into the analysis to assess whether economic gains from trade are unevenly distributed among ethnic groups. This extension addresses the broader issue of spatial inequality, emphasizing the role of historical ethnic fragmentation in amplifying economic disparities.</p>
+</section>
+<section id="when-waste-becomes-wealth" class="level2">
+<h2 class="anchored" data-anchor-id="when-waste-becomes-wealth">When Waste Becomes Wealth</h2>
+<p><strong>The Spillover of China’s Waste Ban to African Landfills</strong> with Christian Leßmann</p>
+<p><img src="accra-treat-control.png" class="img-fluid"></p>
+<p>Rapid urbanization in Sub-Saharan Africa has expanded both the population and the volume of waste, much of which ends up in landfills. These sites simultaneously provide rare income opportunities for the urban poor and expose nearby residents to health risks. We causally study how landfills affect local development in terms of wealth and health by exploiting China’s 2018 , which banned the import of 24 waste categories. The resulting redirection of waste exports increased the value of landfills in African port cities but left hinterland cities unaffected. Using a triple-difference design and novel hand-collected data on landfills in Ghana and Kenya, linked to DHS microdata, we show that landfill-value increases improve household wealth, moving households up the national wealth distribution, and raise access to antenatal care. We find no detectable effect on child health. Our results highlight the dual role of landfills as extractive sites: they increase wealth and improve access to health services through informal recycling markets, yet they do not mitigate underlying health hazards.</p>
+</section>
+</section>
+<section id="publications" class="level1">
+<h1>Publications</h1>
+<section id="a-comment-on-information-and-spillovers-from-targeting-policy-in-perus-anchoveta-fishery" class="level2">
+<h2 class="anchored" data-anchor-id="a-comment-on-information-and-spillovers-from-targeting-policy-in-perus-anchoveta-fishery">A Comment on “Information and Spillovers from Targeting Policy in Peru’s Anchoveta Fishery”</h2>
+<p>with Marta Bernardi and Rebecca Rotich (2024, <a href="https://www.econstor.eu/handle/10419/302900">I4R Discussion Paper Series No.&nbsp;156</a>)</p>
+<p><img src="i4r.PNG" class="img-fluid"></p>
+<p>The study provides empirical evidence that a targeted policy can backfire because information signals affect non-targeted units. Specifically, the analysis of the policy aimed at regulating the harvesting of juvenile fish in Peru’s Anchovy Fishery, by temporarily closing areas with high juvenile catch percentages, reveals an unintended increase of 48% in the overall seasonal juvenile catch percentage. This appears to be due to substantial spatial and temporal spillovers generated by the policy that reduces search costs for fishers. The study combines administrative micro-data used by the regulator to generate closures with biologically richer data from fishing firms. All results are easily computationally reproducible within a 5-hour time frame, except for the synthetic controls robustness check, which takes a considerable amount of time (appr. 64 hours) but works. We stress the robustness and reproducibility of the study by testing whether the analysis is robust to the use of different types of standard errors, and the findings appear unaffected. Overall, the full analysis and graphic outputs of the paper are reproducible using the publicly available complementary data and code from the AEJ website despite minor code interpretability challenges.</p>
+</section>
+<section id="economic-advantages-of-community-currencies" class="level2">
+<h2 class="anchored" data-anchor-id="economic-advantages-of-community-currencies">Economic Advantages of Community Currencies</h2>
+<p>(2020, <a href="(https://www.mdpi.com/1911-8074/13/11/271)"><strong>Journal of Risk and Financial Management</strong></a>)</p>
+<p><img src="community-currency-framework.png" class="img-fluid"></p>
+<p>Community currencies are only sometimes economically advantageous. We focus on seasonal changes in money upply and assume that community currencies stabilize the money supply in a local community. This leads to additional transactions during seasons of insufficient supply of national currency. We hypothesize community currencies are therefore economically advantageous in a surrounding of seasonally insufficient money supply. We test the hypothesis qualitatively with two case studies, the German Chiemgauer and the Kenyan Sarafu Credit. We find community currencies are only economically advantageous in an environment of insufficient liquidity.</p>
 
 
 
+</section>
+</section>
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-posts">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="code" data-listing-date-sort="1751493600000" data-listing-file-modified-sort="1755425350407" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1062">
-<div class="thumbnail">
-<p><a href="../blog/posts/osm-history-files/index.html" class="no-external"></a></p><a href="../blog/posts/osm-history-files/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/osm-history-files/duck.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/osm-history-files/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/osm-history-files/index.html" class="no-external">Working with OSM history files in <code>R</code></a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/osm-history-files/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/osm-history-files/index.html" class="no-external">We’re trying to find POIs throughout the history of OSM. Luckily, OSM does track when they are added. Only drawback? We’re working with huuuuuuge files. Let’s see how we can…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/osm-history-files/index.html" class="no-external">
-<div class="listing-date">
-Jul 3, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="code,summary" data-listing-date-sort="1748383200000" data-listing-file-modified-sort="1755425373838" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="706">
-<div class="thumbnail">
-<p><a href="../blog/posts/scraping-wikipedia/index.html" class="no-external"></a></p><a href="../blog/posts/scraping-wikipedia/index.html" class="no-external">
-<p class="card-img-top"><img src="posts\scraping-wikipedia\index_files\figure-html\plot-afghanistan-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="../blog/posts/scraping-wikipedia/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/scraping-wikipedia/index.html" class="no-external">Scraping wikipedia</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/scraping-wikipedia/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('summary'); return false;">
-summary
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/scraping-wikipedia/index.html" class="no-external">Every now and then, we want to get some data from the wild – e.g., from Wikipedia articles. We’ll see two data types here:</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/scraping-wikipedia/index.html" class="no-external">
-<div class="listing-date">
-May 28, 2025
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="code,visualization" data-listing-date-sort="1739314800000" data-listing-file-modified-sort="1755425385560" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="698">
-<div class="thumbnail">
-<p><a href="../blog/posts/sending-automated-emails/index.html" class="no-external"></a></p><a href="../blog/posts/sending-automated-emails/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/sending-automated-emails/mail.webp" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/sending-automated-emails/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/sending-automated-emails/index.html" class="no-external">Sending automated emails</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/sending-automated-emails/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('visualization'); return false;">
-visualization
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/sending-automated-emails/index.html" class="no-external">I recently needed to send out an email to many recipients, with only slight changes in the text. And I figured – this must be something we can do with <code>R</code>, right?</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/sending-automated-emails/index.html" class="no-external">
-<div class="listing-date">
-Feb 12, 2025
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="code,visualization" data-listing-date-sort="1738450800000" data-listing-file-modified-sort="1755425277291" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1428">
-<div class="thumbnail">
-<p><a href="../blog/posts/locator-map/index.html" class="no-external"></a></p><a href="../blog/posts/locator-map/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/locator-map/locator-map.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/locator-map/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/locator-map/index.html" class="no-external">Creating a locator map with <code>ggplot2</code></a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/locator-map/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('visualization'); return false;">
-visualization
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/locator-map/index.html" class="no-external">Sometimes I visualize data on a country that not everyone is familiar with. In this case, a locator map can be helpful: It shows where in the world my country of interest…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/locator-map/index.html" class="no-external">
-<div class="listing-date">
-Feb 2, 2025
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="code,spatial formats" data-listing-date-sort="1716760800000" data-listing-file-modified-sort="1755425324280" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1717">
-<div class="thumbnail">
-<p><a href="../blog/posts/opening-kmz-files/index.html" class="no-external"></a></p><a href="../blog/posts/opening-kmz-files/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/opening-kmz-files/landfills.PNG" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/opening-kmz-files/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/opening-kmz-files/index.html" class="no-external">Opening <code>.kmz</code> files</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/opening-kmz-files/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('spatial formats'); return false;">
-spatial formats
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/opening-kmz-files/index.html" class="no-external">When working with spatial data, one thing I’ve noticed is: there’s a lot of obscure data formats. And with every one of them, it takes me a while to figure out how to handle…<code></code></a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/opening-kmz-files/index.html" class="no-external">
-<div class="listing-date">
-May 27, 2024
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="code,data" data-listing-date-sort="1714860000000" data-listing-file-modified-sort="1755425363378" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1182">
-<div class="thumbnail">
-<p><a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external"></a></p><a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/reading-csv-with-2row-colnames/two_row_colnames.PNG" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external">Reading a <code>csv</code> file with 2-row column names</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('data'); return false;">
-data
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external">Sometimes, <code>csv</code> files have 2-row column names. I create a function to deal with this.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external">
-<div class="listing-date">
-May 5, 2024
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-categories="code,spatial formats" data-listing-date-sort="1708729200000" data-listing-file-modified-sort="1755425336154" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1272">
-<div class="thumbnail">
-<p><a href="../blog/posts/opening-nc-files/index.html" class="no-external"></a></p><a href="../blog/posts/opening-nc-files/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/opening-nc-files/raster.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/opening-nc-files/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/opening-nc-files/index.html" class="no-external">Opening <code>.nc</code> files</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/opening-nc-files/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('spatial formats'); return false;">
-spatial formats
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/opening-nc-files/index.html" class="no-external">When working with raster data, one thing I’ve noticed is: there’s a lot of obscure data formats. And with every one of them, it takes me a while to figure out how to handle…<code></code></a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/opening-nc-files/index.html" class="no-external">
-<div class="listing-date">
-Feb 24, 2024
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-categories="code,visualization" data-listing-date-sort="1704322800000" data-listing-file-modified-sort="1755425280526" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1013">
-<div class="thumbnail">
-<p><a href="../blog/posts/creating-a-basic-map/index.html" class="no-external"></a></p><a href="../blog/posts/creating-a-basic-map/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/creating-a-basic-map/map.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/creating-a-basic-map/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/creating-a-basic-map/index.html" class="no-external">Creating a map with <code>ggplot2</code></a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/creating-a-basic-map/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('visualization'); return false;">
-visualization
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/creating-a-basic-map/index.html" class="no-external">In this post, I create a basic world map – specifically, a Choropleth map. That means we colour the countries by a specific variable.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/creating-a-basic-map/index.html" class="no-external">
-<div class="listing-date">
-Jan 4, 2024
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="8" data-categories="code,summary" data-listing-date-sort="1701126000000" data-listing-file-modified-sort="1755425404302" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="803">
-<div class="thumbnail">
-<p><a href="../blog/posts/showing-regression-results/index.html" class="no-external"></a></p><a href="../blog/posts/showing-regression-results/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/showing-regression-results/table.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/showing-regression-results/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/showing-regression-results/index.html" class="no-external">Creating a basic regression table with <code>modelsummary</code></a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/showing-regression-results/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('summary'); return false;">
-summary
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/showing-regression-results/index.html" class="no-external">In this post, we have a look at creating a basic regression table with <code>modelsummary</code> and <code>fixest</code>.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/showing-regression-results/index.html" class="no-external">
-<div class="listing-date">
-Nov 28, 2023
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-farther" class="csl-entry" role="listitem">
+Storeygard, Adam. 2016. <span>“Farther on down the Road: Transport Costs, Trade and Urban Growth in Sub-Saharan Africa.”</span> <em>The Review of Economic Studies</em> 83 (3): 1263–95.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

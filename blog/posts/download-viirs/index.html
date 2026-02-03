@@ -6,9 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Sarah Listabarth">
+<meta name="author" content="Sarah Zeller">
+<meta name="dcterms.date" content="2025-05-21">
 
-<title>Blog – Sarah Listabarth</title>
+<title>Downloading VIIRS data – Sarah Zeller</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,30 +22,62 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../assets/favicon-data.svg" rel="icon" type="image/svg+xml">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../site_libs/quarto-html/quarto.js"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../assets/favicon-data.svg" rel="icon" type="image/svg+xml">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,68 +105,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-posts .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-posts'] = new List('listing-posts', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-<meta name="google-site-verification" content="fmXXMObT8-C0B98LBR31pY28kNntX3HcjxyeLxa2J7M">
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="../../../styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -143,8 +117,8 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Sarah Listabarth</span>
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Sarah Zeller</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -154,27 +128,23 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../research/research.html"> 
-<span class="menu-text">Research</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../cv/cv.pdf"> 
+    <a class="nav-link" href="../../../cv/cv.pdf"> 
 <span class="menu-text">CV</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../blog/index.html" aria-current="page"> 
+    <a class="nav-link" href="../../../blog/index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../software/index.html"> 
+    <a class="nav-link" href="../../../software/index.html"> 
 <span class="menu-text">Software</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../data-viz/index.html"> 
+    <a class="nav-link" href="../../../data-viz/index.html"> 
 <span class="menu-text">Data Visualization</span></a>
   </li>  
 </ul>
@@ -188,365 +158,192 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Blog</h1>
-                      </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">Downloading VIIRS data</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">code</div>
+              </div>
+                  </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page-left">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Sarah Zeller </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 21, 2025</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(9)</span></div><div class="category" data-category="code">code <span class="quarto-category-count">(9)</span></div><div class="category" data-category="data">data <span class="quarto-category-count">(1)</span></div><div class="category" data-category="spatial formats">spatial formats <span class="quarto-category-count">(2)</span></div><div class="category" data-category="summary">summary <span class="quarto-category-count">(2)</span></div><div class="category" data-category="visualization">visualization <span class="quarto-category-count">(3)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#yearly-viirs-data" id="toc-yearly-viirs-data" class="nav-link active" data-scroll-target="#yearly-viirs-data">Yearly VIIRS data</a>
+  <ul class="collapse">
+  <li><a href="#case-study-2013" id="toc-case-study-2013" class="nav-link" data-scroll-target="#case-study-2013">Case study: 2013</a></li>
+  <li><a href="#all-years" id="toc-all-years" class="nav-link" data-scroll-target="#all-years">All years</a></li>
+  </ul></li>
+  <li><a href="#download" id="toc-download" class="nav-link" data-scroll-target="#download">Download</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
-<blockquote class="blockquote">
-<p>This blog is for people just starting out with their <code>R</code> journey. I’ll address beginner problems, simplifying some concepts in <code>R</code> programming.</p>
-</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="yearly-viirs-data" class="level1">
+<h1>Yearly VIIRS data</h1>
+<ul>
+<li><a href="https://eogdata.mines.edu/products/vnl/#annual_v2">annual VNL V2.1</a></li>
+</ul>
+<section id="case-study-2013" class="level2">
+<h2 class="anchored" data-anchor-id="case-study-2013">Case study: 2013</h2>
+<p>Let’s check out the different data formats we could get. For now, we’ll ignore the prefix – that’s the same within every year, and we’ll need it to build our URL.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://eogdata.mines.edu/nighttime_light/annual/v21/2013/"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>table <span class="ot">&lt;-</span> url <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_html</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">[[</span><span class="st">`</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">|&gt;</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Name <span class="sc">!=</span> <span class="st">"Parent Directory"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_wider_delim</span>(<span class="at">cols =</span> Name,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"."</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">names =</span> <span class="fu">c</span>(<span class="st">"prefix"</span>, <span class="st">"var"</span>, <span class="st">"extension_1"</span>, <span class="st">"extension_2"</span>, <span class="st">"extension_3"</span>))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>table <span class="sc">|&gt;</span> </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(var)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 1
+  var           
+  &lt;chr&gt;         
+1 average       
+2 average_masked
+3 cf_cvg        
+4 cvg           
+5 lit_mask      
+6 maximum       
+7 median        
+8 median_masked 
+9 minimum       </code></pre>
+</div>
+</div>
+<p>We’ll go for <code>average_masked</code> – that should fit our purposes.</p>
+</section>
+<section id="all-years" class="level2">
+<h2 class="anchored" data-anchor-id="all-years">All years</h2>
+<p>Let’s first find all years that are after 2012 – 2012 is a bit messy because measurement only starts halfway through the year.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>base_url <span class="ot">&lt;-</span> <span class="st">"https://eogdata.mines.edu/nighttime_light/annual/v21/"</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>years <span class="ot">&lt;-</span> base_url <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_html</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">[[</span><span class="st">`</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">|&gt;</span> </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">extract_numeric</span>(Name), </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">.keep =</span> <span class="st">"none"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;</span> <span class="dv">2012</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>years</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 1
+   year
+  &lt;dbl&gt;
+1  2013
+2  2014
+3  2015
+4  2016
+5  2017
+6  2018
+7  2019
+8  2020
+9  2021</code></pre>
+</div>
+</div>
+<p>So we can check out the years between 2013 and 2021. Great!</p>
+<p>Now, let’s find out the names of the <code>average_masked</code> files.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>year_urls <span class="ot">&lt;-</span> <span class="fu">paste0</span>(base_url,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">2013</span><span class="sc">:</span><span class="dv">2021</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"/"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>average_masked_files <span class="ot">&lt;-</span> year_urls <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_chr</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.f =</span> <span class="sc">~</span> .x <span class="sc">|&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">read_html</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">html_table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">`</span><span class="at">[[</span><span class="st">`</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(Name) <span class="sc">|&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"average_masked"</span>, Name)) <span class="sc">|&gt;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pull</span>(Name)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>file_urls <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">"{url}/{year}/{file}"</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>                   <span class="at">url =</span> base_url,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>                   <span class="at">year =</span> <span class="dv">2013</span><span class="sc">:</span><span class="dv">2021</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>                   <span class="at">file =</span> average_masked_files)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="download" class="level1">
+<h1>Download</h1>
+<p>Now that we’ve got the links, we can just go ahead and download them.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">walk2</span>(file_urls,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>      <span class="dv">2013</span><span class="sc">:</span><span class="dv">2021</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">.f =</span> <span class="sc">~</span> <span class="fu">download.file</span>(<span class="at">url =</span> .x,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">destfile =</span> <span class="fu">paste0</span>(temp, <span class="st">"/"</span>, .y, <span class="st">".dat.tif.gz"</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">mode =</span> <span class="st">"wb"</span>))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>local_files <span class="ot">&lt;-</span> temp <span class="sc">|&gt;</span> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list.files</span>(<span class="at">full.names =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">keep</span>(<span class="sc">~</span><span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">.dat"</span>, .x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-posts">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="code" data-listing-date-sort="1751493600000" data-listing-file-modified-sort="1755425350407" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1062">
-<div class="thumbnail">
-<p><a href="../blog/posts/osm-history-files/index.html" class="no-external"></a></p><a href="../blog/posts/osm-history-files/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/osm-history-files/duck.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/osm-history-files/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/osm-history-files/index.html" class="no-external">Working with OSM history files in <code>R</code></a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/osm-history-files/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/osm-history-files/index.html" class="no-external">We’re trying to find POIs throughout the history of OSM. Luckily, OSM does track when they are added. Only drawback? We’re working with huuuuuuge files. Let’s see how we can…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/osm-history-files/index.html" class="no-external">
-<div class="listing-date">
-Jul 3, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="code,summary" data-listing-date-sort="1748383200000" data-listing-file-modified-sort="1755425373838" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="706">
-<div class="thumbnail">
-<p><a href="../blog/posts/scraping-wikipedia/index.html" class="no-external"></a></p><a href="../blog/posts/scraping-wikipedia/index.html" class="no-external">
-<p class="card-img-top"><img src="posts\scraping-wikipedia\index_files\figure-html\plot-afghanistan-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="../blog/posts/scraping-wikipedia/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/scraping-wikipedia/index.html" class="no-external">Scraping wikipedia</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/scraping-wikipedia/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('summary'); return false;">
-summary
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/scraping-wikipedia/index.html" class="no-external">Every now and then, we want to get some data from the wild – e.g., from Wikipedia articles. We’ll see two data types here:</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/scraping-wikipedia/index.html" class="no-external">
-<div class="listing-date">
-May 28, 2025
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="code,visualization" data-listing-date-sort="1739314800000" data-listing-file-modified-sort="1755425385560" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="698">
-<div class="thumbnail">
-<p><a href="../blog/posts/sending-automated-emails/index.html" class="no-external"></a></p><a href="../blog/posts/sending-automated-emails/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/sending-automated-emails/mail.webp" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/sending-automated-emails/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/sending-automated-emails/index.html" class="no-external">Sending automated emails</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/sending-automated-emails/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('visualization'); return false;">
-visualization
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/sending-automated-emails/index.html" class="no-external">I recently needed to send out an email to many recipients, with only slight changes in the text. And I figured – this must be something we can do with <code>R</code>, right?</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/sending-automated-emails/index.html" class="no-external">
-<div class="listing-date">
-Feb 12, 2025
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="code,visualization" data-listing-date-sort="1738450800000" data-listing-file-modified-sort="1755425277291" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1428">
-<div class="thumbnail">
-<p><a href="../blog/posts/locator-map/index.html" class="no-external"></a></p><a href="../blog/posts/locator-map/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/locator-map/locator-map.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/locator-map/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/locator-map/index.html" class="no-external">Creating a locator map with <code>ggplot2</code></a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/locator-map/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('visualization'); return false;">
-visualization
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/locator-map/index.html" class="no-external">Sometimes I visualize data on a country that not everyone is familiar with. In this case, a locator map can be helpful: It shows where in the world my country of interest…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/locator-map/index.html" class="no-external">
-<div class="listing-date">
-Feb 2, 2025
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="code,spatial formats" data-listing-date-sort="1716760800000" data-listing-file-modified-sort="1755425324280" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1717">
-<div class="thumbnail">
-<p><a href="../blog/posts/opening-kmz-files/index.html" class="no-external"></a></p><a href="../blog/posts/opening-kmz-files/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/opening-kmz-files/landfills.PNG" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/opening-kmz-files/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/opening-kmz-files/index.html" class="no-external">Opening <code>.kmz</code> files</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/opening-kmz-files/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('spatial formats'); return false;">
-spatial formats
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/opening-kmz-files/index.html" class="no-external">When working with spatial data, one thing I’ve noticed is: there’s a lot of obscure data formats. And with every one of them, it takes me a while to figure out how to handle…<code></code></a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/opening-kmz-files/index.html" class="no-external">
-<div class="listing-date">
-May 27, 2024
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="code,data" data-listing-date-sort="1714860000000" data-listing-file-modified-sort="1755425363378" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1182">
-<div class="thumbnail">
-<p><a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external"></a></p><a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/reading-csv-with-2row-colnames/two_row_colnames.PNG" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external">Reading a <code>csv</code> file with 2-row column names</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('data'); return false;">
-data
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external">Sometimes, <code>csv</code> files have 2-row column names. I create a function to deal with this.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/reading-csv-with-2row-colnames/index.html" class="no-external">
-<div class="listing-date">
-May 5, 2024
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-categories="code,spatial formats" data-listing-date-sort="1708729200000" data-listing-file-modified-sort="1755425336154" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1272">
-<div class="thumbnail">
-<p><a href="../blog/posts/opening-nc-files/index.html" class="no-external"></a></p><a href="../blog/posts/opening-nc-files/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/opening-nc-files/raster.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/opening-nc-files/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/opening-nc-files/index.html" class="no-external">Opening <code>.nc</code> files</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/opening-nc-files/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('spatial formats'); return false;">
-spatial formats
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/opening-nc-files/index.html" class="no-external">When working with raster data, one thing I’ve noticed is: there’s a lot of obscure data formats. And with every one of them, it takes me a while to figure out how to handle…<code></code></a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/opening-nc-files/index.html" class="no-external">
-<div class="listing-date">
-Feb 24, 2024
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-categories="code,visualization" data-listing-date-sort="1704322800000" data-listing-file-modified-sort="1755425280526" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1013">
-<div class="thumbnail">
-<p><a href="../blog/posts/creating-a-basic-map/index.html" class="no-external"></a></p><a href="../blog/posts/creating-a-basic-map/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/creating-a-basic-map/map.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/creating-a-basic-map/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/creating-a-basic-map/index.html" class="no-external">Creating a map with <code>ggplot2</code></a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/creating-a-basic-map/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('visualization'); return false;">
-visualization
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/creating-a-basic-map/index.html" class="no-external">In this post, I create a basic world map – specifically, a Choropleth map. That means we colour the countries by a specific variable.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/creating-a-basic-map/index.html" class="no-external">
-<div class="listing-date">
-Jan 4, 2024
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="8" data-categories="code,summary" data-listing-date-sort="1701126000000" data-listing-file-modified-sort="1755425404302" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="803">
-<div class="thumbnail">
-<p><a href="../blog/posts/showing-regression-results/index.html" class="no-external"></a></p><a href="../blog/posts/showing-regression-results/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/posts/showing-regression-results/table.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/posts/showing-regression-results/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/posts/showing-regression-results/index.html" class="no-external">Creating a basic regression table with <code>modelsummary</code></a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/posts/showing-regression-results/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('summary'); return false;">
-summary
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/posts/showing-regression-results/index.html" class="no-external">In this post, we have a look at creating a basic regression table with <code>modelsummary</code> and <code>fixest</code>.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/posts/showing-regression-results/index.html" class="no-external">
-<div class="listing-date">
-Nov 28, 2023
-</div>
-<div class="listing-author">
-Sarah Listabarth
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{zeller2025,
+  author = {Zeller, Sarah},
+  title = {Downloading {VIIRS} Data},
+  date = {2025-05-21},
+  url = {https://sarahzeller.github.io/blog/posts/downloading-viirs-data/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-zeller2025" class="csl-entry quarto-appendix-citeas" role="listitem">
+Zeller, Sarah. 2025. <span>“Downloading VIIRS Data.”</span> May 21,
+2025. <a href="https://sarahzeller.github.io/blog/posts/downloading-viirs-data/">https://sarahzeller.github.io/blog/posts/downloading-viirs-data/</a>.
+</div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -783,7 +580,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/sarahlistabarth\.github\.io\/");
+      var filterRegex = new RegExp('/' + window.location.host + '/');
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
