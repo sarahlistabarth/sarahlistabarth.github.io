@@ -8,6 +8,8 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - href: research/research.qmd
+        text: Research
       - href: cv/cv.pdf
         text: CV
       - href: blog/index.qmd

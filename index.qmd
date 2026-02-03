@@ -6,7 +6,7 @@ about:
   template: jolla
   links: 
     - icon: envelope
-      href: mailto:sarah.zeller@tu-dresden.de
+      href: mailto:sarah.listabarth@tu-dresden.de
     - icon: github
       href: https://github.com/sarahlistabarth
 ---
