@@ -6,8 +6,6 @@ website:
   favicon: assets/favicon-data.svg
   navbar:
     left:
-      - href: index.qmd
-        text: Home
       - href: research/research.qmd
         text: Research
       - href: cv/cv.pdf
