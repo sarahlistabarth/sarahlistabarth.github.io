@@ -1,0 +1,265 @@
+---
+authors:
+  - Jakob Listabarth
+  - Sarah Listabarth
+title: "Filtering a large online dataset with duckDB"
+date: "2026-02-10"
+categories: [code]
+image: "duck.png"
+citation: 
+  url: https://sarahlistabarth.github.io/blog/posts/filtering-online-dataset-with-duckdb/
+
+format:
+  html:
+    toc: true
+
+execute:
+  warning: false
+  eval: false
+---
+
+I recently wanted to find 100k datapoints within a database that met a specific requirement: They should be German.
+So far, so good -- in `R`, this would look as simple as the following code chunk.
+
+```{r}
+data |> 
+    filter(language == "German")
+```
+
+So what is the problem then?
+The `data` part of the code. 
+Because it is not just a single file, and not 100, but actually 3000 parquet files, which together make up *>1.5 TB*.
+
+## Classical solution: download, then filter
+
+As long as we have enough storage space, we could just download the dataset.
+I have a large external drive, so that's the first thing I tried.
+
+I wrote 
+
+- a function that would create the link from which to download each individual file
+- a function that would create the correct file name
+- a function to combine them.
+
+```{r}
+
+make_url <- function(first_number = 1, second_number = 1, corpus = 1){
+  paste0("https://huggingface.co/datasets/PleIAs/common_corpus/resolve/main/common_corpus_",
+  corpus,
+  "/subset_",
+  first_number,
+  "_",
+  second_number,
+  ".parquet")
+}
+
+make_file_name <- function(first_number, second_number){
+  paste0("download/subset_", first_number, "_", second_number, ".parquet")
+}
+
+download_and_save <- function(first, second){
+  make_url(first, second) |> 
+    download.file(
+      make_file_name(first, second),
+      mode = "wb"
+    )
+}
+```
+
+Now, all I needed to do was to write a small function to map/walk over all files ... and wait.
+
+
+```{r}
+numbers <- cross_df(list(first = 1:100, second = 1:10, corpus = 1:3)) |> 
+  dplyr::arrange(corpus, first)
+
+pwalk(numbers, download_and_save)
+```
+
+.... and wait. 
+
+And wait.
+The issue was: With my internet connection, it took a really long time (a couple of days) to download everything, and every now and then, an error (maybe the internet connection?) would stop everything.
+
+Eventually, I noticed that I was running out of storage space on my external drive as well. 
+So now, I did not have one, but two issues:
+
+1. limited storage space for huge database
+1. slow download times
+
+## The Dutch solution
+
+One solution to problem #1 -- limited storage space -- is the following workflow:
+
+1. Download one file
+2. Filter it
+3. Delete it
+4. Repeat
+
+For the database I wanted to filter within -- the Common Corpus -- [Edwin Rijgersberg](https://huggingface.co/datasets/Rijgersberg/common_corpus_nl) actually used this approach to find all Dutch data points.
+They then shared this filtered database on Huggingface.
+However, they noted that the downloading was a bit of a pain -- it did not always work, was sometimes interrupted, etc.
+
+So, this does not seem to be the perfect solution either: Downloading is still a pain, and still takes days.
+
+## The duckDB way
+
+Enter duckDB!
+It allows us to filter the database *without* downloading it first. 
+Read that again. 
+We really can do all the filtering with a database that's somewhere on some server we don't own!
+Since we don't have to download the database anymore, both problems are solved.
+
+duckDB does the following:
+
+1. Create a database A
+2. Look at the original dataset X
+3. Filter this original dataset X
+4. Save the filtered results from X to the newly created database A
+
+Let me walk you through the steps.
+
+### Create a database
+
+Within duckDB, we're working with a database, so we need to create it first.
+As an `R` user, this `SQL` code looks a bit unfamiliar, but all we're doing is either creating or replacing a table, that's called `corpus_german`.
+
+The `AS` that's following already sets us up for what we want to put in.
+
+```{sql}
+CREATE
+OR REPLACE TABLE corpus_german AS (
+);
+```
+
+### Name the source database
+
+Now, let's populate this new database A.
+With the `FROM` parameter, we tell it where the dataset X lives.
+
+For this, we use the `httpfs` extension.
+For this to work, we exchange the `https://` in the beginning with `hf://`.
+This is a specific shortcut for *Huggingface*.
+Note that the URL is way shorter than before.
+It mostly takes away the huggingface part in the beginning, and the `resolve/main/` part in the middle.
+
+```{sql}
+"https://huggingface.co/datasets/PleIAs/common_corpus/resolve/main/common_corpus_1/01/1.parquet"
+
+'hf://datasets/PleIAs/common_corpus/common_corpus_*/**/*.parquet'
+```
+
+The cool thing about it: We can use a `glob` syntax, which works like a wildcard, to not only give it one parquet file, but all parquet files included in the database X.
+The pattern is the following: 
+
+- a corpus (1--3)
+- a subset (1-100)
+- a part (1-10)
+
+All of these are simply indicated by a `*`, something like a wild card.
+
+The `SELECT` clause says to now take every column within this dataset (`*` indicates any).
+Also, we tell it to select each `filename` -- this is special because of the way we access the dataset.
+
+```{sql}
+CREATE
+OR REPLACE TABLE corpus_german AS (
+    SELECT
+        *,
+        filename,
+    FROM
+        'hf://datasets/PleIAs/common_corpus/common_corpus_*/**/*.parquet'
+);
+```
+
+### Filtering
+
+So far, so good -- but really, we're only telling duckDB to look at the entire dataset online. 
+If we were to now save it somewhere, we'd still have to find a lot of space for it.
+What we really need is to *filter* it so we only have the parts that are interesting to us.
+
+As an `R` user, this finally looks familiar again.
+We would write in `R`:
+
+```{r}
+data |>
+    filter(language == 'German')
+```
+
+In `SQL`, we write:
+
+```{sql}
+CREATE
+OR REPLACE TABLE corpus_german AS (
+    SELECT
+        *,
+        filename,
+    FROM
+        'hf://datasets/PleIAs/common_corpus/common_corpus_*/**/*.parquet'
+    WHERE
+        language = 'German'
+);
+
+```
+
+### Limit the number of rows
+
+Now, we could end up with millions of data points again -- this is not what I wanted in this case.
+100.000 data points is more than enough for me.
+We can tell duckDB to stop using the `LIMIT` clause.
+This way, duckDB will only deliver 100.000 rows.
+
+```{sql}
+CREATE
+OR REPLACE TABLE corpus_german AS (
+    SELECT
+        *,
+        filename,
+    FROM
+        'hf://datasets/PleIAs/common_corpus/common_corpus_*/**/*.parquet'
+    WHERE
+        language IN ('German')
+    LIMIT
+        100000
+);
+
+```
+
+
+### Saving the new database
+
+Once my filtered data points are available, I want to save them to a `.parquet` file.
+With duckDB, we do this by `COPY`ing the created database to a file, which we can name however we want.
+
+```{sql}
+COPY corpus_german TO 'corpus_german.parquet';
+
+```
+
+### Running the code 
+
+duckDB only takes about *3 hours* for this entire thing!
+
+Compare this to the *days* the other approaches took, and you'll understand why I've become a huge duckDB fangirl.
+
+
+
+## Entire code for copying
+
+
+```{sql}
+CREATE
+OR REPLACE TABLE corpus_german AS (
+    SELECT
+        *,
+        filename,
+    FROM
+        'hf://datasets/PleIAs/common_corpus/common_corpus_*/**/*.parquet'
+    WHERE
+        language = 'German'
+    LIMIT
+        100000
+);
+
+COPY corpus_german TO 'corpus_german.parquet';
+```
