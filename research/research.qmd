@@ -25,7 +25,14 @@ We investigate the long-run effects of early democratic participation on subsequ
 
 ![](oil.png)
 
-This paper investigates the economic effects of Oil Prices on development in Sub-Saharan Africa (SSA), focusing on the ethnic dimension of these effects. Despite extensive research on the relationship between trade, transport costs, and economic growth, there is limited understanding of how ethnic boundaries influence the distribution of trade benefits. Our key research question is: Do ethnic boundaries create economic discontinuities that hinder the diffusion of economic benefits? We contribute to the literature by extending the work of @farther, who demonstrated that transport costs significantly shape urban economic growth, particularly in proximity to ports. While Storeygard focused on spatial variation in transport costs driven by oil price fluctuations, our study incorporates ethnic boundaries into the analysis to assess whether economic gains from trade are unevenly distributed among ethnic groups. This extension addresses the broader issue of spatial inequality, emphasizing the role of historical ethnic fragmentation in amplifying economic disparities.
+This paper examines how oil-price induced changes in transport costs reshape the spatial distribution of economic activity in Sub-Saharan Africa (SSA).
+We build on @farther, who shows that higher oil prices dampen growth in cities farther from ports due to rising transport costs, and study redistribution across space. 
+Our central question is: Which locations gain, and which lose, when trade costs change?
+We show that oil price shocks generate systematic reallocation effects.
+Cities relatively close to ports—but outside the immediate port hinterland—benefit disproportionately, while remote areas experience relative decline.
+In addition to road distance, we explore ethnic distance as an alternative measure of trade costs.
+We highlight spatial winners and losers of trade redistribution.
+Oil price shocks thus function as a redistribution mechanism and shape patterns of regional inequality within countries.
 
 ## When Waste Becomes Wealth
 
