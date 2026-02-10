@@ -7,10 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Sarah Listabarth">
-<meta name="dcterms.date" content="2024-05-05">
-<meta name="description" content="Sometimes, csv files have 2-row column names. I create a function to deal with this.">
+<meta name="dcterms.date" content="2026-02-10">
 
-<title>Reading a csv file with 2-row column names – Sarah Listabarth</title>
+<title>Filtering a large online dataset with duckDB – Sarah Listabarth</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -161,15 +160,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Reading a <code>csv</code> file with 2-row column names</h1>
-                  <div>
-        <div class="description">
-          Sometimes, <code>csv</code> files have 2-row column names. I create a function to deal with this.
-        </div>
-      </div>
-                          <div class="quarto-categories">
+      <h1 class="title">Filtering a large online dataset with duckDB</h1>
+                                <div class="quarto-categories">
                 <div class="quarto-category">code</div>
-                <div class="quarto-category">data</div>
               </div>
                   </div>
   </div>
@@ -178,16 +171,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="quarto-title-meta">
 
       <div>
-      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-heading">Authors</div>
       <div class="quarto-title-meta-contents">
-               <p>Sarah Zeller </p>
+               <p>Jakob Listabarth </p>
+               <p>Sarah Listabarth </p>
             </div>
     </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">May 5, 2024</p>
+        <p class="date">February 10, 2026</p>
       </div>
     </div>
     
@@ -203,17 +197,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
-  <li><a href="#preparation" id="toc-preparation" class="nav-link" data-scroll-target="#preparation">Preparation</a></li>
-  <li><a href="#reading-the-column-names" id="toc-reading-the-column-names" class="nav-link" data-scroll-target="#reading-the-column-names">Reading the column names</a>
+  <li><a href="#classical-solution-download-then-filter" id="toc-classical-solution-download-then-filter" class="nav-link active" data-scroll-target="#classical-solution-download-then-filter">Classical solution: download, then filter</a></li>
+  <li><a href="#the-dutch-solution" id="toc-the-dutch-solution" class="nav-link" data-scroll-target="#the-dutch-solution">The Dutch solution</a></li>
+  <li><a href="#the-duckdb-way" id="toc-the-duckdb-way" class="nav-link" data-scroll-target="#the-duckdb-way">The duckDB way</a>
   <ul class="collapse">
-  <li><a href="#reading-the-first-row" id="toc-reading-the-first-row" class="nav-link" data-scroll-target="#reading-the-first-row">Reading the first row</a></li>
-  <li><a href="#reading-both-column-names" id="toc-reading-both-column-names" class="nav-link" data-scroll-target="#reading-both-column-names">Reading both column names</a></li>
+  <li><a href="#create-a-database" id="toc-create-a-database" class="nav-link" data-scroll-target="#create-a-database">Create a database</a></li>
+  <li><a href="#name-the-source-database" id="toc-name-the-source-database" class="nav-link" data-scroll-target="#name-the-source-database">Name the source database</a></li>
+  <li><a href="#filtering" id="toc-filtering" class="nav-link" data-scroll-target="#filtering">Filtering</a></li>
+  <li><a href="#limit-the-number-of-rows" id="toc-limit-the-number-of-rows" class="nav-link" data-scroll-target="#limit-the-number-of-rows">Limit the number of rows</a></li>
+  <li><a href="#saving-the-new-database" id="toc-saving-the-new-database" class="nav-link" data-scroll-target="#saving-the-new-database">Saving the new database</a></li>
+  <li><a href="#running-the-code" id="toc-running-the-code" class="nav-link" data-scroll-target="#running-the-code">Running the code</a></li>
   </ul></li>
-  <li><a href="#combine-the-row-names" id="toc-combine-the-row-names" class="nav-link" data-scroll-target="#combine-the-row-names">Combine the row names</a></li>
-  <li><a href="#read-in-the-data-and-replace-the-column-names" id="toc-read-in-the-data-and-replace-the-column-names" class="nav-link" data-scroll-target="#read-in-the-data-and-replace-the-column-names">Read in the data and replace the column names</a></li>
-  <li><a href="#one-step-further-considering-the-second-row-meaning" id="toc-one-step-further-considering-the-second-row-meaning" class="nav-link" data-scroll-target="#one-step-further-considering-the-second-row-meaning">One step further – considering the second row meaning</a></li>
-  <li><a href="#an-alternative" id="toc-an-alternative" class="nav-link" data-scroll-target="#an-alternative">An alternative</a></li>
+  <li><a href="#entire-code-for-copying" id="toc-entire-code-for-copying" class="nav-link" data-scroll-target="#entire-code-for-copying">Entire code for copying</a></li>
   </ul>
 </nav>
     </div>
@@ -224,191 +219,205 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>I recently wanted to check out election results from the last German <em>Bundestag</em> election, and read them into <code>R</code>. The data was saved in a <code>csv</code> file – so far, so good. But the column names were spread over two rows. 😱</p>
-<p>This means I’m losing valuable information if I’m only reading the first row of column names. Additionally, the types of the rows get messed up, since the second row of the column names is read as data – specifically, <code>character</code> data.</p>
-<p>So, I wanted to combine both rows of column names into one. Here’s how I did it in R.</p>
-<section id="data" class="level1">
-<h1>Data</h1>
-<p>You’ll find the <code>csv</code> file I was trying to read <a href="https://www.bundeswahlleiterin.de/dam/jcr/62868510-b616-443c-97b4-71847916d543/btw2021_brief_wkr.csv">here</a>. It shows the federal election results, aggregated to the level of the electoral districts. In Germany, you have two votes: the first one is for a candidate, the second one for a party. Here’s a snapshot of the file when you load it into <code>Excel</code> .</p>
-<p><img src="two_row_colnames.PNG" class="img-fluid"></p>
-<p>You can see two issues.</p>
-<ol type="1">
-<li><p>The copyright information and title are saved in column <code>A</code> (rows 1 and 3). We can solve this easily by skipping over those rows when we read the <code>csv</code> file into R.</p></li>
-<li><p>The column names are spread over two rows: 4 and 5. This issue, we can’t solve that quickly.</p></li>
-</ol>
-<p>So let’s check out the structure of the column names. The columns A–F that only need one row for the column names identify the voting district; the columns that follow identify the results. Row 6 always indicates whether it’s the first or second vote result.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Two-row column names are not always so clearly structured.</p>
-</div>
-</div>
-<p>So what’s the plan? We want to do the following:</p>
-<ol type="1">
-<li>Read the first column name row.</li>
-<li>Read the second column name row.</li>
-<li>Combine those two rows into one.</li>
-<li>Read the data into R.</li>
-<li>Replace the column names with the combined column names.</li>
-</ol>
-<p>Let’s get started 🚀</p>
-</section>
-<section id="preparation" class="level1">
-<h1>Preparation</h1>
-<p>Let’s load the data first. We’ll create a <code>temp_file</code> to store the data, but feel free to download it into any folder you like.</p>
+<p>I recently wanted to find 100k datapoints within a database that met a specific requirement: They should be German. So far, so good – in <code>R</code>, this would look as simple as the following code chunk.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>temp_file <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".csv"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(<span class="at">url =</span> <span class="st">"https://www.bundeswahlleiterin.de/dam/jcr/62868510-b616-443c-97b4-71847916d543/btw2021_brief_wkr.csv"</span>,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">destfile =</span> temp_file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(language <span class="sc">==</span> <span class="st">"German"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Next, let’s load the needed packages. We’ll use <code>janitor</code> to clean the column names, <code>tidyr</code> and <code>dplyr</code> to combine the two rows, and <code>rlang</code> to set the correct names.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlang)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="reading-the-column-names" class="level1">
-<h1>Reading the column names</h1>
-<section id="reading-the-first-row" class="level2">
-<h2 class="anchored" data-anchor-id="reading-the-first-row">Reading the first row</h2>
-<p>There’s probably many ways to do this, but I decided to go for the following approach:</p>
-<ol type="1">
-<li>read in the <code>csv</code> file starting at the first column name row</li>
-<li>clean the column names</li>
-<li>store the column names in a variable</li>
-</ol>
-<p>To read in the first row of column names, we can use the <code>read.csv2()</code> function. We’ll skip the first three rows (which only contain metadata) and read in only one row, since we don’t need the content for now. Then, we’ll clean the column names with <code>janitor::clean_names()</code> to make sure that they’re formatted like we want them to. Lastly, I’m removing the numbers that are attached at the end since some of the variable names so far are not unique (since they’re still missing the second row).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>colnames_row1 <span class="ot">&lt;-</span> <span class="fu">read.csv2</span>(temp_file, <span class="at">skip =</span> <span class="dv">4</span>, <span class="at">nrows =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gsub</span>(<span class="st">"_[[:digit:]].*"</span>, <span class="st">""</span>, <span class="at">x =</span> _) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="reading-both-column-names" class="level2">
-<h2 class="anchored" data-anchor-id="reading-both-column-names">Reading both column names</h2>
-<p>We could repeat this procedure for the second row of column names. However, it’s better to create a function for this case. We simply take the pipeline from before and put it into a function.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>read_colnames <span class="ot">&lt;-</span> <span class="cf">function</span>(path, <span class="at">skip_rows =</span> <span class="dv">4</span>, <span class="at">no_rows =</span> <span class="dv">1</span>) {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  path <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read.csv2</span>(<span class="at">skip =</span> skip_rows, <span class="at">nrows =</span> no_rows) <span class="sc">|&gt;</span> </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub</span>(<span class="st">"_[[:digit:]].*"</span>, <span class="st">""</span>, <span class="at">x =</span> _)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-</section>
-<section id="combine-the-row-names" class="level1">
-<h1>Combine the row names</h1>
-<p>Now, we can easily read in both rows of column names using this function. All we need to do is change the number of rows to skip. We’ll put them in a <code>data.frame</code> together so we can manipulate them easily.</p>
-<p>To bring the two rows together, we simply check if there’s actually anything inside <code>row_2</code> (i.e.&nbsp;something that is not parsed as <code>"x"</code>). If there is not, we just take the contents of <code>row_1</code>. Otherwise, we paste <code>row_1</code> and <code>row_2</code> together.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rownames <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">row_1 =</span> <span class="fu">read_colnames</span>(temp_file, <span class="at">skip_rows =</span> <span class="dv">4</span>),</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">row_2 =</span> <span class="fu">read_colnames</span>(temp_file, <span class="at">skip_rows =</span> <span class="dv">5</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">colnames =</span> <span class="fu">ifelse</span>(row_2 <span class="sc">==</span> <span class="st">"x"</span>, </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                           row_1, </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">paste</span>(row_1, row_2, <span class="at">sep =</span> <span class="st">"_"</span>)))</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>rownames <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>            row_1 row_2        colnames
-1    wahlkreis_nr     x    wahlkreis_nr
-2   wahlkreisname     x   wahlkreisname
-3            land     x            land
-4  wahlbezirksart     x  wahlbezirksart
-5 wahlberechtigte     x wahlberechtigte
-6        wahlende     x        wahlende</code></pre>
-</div>
-</div>
-<p>Yay, now we have the column names we want in a single vector – <code>rownames$colnames</code> 🥳 All that’s left to do is to read in the data and replace the column names.</p>
-</section>
-<section id="read-in-the-data-and-replace-the-column-names" class="level1">
-<h1>Read in the data and replace the column names</h1>
-<p>Let’s read in the data. We’ll skip the first three rows and the first row of column names. Then, we’ll replace the column names with the combined column names.</p>
-<p>And there we go – a properly read in <code>csv</code> file with two-row column names 🎉</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>vote_results <span class="ot">&lt;-</span> <span class="fu">read.csv2</span>(temp_file, <span class="at">skip =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(rownames<span class="sc">$</span>colnames)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>vote_results <span class="sc">|&gt;</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">7</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  wahlkreis_nr                     wahlkreisname ungultige_erststimmen
-1            1             Flensburg – Schleswig                  1270
-2            2 Nordfriesland – Dithmarschen Nord                  1002
-3            3      Steinburg – Dithmarschen Süd                  1037
-4            4             Rendsburg-Eckernförde                  1092
-5            5                              Kiel                   853
-6            6                 Plön – Neumünster                  1307</code></pre>
-</div>
-</div>
-</section>
-<section id="one-step-further-considering-the-second-row-meaning" class="level1">
-<h1>One step further – considering the second row meaning</h1>
-<p>In this specific data set, the second row of the column names has a specific meaning:</p>
+<p>So what is the problem then? The <code>data</code> part of the code. Because it is not just a single file, and not 100, but actually 3000 parquet files, which together make up <em>&gt;1.5 TB</em>.</p>
+<section id="classical-solution-download-then-filter" class="level2">
+<h2 class="anchored" data-anchor-id="classical-solution-download-then-filter">Classical solution: download, then filter</h2>
+<p>As long as we have enough storage space, we could just download the dataset. I have a large external drive, so that’s the first thing I tried.</p>
+<p>I wrote</p>
 <ul>
-<li><code>erststimmen</code> indicates the first vote</li>
-<li><code>zweitstimmen</code> indicates the second vote</li>
+<li>a function that would create the link from which to download each individual file</li>
+<li>a function that would create the correct file name</li>
+<li>a function to combine them.</li>
 </ul>
-<p>We can disentangle the data set to respect this information. Since the names contain underscores that are apart from the one separating the first and second row, we’ll go a bit hacky here and replace the underscore before <code>erststimme</code> or <code>zweitstimme</code> with a dot.<br>
-Then, we’ll pivot the data longer to separate the party from the vote type.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>vote_results_clean <span class="ot">&lt;-</span> vote_results <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">matches</span>(<span class="st">"stimmen"</span>)), <span class="sc">~</span> stringr<span class="sc">::</span><span class="fu">str_replace</span>(.x, <span class="st">"_([erst|zweit])"</span>, <span class="st">".</span><span class="sc">\\</span><span class="st">1"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">matches</span>(<span class="st">"stimmen"</span>),</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"vote_receiver"</span>, <span class="st">"vote_type"</span>),</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"vote_count"</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>               )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>make_url <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">first_number =</span> <span class="dv">1</span>, <span class="at">second_number =</span> <span class="dv">1</span>, <span class="at">corpus =</span> <span class="dv">1</span>){</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"https://huggingface.co/datasets/PleIAs/common_corpus/resolve/main/common_corpus_"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  corpus,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/subset_"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  first_number,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"_"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  second_number,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">".parquet"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>make_file_name <span class="ot">&lt;-</span> <span class="cf">function</span>(first_number, second_number){</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"download/subset_"</span>, first_number, <span class="st">"_"</span>, second_number, <span class="st">".parquet"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>download_and_save <span class="ot">&lt;-</span> <span class="cf">function</span>(first, second){</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">make_url</span>(first, second) <span class="sc">|&gt;</span> </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">download.file</span>(</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">make_file_name</span>(first, second),</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">mode =</span> <span class="st">"wb"</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>And there we have it – a clean data set with the correct column names and the vote type separated. Yay!</p>
+<p>Now, all I needed to do was to write a small function to map/walk over all files … and wait.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>vote_results_clean <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 9
-  wahlkreis_nr wahlkreisname       land  wahlbezirksart wahlberechtigte wahlende
-         &lt;int&gt; &lt;chr&gt;               &lt;chr&gt; &lt;chr&gt;                    &lt;int&gt;    &lt;int&gt;
-1            1 Flensburg – Schles… SH    Urne                    231536   127698
-2            1 Flensburg – Schles… SH    Urne                    231536   127698
-3            1 Flensburg – Schles… SH    Urne                    231536   127698
-4            1 Flensburg – Schles… SH    Urne                    231536   127698
-5            1 Flensburg – Schles… SH    Urne                    231536   127698
-6            1 Flensburg – Schles… SH    Urne                    231536   127698
-# ℹ 3 more variables: vote_receiver &lt;chr&gt;, vote_type &lt;chr&gt;, vote_count &lt;int&gt;</code></pre>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>numbers <span class="ot">&lt;-</span> <span class="fu">cross_df</span>(<span class="fu">list</span>(<span class="at">first =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="at">second =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">corpus =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(corpus, first)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pwalk</span>(numbers, download_and_save)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>…. and wait.</p>
+<p>And wait. The issue was: With my internet connection, it took a really long time (a couple of days) to download everything, and every now and then, an error (maybe the internet connection?) would stop everything.</p>
+<p>Eventually, I noticed that I was running out of storage space on my external drive as well. So now, I did not have one, but two issues:</p>
+<ol type="1">
+<li>limited storage space for huge database</li>
+<li>slow download times</li>
+</ol>
+</section>
+<section id="the-dutch-solution" class="level2">
+<h2 class="anchored" data-anchor-id="the-dutch-solution">The Dutch solution</h2>
+<p>One solution to problem #1 – limited storage space – is the following workflow:</p>
+<ol type="1">
+<li>Download one file</li>
+<li>Filter it</li>
+<li>Delete it</li>
+<li>Repeat</li>
+</ol>
+<p>For the database I wanted to filter within – the Common Corpus – <a href="https://huggingface.co/datasets/Rijgersberg/common_corpus_nl">Edwin Rijgersberg</a> actually used this approach to find all Dutch data points. They then shared this filtered database on Huggingface. However, they noted that the downloading was a bit of a pain – it did not always work, was sometimes interrupted, etc.</p>
+<p>So, this does not seem to be the perfect solution either: Downloading is still a pain, and still takes days.</p>
+</section>
+<section id="the-duckdb-way" class="level2">
+<h2 class="anchored" data-anchor-id="the-duckdb-way">The duckDB way</h2>
+<p>Enter duckDB! It allows us to filter the database <em>without</em> downloading it first. Read that again. We really can do all the filtering with a database that’s somewhere on some server we don’t own! Since we don’t have to download the database anymore, both problems are solved.</p>
+<p>duckDB does the following:</p>
+<ol type="1">
+<li>Create a database A</li>
+<li>Look at the original database X</li>
+<li>Filter this original database X</li>
+<li>Save the filtered results from X to the newly created database A</li>
+</ol>
+<p>Let me walk you through the steps.</p>
+<section id="create-a-database" class="level3">
+<h3 class="anchored" data-anchor-id="create-a-database">Create a database</h3>
+<p>Within duckDB, we’re working with a database, so we need to create it first. As an <code>R</code> user, this <code>SQL</code> code looks a bit unfamiliar, but all we’re doing is either creating or replacing a table, that’s called <code>corpus_german</code>.</p>
+<p>The <code>AS</code> that’s following already sets us up for what we want to put in.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span> corpus_german <span class="kw">AS</span> (</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="an-alternative" class="level1">
-<h1>An alternative</h1>
-<p>I only found out later that there’s actually a whole package dedicated to reading in files with odd formatting, including two-row column names: <a href="https://github.com/luisDVA/unheadr"><code>unheadr</code></a>. It’s a great package that does exactly what we did here – and more.</p>
-<p>If you want to use it specifically for column names with more than one row to them, you can use their function <code>mash_colnames</code>; it does pretty much what we did here, and extends the functionality to column names with more than two rows.</p>
+<section id="name-the-source-database" class="level3">
+<h3 class="anchored" data-anchor-id="name-the-source-database">Name the source database</h3>
+<p>Now, let’s populate this new database A. With the <code>FROM</code> parameter, we tell it where the dataset X lives.</p>
+<p>For this, we use the <code>httpfs</code> extension. For this to work, we exchange the <code>https://</code> in the beginning with <code>hf://</code>. This is a specific shortcut for <em>Huggingface</em>. Note that the URL is way shorter than before. It mostly takes away the huggingface part in the beginning, and the <code>resolve/main/</code> part in the middle.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">"https://huggingface.co/datasets/PleIAs/common_corpus/resolve/main/common_corpus_1/01/1.parquet"</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">'hf://datasets/PleIAs/common_corpus/common_corpus_*/**/*.parquet'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The cool thing about it: We can use a <code>glob</code> syntax, which works like a wildcard, to not only give it one parquet file, but all parquet files included in the database X. The pattern is the following:</p>
+<ul>
+<li>a corpus (1–3)</li>
+<li>a subset (1-100)</li>
+<li>a part (1-10)</li>
+</ul>
+<p>All of these are simply indicated by a <code>*</code>, something like a wild card.</p>
+<p>The <code>SELECT</code> clause says to now take every column within this dataset (<code>*</code> indicates any). Also, we tell it to select each <code>filename</code> – this is special because of the way we access the dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span> corpus_german <span class="kw">AS</span> (</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">SELECT</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        filename,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">FROM</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'hf://datasets/PleIAs/common_corpus/common_corpus_*/**/*.parquet'</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="filtering" class="level3">
+<h3 class="anchored" data-anchor-id="filtering">Filtering</h3>
+<p>So far, so good – but really, we’re only telling duckDB to look at the entire dataset online. If we were to now save it somewhere, we’d still have to find a lot of space for it. What we really need is to <em>filter</em> it so we only have the parts that are interesting to us.</p>
+<p>As an <code>R</code> user, this finally looks familiar again. We would write in <code>R</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(language <span class="sc">==</span> <span class="st">'German'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In <code>SQL</code>, we write:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span> corpus_german <span class="kw">AS</span> (</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">SELECT</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        filename,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">FROM</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'hf://datasets/PleIAs/common_corpus/common_corpus_*/**/*.parquet'</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">WHERE</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        language <span class="op">=</span> <span class="st">'German'</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="limit-the-number-of-rows" class="level3">
+<h3 class="anchored" data-anchor-id="limit-the-number-of-rows">Limit the number of rows</h3>
+<p>Now, we could end up with millions of data points again – this is not what I wanted in this case. 100.000 data points is more than enough for me. We can tell duckDB to stop using the <code>LIMIT</code> clause. This way, duckDB will only deliver 100.000 rows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span> corpus_german <span class="kw">AS</span> (</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">SELECT</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        filename,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">FROM</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'hf://datasets/PleIAs/common_corpus/common_corpus_*/**/*.parquet'</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">WHERE</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        language <span class="kw">IN</span> (<span class="st">'German'</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">LIMIT</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="dv">100000</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="saving-the-new-database" class="level3">
+<h3 class="anchored" data-anchor-id="saving-the-new-database">Saving the new database</h3>
+<p>Once my filtered data points are available, I want to save them to a <code>.parquet</code> file. With duckDB, we do this by <code>COPY</code>ing the created database to a file, which we can name however we want.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> corpus_german <span class="kw">TO</span> <span class="st">'corpus_german.parquet'</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="running-the-code" class="level3">
+<h3 class="anchored" data-anchor-id="running-the-code">Running the code</h3>
+<p>duckDB only takes about <em>3 hours</em> for this entire thing!</p>
+<p>Compare this to the <em>days</em> the other approaches took, and you’ll understand why I’ve become a huge duckDB fangirl.</p>
+</section>
+</section>
+<section id="entire-code-for-copying" class="level2">
+<h2 class="anchored" data-anchor-id="entire-code-for-copying">Entire code for copying</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span> corpus_german <span class="kw">AS</span> (</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">SELECT</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        filename,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">FROM</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'hf://datasets/PleIAs/common_corpus/common_corpus_*/**/*.parquet'</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">WHERE</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        language <span class="op">=</span> <span class="st">'German'</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">LIMIT</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        <span class="dv">100000</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> corpus_german <span class="kw">TO</span> <span class="st">'corpus_german.parquet'</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{listabarth2024,
-  author = {Listabarth, Sarah},
-  title = {Reading a `Csv` File with 2-Row Column Names},
-  date = {2024-05-05},
-  url = {https://sarahlistabarth.github.io/blog/posts/reading-csv-with-2row-colnames/},
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{listabarth2026,
+  author = {Listabarth, Jakob and Listabarth, Sarah},
+  title = {Filtering a Large Online Dataset with {duckDB}},
+  date = {2026-02-10},
+  url = {https://sarahlistabarth.github.io/blog/posts/filtering-online-dataset-with-duckdb/},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-listabarth2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-Listabarth, Sarah. 2024. <span>“Reading a `Csv` File with 2-Row Column
-Names.”</span> May 5, 2024. <a href="https://sarahlistabarth.github.io/blog/posts/reading-csv-with-2row-colnames/">https://sarahlistabarth.github.io/blog/posts/reading-csv-with-2row-colnames/</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-listabarth2026" class="csl-entry quarto-appendix-citeas" role="listitem">
+Listabarth, Jakob, and Sarah Listabarth. 2026. <span>“Filtering a Large
+Online Dataset with duckDB.”</span> February 10, 2026. <a href="https://sarahlistabarth.github.io/blog/posts/filtering-online-dataset-with-duckdb/">https://sarahlistabarth.github.io/blog/posts/filtering-online-dataset-with-duckdb/</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

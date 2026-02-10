@@ -1,7 +1,12 @@
 [
   {
+    "listing": "/software/index.html",
+    "items": []
+  },
+  {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/posts/filtering-online-dataset-with-duckdb/index.html",
       "/blog/posts/osm-history-files/index.html",
       "/blog/posts/scraping-wikipedia/index.html",
       "/blog/posts/sending-automated-emails/index.html",
@@ -15,10 +20,6 @@
   },
   {
     "listing": "/data-viz/index.html",
-    "items": []
-  },
-  {
-    "listing": "/software/index.html",
     "items": []
   }
 ]
